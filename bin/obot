@@ -1,6 +1,7 @@
 #!/usr/bin/python3 -u
 
-import os
+import os, sys ; sys.path.insert(0, os.getcwd())
+
 import ob
 
 from ob.bot import Console
@@ -13,7 +14,8 @@ def main():
     parse_cli("obot", __version__)
     if k.cfg.daemon:
         daemon()
-    k.walk("ob")
+    k.walk("ob.cmds")
+    k.walk("ob.loader")
     k.init(k.cfg.modules)
     k.start()
     bot = Console()

@@ -1,5 +1,7 @@
 #!/usr/bin/python3 -u
 
+import os, sys ; sys.path.insert(0, os.getcwd())
+
 from ob import __version__
 from ob.bot import Console
 from ob.kernel import k

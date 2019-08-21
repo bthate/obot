@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+
+__version__ = 1
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+import logging
+import shutil
+import time
+import unittest
+
+import ob
+from ob.kernel import k
+from ob.shell import execute, parse_cli
+from ob.types import get_cls
+from ob.times import elapsed
+from ob.utils import level
+
+def initialize():
+    k.walk("ob")
+    for c in ob.classes:
+        try:
+            o = get_cls(c)()
+            o.txt = "yo!"
+            o.save()
+        except TypeError as ex:
+            pass
+
+def main():
+    parse_cli(wd="testdata")
+    try:
+        shutil.rmtree("testdata")
+    except:
+        pass
+    ob.WORKDIR = "testdata"
+    level("debug")
+    initialize()
+    k.cfg.debug = True
+    level(k.cfg.level)
+    test_path = os.getcwd() + os.sep + "tests"
+    p = ""
+    if k.cfg.args and not int(k.cfg.args[0]):
+        p = "test_%s*" % k.cfg.args[0]
+    if not p:
+        p = "test_*"
+    suite = unittest.loader.TestLoader().discover(test_path, pattern=p)
+    unittest.TextTestRunner(verbosity=3).run(suite)
+    print(elapsed(time.time() - k.state.starttime))
+
+execute(main)
+os._exit(0)
