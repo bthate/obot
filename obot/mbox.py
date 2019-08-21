@@ -2,6 +2,7 @@
 
 import mailbox
 import ob
+import os
 
 from ob import Object
 from ob.generic import format

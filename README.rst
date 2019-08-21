@@ -13,7 +13,7 @@ clone the source.
 
 :: 
 
-    > hg clone https://bitbucket.org/bthate/obot
+    > git clone https://github.com/bthate/obot
     > cd obot
     > sudo python3 setup.py install
 
@@ -33,14 +33,14 @@ add url.
 
 ::
 
-    > obot rss https://news.ycombinator.com/rss
+    > obot -m rss rss https://news.ycombinator.com/rss
     ok 1
 
 you can use the find command to see what urls are registered:
 
 ::
 
-    > obot find rss rss
+    > obot -m db find rss rss
     0 https://news.ycombinator.com/rss
 
 irc
@@ -51,7 +51,7 @@ use server (-s), channel (-c) and nick (-n) options to connect to an IRC network
 
 ::
 
-    > obot -s localhost -c \#obot -n obot
+    > obot -m irc -p localhost -c \#obot -n obot
 
 
 you can use the -b option to start the bot in the background and logfiles can be found in ~/.obot/logs.
@@ -76,12 +76,6 @@ you can also use the full userhost as a argument to meet.
     > meet user@server
     user user@server created
 
-to give the user a permission you can use the perm command.
-
-::
-
-    > perm user@server oper
-    ok user@server
 
 the default shell user is root@shell and gives access to all the commands that are available.
 you can use the --owner option to set the owner of the bot to your own userhost.
@@ -89,12 +83,17 @@ you can use the --owner option to set the owner of the bot to your own userhost.
 cli
 ===
 
-obot can be used as a command line shell program.
+obot also provides the ob program that can be used as a command line shell program.
 
 ::
 
-    bart@okdan:~$ obot v
+    bart@okdan:~$ ob v
     RSSBOT 12
+
+stand alone shell is provided by the obs program and standard daemonized
+version with the obd program.
+
+::
 
 shell
 =====
@@ -103,7 +102,7 @@ starting RSSBOT without arguments starts a shell.
 
 ::
 
-    bart@okdan:~$ obot
+    bart@okdan:~$ obot -m entry
     > ps
     1    1s       Task(CLI.select)
     > log first entry to log
@@ -118,9 +117,8 @@ available commands as of may 2019 are:
 
 ::
 
-    announce                 # announce text to all bots in the fleet.
-    cmds                     # show list of commands.
     cfg                      # show configuraton files.
+    cmds                     # show list of commands.
     ed                       # show running threads.
     find                     # present a list of objects based on prompt input.
     fleet                    # show bots in the fleet.
@@ -128,12 +126,11 @@ available commands as of may 2019 are:
     load                     # load a module
     log                      # log some text.
     meet                     # introduce a user.
-    perm                     # assign permissions to an user.
     ps                       # show running tasks.
     rm                       # remove an object from the store.
     todo                     # enter something todo.
     undel                    # undelete an object.
-    v                        # show version.
+    version                  # show version.
 
 programming
 ===========

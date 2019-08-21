@@ -58,22 +58,30 @@ def load(event):
 def unload(event):
     """ unload a module from the table. """
     from ob.kernel import k
+    from ob.handler import modules
     if event.origin != k.cfg.owner:
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
         event.reply("|".join(sorted(k.table)))
         return
+    bot = k.fleet.get_bot(event.orig)
     name = event.args[0]
-    for k in k.handlers:
-        mn = modules.get(k, None)
+    for key, mn in modules.items():
         if name in mn:
-            del k.handlers[k]
-    try:
-        del k.table[name]
-    except KeyError:
-        event.reply("%s is not loaded." % name)
-        return
+            del k.handlers[key]
+            del bot.handlers[key]
+    todo = []
+    for key in k.table:
+        if name in key:
+           todo.append(key)
+    for key in todo:
+        try:
+            del k.table[key]
+            del bot.table[key]
+        except KeyError:
+            event.reply("%s is not loaded." % name)
+            return
     bot = k.fleet.get_bot(event.orig)
     bot.sync(k)
     set_completer(k.handlers)
