@@ -1,4 +1,4 @@
-__version__ = 6
+""" email to object scanner. """
 
 import mailbox
 import ob

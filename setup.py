@@ -13,7 +13,7 @@ def readme():
 
 setup(
     name='obot',
-    version='5',
+    version='6',
     url='https://bitbucket.org/bthate/obot',
     author='Bart Thate',
     author_email='bthate@dds.nl',
