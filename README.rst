@@ -46,12 +46,14 @@ you can use the find command to see what urls are registered:
 irc
 ===
 
-the default bot starts the IRC bot, you can disable this with the -x bot.irc option.
-use server (-s), channel (-c) and nick (-n) options to connect to an IRC network
+the default bot just starts the shell, if you want to connect to IRC or XMPP
+use the -p (prompt) option to provide connection arguments. 
+
+for IRC this is <server> <channel> <nick>, for XMPP <jid>.
 
 ::
 
-    > obot -m irc -p localhost -c \#obot -n obot
+    > obot -m irc -p localhost \#obot obot
 
 
 you can use the -b option to start the bot in the background and logfiles can be found in ~/.obot/logs.
