@@ -65,7 +65,7 @@ class Kernel(Handler, Launcher):
                         except Exception as ex:
                             pass
             logging.warn("init %s" % get_name(mod))
-            if mod:
+            if mod and "init" in dir(mod):
                 try:
                     mod.init()
                 except EINIT:

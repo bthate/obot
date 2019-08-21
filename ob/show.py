@@ -21,6 +21,7 @@ def cfg(event):
     else:
         event.reply(k.cfg)
 
+
 def fleet(event):
     """ show list of bots. """
     try:
@@ -29,6 +30,10 @@ def fleet(event):
         return
     except (ValueError, IndexError):
         event.reply([get_type(x) for x in k.fleet.bots])
+
+def ls(event):
+    """ show listing of the store directory. """
+    event.reply("|".join(os.listdir(k.cfg.workdir)))
 
 def uptime(event):
     """ show time running. """
@@ -43,5 +48,5 @@ def version(event):
         ver = getattr(mod, "__version__", None)
         if ver:
             event.reply("%s %s" % (name.upper(), ver))
-    #event.reply("%s %s" % (k.cfg.name.upper(), ob.__version__))
+    event.reply("%s %s" % (k.cfg.name.upper(), ob.__version__))
     

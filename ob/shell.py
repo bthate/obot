@@ -27,7 +27,7 @@ opts = [
     ('-o', '', "string", "", 'options', "options to use."),
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
-    ('', '--owner', "string", "", 'owner', "owner's userhost or JID.")
+    ('', '--owner', "string", "root@shell", 'owner', "owner's userhost or JID.")
 ]
 
 def close_history():

@@ -4,17 +4,17 @@ import queue
 import sys
 import threading
 
-from . import Cfg, classes
-from .kernel import k
-from .handler import Event, Handler
-from .shell import enable_history, set_completer
+from ob import Cfg, classes
+from ob.kernel import k
+from ob.handler import Event, Handler
+from ob.shell import enable_history, set_completer
 
 def __dir__():
     return ("Bot", "Console")
 
 class Bot(Handler):
 
-    """ Basic bot class. """
+    """basic bot class. """
 
     def __init__(self):
         super().__init__()
@@ -24,15 +24,23 @@ class Bot(Handler):
         self.cfg.update({"prompt": True, "verbose": True})
         self.channels = []
 
+    def _raw(self, txt):
+        """ write directly to display. """
+        if not txt:
+            return
+        sys.stdout.write(txt)
+        sys.stdout.flush()
+
     def _say(self, *args):
         """ say some text on some channel. """
         if self.cfg.verbose and len(args) > 1:
-            self.raw(str(args[1]) + "\n")
+            self._raw(str(args[1]) + "\n")
 
     def announce(self, txt):
         """ announce txt on all registered channels. """
-        for channel in self.channels:
-            self.say(channel, txt)
+        if self.cfg.verbose:
+            for channel in self.channels:
+                self.say(channel, txt)
 
     def cmd(self, txt, origin=""):
         """ execute a command on this bot. """
@@ -53,17 +61,13 @@ class Bot(Handler):
             channel, txt, otype = self._outqueue.get()
             if txt:
                 self._say(channel, txt, otype)
-    def raw(self, txt):
-        """ write directly to display. """
-        if not txt:
-            return
-        sys.stdout.write(txt)
-        sys.stdout.flush()
 
     def say(self, channel, txt, mtype=None):
+        """ say some txt on a channel. """
         self._say(channel, txt, mtype)
 
     def start(self):
+        """ start the bot and add it to kernel's fleet. """
         super().start()
         k.fleet.add(self)
 
@@ -78,8 +82,7 @@ class Console(Bot):
 
     def announce(self, txt):
         """ announce to console. """
-        if k.cfg.test:
-            raw(str(txt) + "\n")
+        self._raw(str(txt) + "\n")
 
     def dispatch(self, event):
         """ dispatch and wait for the event to finish. """
@@ -104,5 +107,5 @@ class Console(Bot):
     def start(self):
         """ start the console. """
         super().start()
-        set_completer(self.handlers)
+        set_completer(k.handlers)
         enable_history()

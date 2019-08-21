@@ -7,6 +7,9 @@ import os
 import threading
 import time
 
+from ob.shell import set_completer
+from ob.utils import get_name
+
 def __dir__():
     return ("Loader", "load", "unload")
 
@@ -35,7 +38,6 @@ class Loader(ob.Object):
 def load(event):
     """ load a module into the kernel. """
     from ob.kernel import k
-    from ob.utils import get_name
     if event.origin != k.cfg.owner:
         event.reply("EOWNER, use the --owner option")
         return
@@ -48,6 +50,9 @@ def load(event):
     name = event.args[0]
     mods = k.walk(name)
     k.init(name)
+    bot = k.fleet.get_bot(event.orig)
+    bot.sync(k)
+    set_completer(k.handlers)
     event.reply("%s loaded" % ",".join([get_name(x) for x in mods]))
 
 def unload(event):
@@ -60,9 +65,16 @@ def unload(event):
         event.reply("|".join(sorted(k.table)))
         return
     name = event.args[0]
+    for k in k.handlers:
+        mn = modules.get(k, None)
+        if name in mn:
+            del k.handlers[k]
     try:
         del k.table[name]
     except KeyError:
         event.reply("%s is not loaded." % name)
         return
+    bot = k.fleet.get_bot(event.orig)
+    bot.sync(k)
+    set_completer(k.handlers)
     event.reply("unload %s" % name)
