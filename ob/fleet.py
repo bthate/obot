@@ -44,7 +44,6 @@ class Fleet(Object):
 
     def say(self, bid, channel, txt, mtype="chat"):
         b = self.get_bot(bid)
-        print(b)
         if b:
             if b._outputed:
                 b._outqueue.put_nowait((channel, txt, mtype))
