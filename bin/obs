@@ -1,0 +1,21 @@
+#!/usr/bin/python3 -u
+
+import os
+
+from ob import __version__
+from ob.bot import Console
+from ob.kernel import k
+from ob.shell import execute, parse_cli
+from ob.utils import hd
+
+def main():
+    parse_cli("ob", __version__, hd(".ob"), "ob -m mod1,mod2 cmd")
+    k.walk("ob")
+    k.init(k.cfg.modules)
+    bot = Console()
+    bot.sync(k)
+    bot.start()
+    bot.wait()
+        
+execute(main)
+os._exit(0)

@@ -1,0 +1,22 @@
+#!/usr/bin/python3 -u
+
+from ob import __version__
+from ob.bot import Console
+from ob.kernel import k
+from ob.shell import daemon, execute, parse_cli
+from ob.utils import level, hd
+
+def main():
+    parse_cli("obd", __version__, hd(".ob"))
+    level("debug")
+    daemon()
+    k.start()
+    k.walk("ob")
+    k.init(k.cfg.modules)
+    bot = Console()
+    bot.sync(k)
+    bot.start()
+    bot.wait()
+        
+execute(main)
+os._exit(0)

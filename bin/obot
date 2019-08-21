@@ -1,0 +1,25 @@
+#!/usr/bin/python3 -u
+
+import os
+import ob
+
+from ob.bot import Console
+from ob.shell import daemon, execute,parse_cli
+from obot import __version__
+
+from ob.kernel import k
+
+def main():
+    parse_cli("obot", __version__)
+    if k.cfg.daemon:
+        daemon()
+    k.walk("ob")
+    k.init(k.cfg.modules)
+    k.start()
+    bot = Console()
+    bot.sync(k)
+    bot.start()
+    bot.wait()
+
+execute(main)
+os._exit(0)
