@@ -3,9 +3,8 @@ import random
 import unittest
 
 from ob.bot import Bot
-from ob.event import Event
 from ob.kernel import k
-from ob.handler import modules, names
+from ob.handler import Event, modules, names
 from ob.types import get_cls
 from ob.trace import get_exception
 
