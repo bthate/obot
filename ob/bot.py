@@ -1,4 +1,4 @@
-""" provide persistence through save/load to JSON files. """
+""" bot base class. """
 
 import queue
 import sys
@@ -49,7 +49,7 @@ class Bot(Handler):
         event.txt = txt
         event.options = k.cfg.options
         event.origin = origin or "root@shell"
-        self.dispatch(event)
+        k.dispatch(event)
         event.wait()
         for val in event.result:
             self.say("", val)

@@ -1,4 +1,4 @@
-""" provide persistence through save/load to JSON files. """
+""" save/load JSON files. """
 
 __version__ = 27
 
@@ -16,6 +16,7 @@ import _thread
 
 from ob.utils import locked, hd
 from ob.errors import ECLASS, ENOFILE
+from ob.times import fntime
 from ob.types import get_cls, get_type
 
 def __dir__():
@@ -33,12 +34,14 @@ class Object:
     __slots__ = ("__dict__", "_path", "_ready", "_type")
 
     def __init__(self):
+        """ sets _path, _ready and _type. """
         super().__init__()
         self._path = ""
         self._ready = threading.Event()
         self._type = get_type(self)
 
     def __delitem__(self, key):
+        """ remove item. """
         del self.__dict__[key]
 
     def __eq__(self, obj):
@@ -123,8 +126,7 @@ class Object:
             return self
         for key in obj:
             val = obj[key]
-            if keys and key in keys:
-                setattr(self, key, val)
+            if keys and key not in keys:
                 continue
             if skip and not val:
                 continue
@@ -169,7 +171,6 @@ def last(obj):
     val = k.db.last(get_type(obj))
     if val:
         obj.update(val, skip=True)
-    return obj
 
 def launch(func, *args):
     """ start a task. """
@@ -185,5 +186,45 @@ def hooked(d):
         o = Object()
     o.update(d)
     return o
+
+def names(name, delta=None):
+    """ show all object filenames on disk. """
+    if not name:
+        return []
+    if not delta:
+        delta = 0
+    assert ob.WORKDIR
+    p = os.path.join(ob.WORKDIR, "store", name) + os.sep
+    res = []
+    now = time.time()
+    past = now + delta
+    for rootdir, dirs, files in os.walk(p, topdown=True):
+        for fn in files:
+            fnn = os.path.join(rootdir, fn).split(os.path.join(ob.WORKDIR, "store"))[-1]
+            if delta:
+                if ime(fnn) < past:
+                    continue
+            res.append(os.sep.join(fnn.split(os.sep)[1:]))
+    return sorted(res, key=fntime)
+
+def search(obj, match: None):
+    """ do a strict key,value match. """
+    if not match:
+        match = {}
+    res = False
+    for key, value in match.items():
+        val = getattr(obj, key, None)
+        if val:
+            if value is None:
+                res = True
+                continue
+            if value in str(val):
+                res = True
+                continue
+        else:
+            res = False
+            break
+    return res
+
 
 import ob.all

@@ -29,6 +29,7 @@ class Event(Command):
         self.direct = False
         self.type = "chat"
         self.name = ""
+        self.sep = "\n"
 
     def prompt(self):
         """ optional prompt. """
@@ -93,7 +94,10 @@ class Handler(Loader):
         event._func = self.get_handler(event.chk)
         if event._func:
             logging.warn("dispatch %s" % event.chk)
-            event._func(event)
+            try:
+                event._func(event)
+            except Exception as ex:
+                logging.error(get_exception())
         return self.handle_event(event)
 
     def handle_event(self, event):

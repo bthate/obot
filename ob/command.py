@@ -1,5 +1,6 @@
-""" parse a string into a command. """
+""" parse string into command. """
 
+import logging
 import ob
 
 def __dir__():
@@ -14,6 +15,7 @@ aliases = {
            "v": "version"
            }
 
+from ob.errors import ENOTXT
 from ob.times import to_day
 
 class Token(ob.Default):
@@ -50,6 +52,7 @@ class Token(ob.Default):
             pass
         if nr == 1:
             self.match = ob.handler.names.get(word, word)
+            logging.warn("match %s" % self.match)
             self.arg = word
             return
         if "http" in word:
@@ -126,7 +129,9 @@ class Command(ob.Default):
     def parse(self, txt, options=""):
         """ parse txt into a command. """
         if not txt:
-            return
+            txt = self.txt 
+        if not txt:
+            raise ENOTXT
         txt = txt.replace("\u0001", "")
         txt = txt.replace("\001", "")
         if txt and self.cc == txt[0]:

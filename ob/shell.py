@@ -106,6 +106,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     cfg.name = name
     cfg.version = version
     cfg.workdir = wd or cfg.workdir or hd(".%s" % name)
+    cfg.txt = " ".join(cfg.args)
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)

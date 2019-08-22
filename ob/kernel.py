@@ -1,4 +1,4 @@
-""" provide persistence through save/load to JSON files. """
+""" runtime objects and boot code. """
 
 import logging
 import ob
@@ -16,7 +16,11 @@ from ob.user import Users
 from ob.utils import get_name
 
 def __dir__():
-    return ("Kernel", "k")
+    return ("cfg", "Kernel", "k")
+
+class Cfg(Cfg):
+
+    """ kernel config. """
 
 class Kernel(Handler, Launcher):
 
@@ -32,6 +36,7 @@ class Kernel(Handler, Launcher):
         self.state.starttime = time.time()
         self.users = Users()
 
+
     def cmd(self, txt, origin=""):
         """ execute a string as a command. """
         event = Event()
@@ -39,7 +44,7 @@ class Kernel(Handler, Launcher):
         event.txt = txt
         event.options = self.cfg.options
         event.origin = origin or "root@shell"
-        self.dispatch(event)
+        k.dispatch(event)
         event.wait()
         return event.result
 
@@ -72,6 +77,16 @@ class Kernel(Handler, Launcher):
                     _thread.interrupt_main()
                 except Exception as ex:
                      logging.error(get_exception())
-                     
+
+    def raw(self, txt):
+        print(txt)
+
+    def start(self):
+        """ start the kernel. """
+        super().start()
+        if k.cfg.prompting:
+            self.save()
+        ob.last(self.cfg)
+
 #:
 k = Kernel()

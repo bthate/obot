@@ -28,6 +28,10 @@ class ENOTIMPLEMENTED(Exception):
 
     """ base function is not overriden. """
 
+class ENOTXT(Exception):
+
+    """ event has no text set. """
+
 class ENOUSER(Exception):
 
     """ user is not found. """

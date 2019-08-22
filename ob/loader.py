@@ -47,11 +47,13 @@ def load(event):
         h.walk("ob")
         event.reply("|".join(sorted(h.table)))
         return
-    name = event.args[0]
-    mods = k.walk(name)
-    k.init(name)
+    for name in event.args[0].split(","):
+        name = event.args[0]
+        mods = k.walk(name)
+        k.init(name)
     bot = k.fleet.get_bot(event.orig)
-    bot.sync(k)
+    if bot:
+        bot.sync(k)
     set_completer(k.handlers)
     event.reply("%s loaded" % ",".join([get_name(x) for x in mods]))
 
@@ -82,7 +84,6 @@ def unload(event):
         except KeyError:
             event.reply("%s is not loaded." % name)
             return
-    bot = k.fleet.get_bot(event.orig)
     bot.sync(k)
     set_completer(k.handlers)
     event.reply("unload %s" % name)

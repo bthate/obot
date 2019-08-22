@@ -12,7 +12,7 @@ from ob.times import elapsed
 from ob.utils import get_name
 
 def __dir__():
-    return ("cfg", "fleet", "ls", "uptime", "version")
+    return ("cfg", "fleet", "kernel", "ls", "uptime", "version")
 
 def cfg(event):
     """ show configuration files. """
@@ -30,6 +30,10 @@ def fleet(event):
         return
     except (ValueError, IndexError):
         event.reply([get_type(x) for x in k.fleet.bots])
+
+def kernel(event):
+    """ kernel dump. """
+    event.reply(k)
 
 def ls(event):
     """ show listing of the store directory. """
