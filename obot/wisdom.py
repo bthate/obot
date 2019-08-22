@@ -15,12 +15,15 @@ import random
 
 def init():
     e = Event()
+    e.isinit = True
     repeater = Repeater(random.randint(60,120), wisdom, e)
     ob.launch(repeater.start)
 
 def wisdom(event):
     x = random.choice([x.strip() for x in txt.split("\n") if x])
     k.fleet.announce(x)
+    if not event.isinit:
+        event.reply(x)
 
 txt="""
 OVERDRACHT

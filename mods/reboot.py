@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 
-from ob import k
+from ob.kernel import k
 
 def reboot(event):
     if not k.cfg.owner:

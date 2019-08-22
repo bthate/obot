@@ -92,6 +92,7 @@ class Handler(Loader):
             event.orig = repr(self)
         event._func = self.get_handler(event.chk)
         if event._func:
+            logging.warn("dispatch %s" % event.chk)
             event._func(event)
         return self.handle_event(event)
 
@@ -170,17 +171,17 @@ class Handler(Loader):
         mod = None
         try:
             mod = self.load_mod(pkgname)
-        except:
+        except ModuleNotFoundError:
             try:
                 mod = self.load_mod("ob.%s" % pkgname)
-            except:
+            except ModuleNotFoundError:
                 try:
                     mod = self.load_mod("obot.%s" % pkgname)
-                except:
+                except ModuleNotFoundError:
                     try:
                         mod = self.load_mod("%s.%s" % (self.cfg.name, pkgname))
-                    except Exception as ex:
-                        pass
+                    except ModuleNotFoundError:
+                       pass
         if not mod:
             logging.warn("not found %s" % pkgname)
             return
