@@ -165,6 +165,27 @@ def default(obj):
         return obj
     return repr(obj)
 
+def format(obj, keys=None, full=False):
+    """ return a string that can be displayed. """
+    if keys is None:
+        keys = vars(obj).keys()
+    res = []
+    txt = ""
+    for key in keys:
+        val = getattr(obj, key, None)
+        if key == "text":
+            val = val.replace("\\n", "\n")
+        if not val:
+            continue
+        val = str(val)
+        if full:
+            res.append("%s=%s " % (key, val))
+        else:
+            res.append(val)
+    for val in res:
+        txt += "%s " % val.strip()
+    return txt.strip()
+
 def last(obj):
     """ return the last version of this type. """
     from ob.kernel import k
@@ -226,4 +247,14 @@ def search(obj, match: None):
             break
     return res
 
-#import ob.all
+def sliced(obj, keys=None):
+    """ return a new object with the sliced result. """
+    val = ob.Object()
+    if not keys:
+        keys = obj.keys()
+    for key in keys:
+        try:
+            val[key] = obj[key]
+        except KeyError:
+            pass
+    return val

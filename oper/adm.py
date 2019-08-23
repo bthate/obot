@@ -1,21 +1,36 @@
 """ admin commands. """
 
-import json
 import ob
 import os
 import time
 
-from ob.times import days, fntime
-from ob.utils import last
-
-from ob import __version__
 from ob.kernel import k
-from ob.shell import execute, hd, parse_cli
+from ob.times import elapsed
+
+def edit(obj, setter=None):
+    """ edit an objects with the setters key/value. """
+    if not setter:
+        setter = {}
+    count = 0
+    for key, value in setter.items():
+        if "," in value:
+            value = value.split(",")
+        otype = type(value)
+        if value in ["True", "true"]:
+            setattr(obj, key, True)
+        elif value in ["False", "false"]:
+            setattr(obj, key, False)
+        elif otype == list:
+            setattr(obj, key, value)
+        elif otype == str:
+            setattr(obj, key, value)
+        else:
+            setattr(obj, key, value)
+        count += 1
+    return count
 
 def ed(event):
     """ edit an object, select with key==value, set with key=value. """
-    from ob.kernel import k
-    from ob.generic import edit
     if not event.args:
         fns = os.listdir(os.path.join(ob.WORKDIR, "store"))
         fns = sorted({x.split(".")[-1].lower() for x in fns})
@@ -39,7 +54,6 @@ def rm(event):
     if not event.args:
         event.reply("rm <selector>")
         return
-    from ob.kernel import k
     nr = -1
     for o in k.db.find(event.match, event.selector, event.index, event.delta):
         if not o:
@@ -54,8 +68,6 @@ def undel(event):
     if not event.args:
         event.reply("undel <selector>")
         return
-    from ob.kernel import k
-    from ob.times import elapsed
     st = time.time()
     nr = -1
     for o in k.db.all(event.match, event.selector, event.index, event.delta):
@@ -63,4 +75,3 @@ def undel(event):
         o._deleted = False
         o.save()
     event.reply("ok %s %s" % (nr+1, elapsed(time.time()-st)))
-

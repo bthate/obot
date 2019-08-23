@@ -9,7 +9,7 @@ from ob.times import days, fntime
 from ob.utils import last
 
 def __dir__():
-    return ("Db", "hook", "find",)
+    return ("Db", "hook", "find")
 
 class Db(ob.Object):
 
@@ -146,12 +146,11 @@ def find(event):
         if "f" in event.options:
             full = True
         if event.dkeys:
-            txt = "%s %s" % (event.index or nr, format(o, event.dkeys, full))
+            txt = "%s %s" % (event.index or nr, ob.format(o, event.dkeys, full))
         else:
-            txt = "%s %s" % (event.index or nr, format(o, full=full))
+            txt = "%s %s" % (event.index or nr, ob.format(o, full=full))
         if "t" in event.options:
             txt += " " + days(o._path)
         txt = txt.rstrip()
         if txt:
             event.reply(txt)
-

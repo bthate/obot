@@ -31,7 +31,6 @@ import ob.user
 import ob.fleet
 import ob.db
 import ob.entry
-import ob.generic
 import ob.loader
 import ob.handler
 import ob.kernel
