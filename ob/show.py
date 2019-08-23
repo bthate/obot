@@ -46,14 +46,17 @@ def uptime(event):
 def version(event):
     """ show bot's version. """
     import ob
-    h = Handler()
-    h.walk("ob")
-    h.walk("obot")
+    import obot
     res = []
-    for name, mod in h.table.items():
+    event.reply("OBOT %s" % obot.__version__)
+    event.reply("OB %s" % ob.__version__)
+    for name, mod in k.table.items():
+        if name in ["ob", "obot"]:
+            continue
         if not mod:
             continue
         ver = getattr(mod, "__version__", None)
         if ver:
             res.append("%s %s" % (name, ver))
-    event.reply(" | ".join(res))
+    if res:
+        event.reply(" | ".join(res))
