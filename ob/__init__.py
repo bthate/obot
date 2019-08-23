@@ -193,14 +193,14 @@ def names(name, delta=None):
         return []
     if not delta:
         delta = 0
-    assert ob.WORKDIR
-    p = os.path.join(ob.WORKDIR, "store", name) + os.sep
+    assert WORKDIR
+    p = os.path.join(WORKDIR, "store", name) + os.sep
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(ob.WORKDIR, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(WORKDIR, "store"))[-1]
             if delta:
                 if ime(fnn) < past:
                     continue
@@ -226,5 +226,4 @@ def search(obj, match: None):
             break
     return res
 
-
-import ob.all
+#import ob.all

@@ -11,6 +11,7 @@ import threading
 from ob.command import Command
 from ob.loader import Loader
 from ob.trace import get_exception
+from ob.types import get_type
 
 def __dir__():
     return ("Event", "Handler")
@@ -76,7 +77,7 @@ class Handler(Loader):
         self._ready = threading.Event()
         self._stopped = False
         self._threaded = False
-        self._type = ob.types.get_type(self)
+        self._type = get_type(self)
         self.cfg = ob.Cfg()
         self.handlers = {}
 
@@ -139,7 +140,7 @@ class Handler(Loader):
                 modules[key] = o.__module__
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, ob.Object):
-                t = ob.types.get_type(o)
+                t = get_type(o)
                 if t not in ob.classes:
                     ob.classes.append(t)
                 w = t.split(".")[-1].lower()
