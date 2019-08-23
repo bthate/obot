@@ -71,7 +71,7 @@ def ps(event):
         d = vars(thr)
         o = ob.Object()
         o.update(d)
-        if getattr(o, "sleep", None):
+        if o._get("sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
             up = int(time.time() - k.state.starttime)

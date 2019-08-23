@@ -20,9 +20,9 @@ from ob.times import fntime
 from ob.types import get_cls, get_type
 
 def __dir__():
-    iface = ['Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'WORKDIR', 'all', 'classes', 'default', 'hooked', 'last', 'launch']
-    mods = ['all', 'bot', 'clock', 'cmds', 'command', 'db', 'entry', 'errors', 'fleet', 'generic', 'handler', 'kernel', 'loader', 'shell', 'show', 'tasks', 'term', 'times', 'trace', 'types', 'user', 'utils']
-    return iface + mods
+    iface = ['Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'WORKDIR', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update']
+    mods = ['all', 'bot', 'clock', 'cmds', 'command', 'db', 'entry', 'errors', 'fleet', 'handler', 'kernel', 'loader', 'shell', 'show', 'tasks', 'term', 'times', 'trace', 'types', 'user', 'utils']
+    return iface 
 
 classes = []
 WORKDIR = hd(".ob")
@@ -52,7 +52,7 @@ class Object:
 
     def __getitem__(self, name, default=None):
         """ wrap getattr. """
-        return getattr(self, name, default)
+        return get(self, name, default)
 
     def __hash__(self):
         """ return a hashable version. """
@@ -76,9 +76,6 @@ class Object:
     def __str__(self):
         """ return json string. """
         return json.dumps(self, default=default, indent=4, sort_keys=True)
-
-    def get(self, key, default=None):
-        return getattr(self, key, default)
 
     def load(self, path):
         """ load this object from disk. """
@@ -116,22 +113,7 @@ class Object:
         with open(opath, "w") as file:
             json.dump(self, file, default=default, indent=4, sort_keys=True)
         return path
-
-    def typed(self):
-        return type(self)().update(self)
                 
-    def update(self, obj, keys=None, skip=False):
-        """ update this object from the data of another. """
-        if not obj:
-            return self
-        for key in obj:
-            val = obj[key]
-            if keys and key not in keys:
-                continue
-            if skip and not val:
-                continue
-            setattr(self, key, val)
-        return self
 
 class Default(Object):
 
@@ -144,8 +126,8 @@ class Default(Object):
 
     def __getattr__(self, key):
         if key not in dir(self):
-            setattr(self, key, "")
-        return getattr(self, key)
+            set(self, key, "")
+        return get(self, key)
 
 
 class Cfg(Default):
@@ -172,7 +154,7 @@ def format(obj, keys=None, full=False):
     res = []
     txt = ""
     for key in keys:
-        val = getattr(obj, key, None)
+        val = get(obj, key, None)
         if key == "text":
             val = val.replace("\\n", "\n")
         if not val:
@@ -185,6 +167,10 @@ def format(obj, keys=None, full=False):
     for val in res:
         txt += "%s " % val.strip()
     return txt.strip()
+
+def get(obj, key, default=None):
+    """ get attribute. """
+    return getattr(obj, key, default)
 
 def last(obj):
     """ return the last version of this type. """
@@ -199,6 +185,7 @@ def launch(func, *args):
     return k.launch(func, *args)
 
 def hooked(d):
+    """ construct obj from _type. """
     if "_type" in d:
         t = d["_type"]
         o = get_cls(t)()
@@ -234,7 +221,7 @@ def search(obj, match: None):
         match = {}
     res = False
     for key, value in match.items():
-        val = getattr(obj, key, None)
+        val = get(obj, key, None)
         if val:
             if value is None:
                 res = True
@@ -247,6 +234,10 @@ def search(obj, match: None):
             break
     return res
 
+def set(obj, key, value):
+    """ set attribute. """
+    return setattr(obj, key, value)
+
 def sliced(obj, keys=None):
     """ return a new object with the sliced result. """
     val = ob.Object()
@@ -258,3 +249,20 @@ def sliced(obj, keys=None):
         except KeyError:
             pass
     return val
+
+def typed(obj):
+    """ return a types copy of obj. """
+    return type(obj)().update(obj)
+
+def update(obj1, obj2, keys=None, skip=False):
+    """ update this object from the data of another. """
+    if not obj2:
+        return obj1
+    for key in obj2:
+        val = obj2[key]
+        if keys and key not in keys:
+            continue
+        if skip and not val:
+            continue
+        set(obj1, key, val)
+    return obj1

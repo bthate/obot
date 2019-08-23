@@ -49,7 +49,7 @@ class Users(Object):
             return o
 
     def get_user(self, origin):
-        u = getattr(Users.cache, origin, None)
+        u = Users.cache._get(origin, None)
         if u:
             return u
         s = {"user": origin}
@@ -96,6 +96,6 @@ def meet(event):
         event.reply("|".join(sorted(k.users.userhosts)))
         return
     from ob.kernel import k
-    origin = getattr(k.users.userhosts, origin, origin)
+    origin = k.users.userhosts._get(origin, origin)
     u = k.users.meet(origin, perms)
     event.reply("added %s" % u.user)

@@ -59,7 +59,7 @@ class Fetcher(Object):
         else:
             dl = self.cfg.display_list
         for key in dl:
-            data = getattr(o, key, None)
+            data = o._get(key, None)
             if data:
                 data = data.replace("\n", " ")
                 data = strip_html(data.rstrip())

@@ -100,7 +100,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     usage = usage or "%s -m [mod1,mod2] cmd"  % name
     opt, arguments = make_opts(opts, usage, ver)
     cfg = ob.Cfg()
-    cfg.update(vars(opt))
+    ob.update(cfg, vars(opt))
     cfg.args = arguments
     cfg.debug = False
     cfg.name = name
@@ -111,7 +111,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     if not os.path.exists(sp):
         cdir(sp)
     ob.WORKDIR = cfg.workdir
-    ob.kernel.k.cfg.update(cfg)
+    ob.update(ob.kernel.k.cfg, cfg)
     level(cfg.level or "error")
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)
