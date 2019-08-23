@@ -36,7 +36,6 @@ class Kernel(Handler, Launcher):
         self.state.starttime = time.time()
         self.users = Users()
 
-
     def cmd(self, txt, origin=""):
         """ execute a string as a command. """
         event = Event()

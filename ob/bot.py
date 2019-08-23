@@ -22,8 +22,16 @@ class Bot(Handler):
         self._outputed = False
         self._outqueue = queue.Queue()
         self.cfg = Cfg()
-        ob.update(self, {"prompt": True, "verbose": True})
+        ob.update(self.cfg, {"prompt": True, "verbose": True})
         self.channels = []
+
+    def _output(self):
+        """ an optional output thread. """
+        self._outputed = True
+        while not self._stopped:
+            channel, txt, otype = self._outqueue.get()
+            if txt:
+                self._say(channel, txt, otype)
 
     def _raw(self, txt):
         """ write directly to display. """
@@ -54,14 +62,6 @@ class Bot(Handler):
         event.wait()
         for val in event.result:
             self.say("", val)
-
-    def output(self):
-        """ an optional output thread. """
-        self._outputed = True
-        while not self._stopped:
-            channel, txt, otype = self._outqueue.get()
-            if txt:
-                self._say(channel, txt, otype)
 
     def say(self, channel, txt, mtype=None):
         """ say some txt on a channel. """

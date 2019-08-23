@@ -20,9 +20,7 @@ from ob.times import fntime
 from ob.types import get_cls, get_type
 
 def __dir__():
-    iface = ['Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'WORKDIR', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update']
-    mods = ['all', 'bot', 'clock', 'cmds', 'command', 'db', 'entry', 'errors', 'fleet', 'handler', 'kernel', 'loader', 'shell', 'show', 'tasks', 'term', 'times', 'trace', 'types', 'user', 'utils']
-    return iface 
+    return ('Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'WORKDIR', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')
 
 classes = []
 WORKDIR = hd(".ob")
@@ -112,7 +110,6 @@ class Object:
         with open(opath, "w") as file:
             json.dump(self, file, default=default, indent=4, sort_keys=True)
         return path
-                
 
 class Default(Object):
 
@@ -127,7 +124,6 @@ class Default(Object):
         if key not in dir(self):
             set(self, key, "")
         return get(self, key)
-
 
 class Cfg(Default):
 

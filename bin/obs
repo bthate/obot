@@ -9,7 +9,7 @@ from ob.shell import execute, parse_cli
 from ob.utils import hd
 
 def main():
-    parse_cli("ob", __version__, hd(".ob"), "ob -m mod1,mod2 cmd")
+    parse_cli("ob", __version__, hd(".ob"), "ob [options] cmd")
     k.walk("ob.cmds")
     k.init(k.cfg.modules)
     k.start()

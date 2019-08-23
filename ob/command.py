@@ -103,7 +103,7 @@ class Command(ob.Default):
         self.setter = {}
         self.time = 0
 
-    def get_aliased(self, txt):
+    def _aliased(self, txt):
         """ return aliased version of txt. """
         spl = txt.split()
         if spl and spl[0] in aliases:
@@ -114,7 +114,7 @@ class Command(ob.Default):
         txt2 = " ".join(spl)
         return txt2 or txt
 
-    def get_tokens(self):
+    def _tokens(self):
         """ return a list of tokens. """
         words = self.txt.split()
         tokens = []
@@ -136,7 +136,7 @@ class Command(ob.Default):
         txt = txt.replace("\001", "")
         if txt and self.cc == txt[0]:
             txt = txt[1:]
-        self.txt = self.get_aliased(txt)
+        self.txt = self._aliased(txt)
         if not self.txt:
             self.txt = txt
         nr = -1
@@ -145,7 +145,7 @@ class Command(ob.Default):
         self.dkeys = []
         self.options = options or self.options or ""
         prev = ""
-        for token in self.get_tokens():
+        for token in self._tokens():
             nr += 1
             if token.chk:
                 self.chk = token.chk
