@@ -17,6 +17,7 @@ from ob.shell import execute, hd, parse_cli
 def main():
     parse_cli("ob", __version__, hd(".ob"), "ob options cmd [arg1 arg2}")
     k.walk("ob.cmds")
+    k.walk("oper")
     k.init(k.cfg.modules)        
     for line in k.cmd(" ".join(k.cfg.args)):
         print(line)

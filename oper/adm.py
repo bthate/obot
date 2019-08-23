@@ -37,8 +37,7 @@ def ed(event):
         event.reply("|".join(fns))
         return
     if len(event.args) == 1 and not event.selector:
-        event.options += ",f"
-        find(event)
+        event.reply("ed <type> key==value")
         return
     nr = 0
     objs = k.db.find(event.match, event.selector, event.index, event.delta)
