@@ -5,7 +5,6 @@ import ob
 import os
 
 from ob import Object
-from ob.generic import format
 from ob.kernel import k
 
 bdmonths = ['Bo', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
@@ -111,5 +110,5 @@ def cor(event):
     event.selector["From"] = event.args[0]
     nr = 0
     for email in k.db.all("obot.email.Email", event.selector):
-        event.reply("%s %s" % (nr, format(email, event.selector.keys())))
+        event.reply("%s %s" % (nr, ob.format(email, event.selector.keys())))
         nr += 1

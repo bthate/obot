@@ -106,7 +106,6 @@ def hook(fn):
 
 def find(event):
     """ find an object matching to a key==value selector. """
-    from ob.generic import format
     from ob.kernel import k
     if "k" in event.options:
         o = k.db.last(event.match)
