@@ -71,7 +71,7 @@ def tests(b):
         do_cmd(b, cmd)
 
 def do_cmd(b, cmd):
-    exs = param._get(cmd, ["mekker",])
+    exs = ob.get(param, cmd, ["mekker",])
     e = list(exs)
     random.shuffle(e)
     events = []

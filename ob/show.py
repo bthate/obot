@@ -55,7 +55,7 @@ def version(event):
             continue
         if not mod:
             continue
-        ver = mod._get("__version__", None)
+        ver = ob.get(mod, "__version__", None)
         if ver:
             res.append("%s %s" % (name, ver))
     if res:

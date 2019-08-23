@@ -70,8 +70,8 @@ def ps(event):
             continue
         d = vars(thr)
         o = ob.Object()
-        o.update(d)
-        if o._get("sleep", None):
+        ob.update(o, d)
+        if ob.get(o, "sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
             up = int(time.time() - k.state.starttime)

@@ -1,5 +1,6 @@
 """ bot base class. """
 
+import ob
 import queue
 import sys
 import threading
@@ -21,7 +22,7 @@ class Bot(Handler):
         self._outputed = False
         self._outqueue = queue.Queue()
         self.cfg = Cfg()
-        self.cfg.update({"prompt": True, "verbose": True})
+        ob.update(self, {"prompt": True, "verbose": True})
         self.channels = []
 
     def _raw(self, txt):

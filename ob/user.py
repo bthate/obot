@@ -1,5 +1,6 @@
 """ user management. """
 
+import ob
 import logging
 import threading
 import time
@@ -49,12 +50,12 @@ class Users(Object):
             return o
 
     def get_user(self, origin):
-        u = Users.cache._get(origin, None)
+        u = ob.get(Users.cache, origin, None)
         if u:
             return u
         s = {"user": origin}
         for o in self.db.find("ob.user.User", s):
-            setattr(Users.cache, origin, o)
+            ob.set(Users.cache, origin, o)
             return o
 
     def meet(self, origin, perms=None):
@@ -96,6 +97,6 @@ def meet(event):
         event.reply("|".join(sorted(k.users.userhosts)))
         return
     from ob.kernel import k
-    origin = k.users.userhosts._get(origin, origin)
+    origin = ob.get(k.users.userhosts, origin, origin)
     u = k.users.meet(origin, perms)
     event.reply("added %s" % u.user)

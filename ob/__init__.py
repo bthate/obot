@@ -86,11 +86,10 @@ class Object:
             assert ENOFILE(path)
         with open(path, "r") as ofile:
             val = json.load(ofile, object_hook=hooked)
-            self.update(val)
+            update(self, val)
         self._path = path
         return self
 
-    @locked
     def save(self, path="", stime=None, timed=False, strict=False):
         """ save this object to disk. """
         assert WORKDIR
@@ -122,7 +121,7 @@ class Default(Object):
     def __init__(self, cfg=None):
         super().__init__()
         if cfg:
-            self.update(cfg)
+            update(self, cfg)
 
     def __getattr__(self, key):
         if key not in dir(self):
@@ -177,7 +176,7 @@ def last(obj):
     from ob.kernel import k
     val = k.db.last(get_type(obj))
     if val:
-        obj.update(val, skip=True)
+        update(obj, val, skip=True)
 
 def launch(func, *args):
     """ start a task. """
@@ -192,7 +191,7 @@ def hooked(d):
     else:
         from ob import Object
         o = Object()
-    o.update(d)
+    update(o, d)
     return o
 
 def names(name, delta=None):
@@ -252,7 +251,7 @@ def sliced(obj, keys=None):
 
 def typed(obj):
     """ return a types copy of obj. """
-    return type(obj)().update(obj)
+    return update(type(obj)(), obj)
 
 def update(obj1, obj2, keys=None, skip=False):
     """ update this object from the data of another. """
