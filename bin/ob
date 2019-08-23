@@ -2,12 +2,44 @@
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
+import json
+import ob
+import os
+import time
+
+from ob.times import days, fntime
+from ob.utils import last
+
 from ob import __version__
 from ob.kernel import k
 from ob.shell import execute, hd, parse_cli
 
+def ed(event):
+    """ edit an object, select with key==value, set with key=value. """
+    from ob.kernel import k
+    from ob.generic import edit
+    if not event.args:
+        fns = os.listdir(os.path.join(ob.WORKDIR, "store"))
+        fns = sorted({x.split(".")[-1].lower() for x in fns})
+        event.reply("|".join(fns))
+        return
+    if len(event.args) == 1 and not event.selector:
+        event.options += ",f"
+        find(event)
+        return
+    nr = 0
+    objs = k.db.find(event.match, event.selector, event.index, event.delta)
+    for o in objs:
+        got = edit(o, event.setter)
+        if got:
+            o.save()
+            nr += 1
+    event.reply("edit %s" % nr)
+
+
 def main():
     parse_cli("ob", __version__, hd(".ob"), "ob [-m mod1,mod2] cmd")
+    k.register("ed", ed)
     k.walk("ob.cmds")
     k.init(k.cfg.modules)        
     for line in k.cmd(" ".join(k.cfg.args)):
