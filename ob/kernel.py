@@ -85,8 +85,8 @@ class Kernel(Handler, Launcher):
     def start(self):
         """ start the kernel. """
         super().start()
-        if k.cfg.prompting:
-            self.save()
+        if self.cfg.prompting:
+            self.cfg.save()
         ob.last(self.cfg)
 
 #:
