@@ -10,9 +10,10 @@ aliases = {
            "c": "cmds",
            "f": "find",
            "l": "log",
+           "ps": "show tasks",
            "t": "todo",
-           "u": "uptime",
-           "v": "version"
+           "u": "show uptime",
+           "v": "show version"
            }
 
 from ob.errors import ENOTXT
