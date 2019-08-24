@@ -26,11 +26,14 @@ monthint = {
 
 class Email(Object):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """ email data. """
+
+    def __init__(self):
+        super().__init__()
         self.text = ""
 
 def to_date(date):
+    """ fetch date from string. """
     date = date.replace("_", ":")
     res = date.split()
     ddd = ""
@@ -66,6 +69,7 @@ def to_date(date):
     return ddd
 
 def mbox(event):
+    """ scan emails from mbox. """
     if not event.args:
         event.reply("mbox <path>")
         return
@@ -85,7 +89,7 @@ def mbox(event):
         pass
     for m in thing:
         o = Email()
-        o.update(m)
+        ob.update(o, m)
         try:
             sdate = os.sep.join(to_date(o.Date).split())
         except AttributeError:
@@ -104,6 +108,7 @@ def mbox(event):
         event.reply("ok %s" % nr)
 
 def cor(event):
+    """ analyse correspondence. """
     if not event.args:
         event.reply("cor <email>")
         return

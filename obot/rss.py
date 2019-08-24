@@ -1,4 +1,4 @@
-""" rss to channel. """
+""" rss feed fetcher. """
 
 import datetime
 import io
@@ -22,22 +22,35 @@ def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"fetch", "init", "rss")
 
 def init():
+    """ rss initialisation. """
     fetcher = Fetcher()
     fetcher.start()
     return fetcher
 
 class Cfg(Cfg):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """ RSS fetcher configuration. """
+
+    def __init__(self):
+        super().__init__()
         self.display_list = ["title", "description", "link"]
         self.dosave = False
 
 class Feed(Object):
 
-    pass
+    """ feed entry. """
+
+class Rss(Object):
+
+    """ rss entry to store feed url. """
+
+    def __init__(self):
+        super().__init__()
+        self.rss = ""
 
 class Seen(Object):
+
+    """ stores seen feed urls. """
 
     def __init__(self):
         super().__init__()
@@ -45,6 +58,7 @@ class Seen(Object):
 
 class Fetcher(Object):
 
+    """ RSS feed fetcher. """
 
     def __init__(self):
         super().__init__()
@@ -53,6 +67,7 @@ class Fetcher(Object):
         self._thrs = []
 
     def display(self, o):
+        """ return displayable string of a feed item. """
         result = ""
         if "display_list" in dir(o):
             dl = o.display_list
@@ -69,6 +84,7 @@ class Fetcher(Object):
         return result[:-2].rstrip()
 
     def fetch(self, obj):
+        """ fetch a single feed. """
         counter = 0
         objs = []
         if not obj.rss:
@@ -77,8 +93,8 @@ class Fetcher(Object):
             if not o:
                 continue
             feed = Feed()
-            feed.update(o)
-            feed.update(obj)
+            ob.update(feed, o)
+            ob.update(feed, obj)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             if url in self.seen.urls:
@@ -95,15 +111,18 @@ class Fetcher(Object):
         return counter
 
     def join(self):
+        """ join a running threads. """
         for thr in self._thrs:
             thr.join()
 
     def run(self):
+        """ run a poll on all registered feeds. """
         for o in k.db.all("obot.rss.Rss"):
             self._thrs.append(launch(self.fetch, o))
         return self._thrs
 
     def start(self, repeat=True):
+        """ start rss fetcher. """
         last(self.cfg)
         last(self.seen)
         if repeat:
@@ -112,15 +131,12 @@ class Fetcher(Object):
             return repeater
 
     def stop(self):
+        """ stop rss poller. """
         self.seen.save()
 
-class Rss(Object):
-
-    def __init__(self):
-        super().__init__()
-        self.rss = ""
 
 def get_feed(url):
+    """ return entries of a RSS feed. """
     result = ""
     try:
         result = get_url(url).data
@@ -133,6 +149,7 @@ def get_feed(url):
             yield entry
 
 def file_time(timestamp):
+    """ convert timestamp to filename. """
     return str(datetime.datetime.fromtimestamp(timestamp)).replace(" ", os.sep) + "." + str(random.randint(111111, 999999))
 
 def delete(event):

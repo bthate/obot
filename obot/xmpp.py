@@ -17,9 +17,10 @@ from ob.handler import Event
 from ob.kernel import k
 
 def __dir__():
-    return ("XMPP", "XEvent", "Cfg", "stripped")
+    return ("XMPP", "XEvent", "Cfg", "init", "stripped")
 
 def init():
+    """ initialize xmpp bot. """
     xmpp = XMPP()
     ob.last(xmpp.cfg)
     if xmpp.cfg.user:
@@ -56,6 +57,8 @@ except ImportError:
 
 class Cfg(Cfg):
 
+    """ XMPP bot configuration. """
+
     def __init__(self):
         super().__init__()
         self.channel = ""
@@ -67,6 +70,8 @@ class Cfg(Cfg):
         self.user = ""
 
 class XEvent(Event):
+
+    """ Event used by the XMPP bot. """
 
     def __init__(self):
         super().__init__()
@@ -81,6 +86,8 @@ class XEvent(Event):
 
 class XMPP(Bot):
 
+    """ XMPP bot. """
+
     def __init__(self):
         super().__init__()
         self._connected = threading.Event()
@@ -93,14 +100,24 @@ class XMPP(Bot):
         self.rooms = []
         self.state = Object()
 
+    def _bind(self, data):
+        """ session_bind. """
+        self.jid = str(data)
+
     def _connect(self, user, pw):
+        """ connect code. """
         self._makeclient(user, pw)
         if self.cfg.noresolver:
             self.client.configure_dns(None)
         self.client.connect(use_tls=True)
         self._connected.set()
+
+    def _fileno(self):
+        """ return fileno of sleekxmpp client. """
+        return self.client.filesocket.fileno()
         
     def _makeclient(self, jid, password):
+        """ create the sleekxmpp client. """
         self.client = sleekxmpp.clientxmpp.ClientXMPP(jid,
                                                       password,
                                                       plugin_config={},
@@ -109,10 +126,10 @@ class XMPP(Bot):
                                                       sasl_mech=None)
         self.client._error = Object()
         self.client.register_plugin(u'xep_0045')
-        self.client.add_event_handler('errored', self.handling)
-        self.client.add_event_handler('failed_auth', self.handling)
+        self.client.add_event_handler('errored', self.handled)
+        self.client.add_event_handler('failed_auth', self.handled)
         self.client.add_event_handler("message", self.messaged)
-        self.client.add_event_handler("iq", self.handling)
+        self.client.add_event_handler("iq", self.handled)
         self.client.add_event_handler('presence', self.presenced)
         self.client.add_event_handler('presence_dnd', self.presenced)
         self.client.add_event_handler('presence_xa', self.presenced)
@@ -124,16 +141,16 @@ class XMPP(Bot):
         self.client.add_event_handler('presence_subscribed', self.presenced)
         self.client.add_event_handler('presence_unsubscribe', self.presenced)
         self.client.add_event_handler('presence_unsubscribed', self.presenced)
-        self.client.add_event_handler("session_bind", self.session_bind)
-        self.client.add_event_handler("session_start", self.session_start)
-        self.client.add_event_handler("ssl_invalid_cert", self.handling)
-        #self.client.add_event_handler("ssl_cert", self.handler)
-        self.client.exception = self.handling
+        self.client.add_event_handler("session_bind", self._bind)
+        self.client.add_event_handler("session_start", self_start)
+        self.client.add_event_handler("ssl_invalid_cert", self.handled)
+        self.client.exception = self.handled
         self.client.reconnect_max_attempts = 3
         self.client.ssl_version = ssl.PROTOCOL_SSLv23
         self.client.use_ipv6 = self.cfg.ipv6
 
     def _say(self, channel, txt, mtype="chat"):
+        """ raw output to channel. """
         try:
             sleekxmpp.jid.JID(channel)
         except sleekxmpp.jid.InvalidJID:
@@ -146,35 +163,68 @@ class XMPP(Bot):
             channel = stripped(channel)
         self.client.send_message(channel, str(txt), mtype)
 
-    def sleek(self):
+    def _sleek(self):
+        """ sleek event handler. """
         self.client.process(block=True)
 
+    def _start(self, data):
+        """ handles session start. """
+        try:
+            self.client.send_presence()
+            self.client.get_roster()
+        except sleekxmpp.exceptions.IqTimeout:
+            self.reconnect()
+
     def announce(self, txt):
+        """ announce to channels/rooms. """
         for channel in self.channels:
             self.say(channel, txt, "chat")
         for room in self.rooms:
             self.say(channel, txt, "groupchat")
 
     def connect(self, user="", password=""):
+        """ connect to server with user/passowrd credentials. """
         self._connect(user, password)
         return True
 
-    def handling(self, data):
-        print(data)
 
-    def do_join(self):
-        c = self.cfg
-        if c.room not in self.rooms:
-            self.rooms.append(c.room)
+    def join(self, room, nick="obot"):
+        """ join a room. """
+        if room not in self.rooms:
+            self.rooms.append(room)
         self._connected.wait()
-        self.client.plugin['xep_0045'].joinMUC(c.room,
-                                               c.nick,
+        self.client.plugin['xep_0045'].joinMUC(room,
+                                               nick,
                                                wait=True)
 
-    def fileno(self):
-        return self.client.filesocket.fileno()
+    def say(self, room, txt, mtype=None):
+        """ say text in a room. """
+        self._say(room, txt, mtype)
+
+
+    def stop(self):
+        """ stop xmpp server. """
+        if "client" in self and self.client:
+            self.client.disconnect()
+        super().stop()
+
+    def start(self):
+        """ start xmpp server. """
+        super().start()
+        ok = self.connect(self.cfg.user, self.cfg.password)
+        if ok:
+            if self.cfg.channel:
+                self.join(self.cfg.channel, self.cfg.nick)
+        ob.launch(self.output)
+        ob.launch(self._sleek)
+        return self
+
+    def handled(self, data):
+        """ default handler. """
+        print(data)
 
     def messaged(self, data):
+        """ message handler. """
         if '<delay xmlns="urn:xmpp:delay"' in str(data):
             return
         origin = str(data["from"])
@@ -201,10 +251,8 @@ class XMPP(Bot):
             self.channels.append(m.origin)
         k.put(m)
 
-    def pinged(self, event):
-        print(event)
-
     def presenced(self, data):
+        """ presence handler. """
         o = XEvent()
         o.mtype = data["type"]
         o.orig = repr(self)
@@ -236,35 +284,8 @@ class XMPP(Bot):
             if o.origin in self.channels:
                 self.channels.remove(o.origin)
 
-    def say(self, channel, txt, mtype=None):
-        self._say(channel, txt, mtype)
-
-    def session_bind(self, data):
-        self.jid = str(data)
-
-    def session_start(self, data):
-        try:
-            self.client.send_presence()
-            self.client.get_roster()
-        except sleekxmpp.exceptions.IqTimeout:
-            self.reconnect()
-
-    def stop(self):
-        if "client" in self and self.client:
-            self.client.disconnect()
-        super().stop()
-
-    def start(self):
-        super().start()
-        ok = self.connect(self.cfg.user, self.cfg.password)
-        if ok:
-            if self.cfg.channel:
-                self.join()
-        ob.launch(self.output)
-        ob.launch(self.sleek)
-        return self
-
 def stripped(jid):
+    """ strip everything after the / """
     try:
         return str(jid).split("/")[0]
     except (IndexError, ValueError):

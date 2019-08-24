@@ -17,7 +17,7 @@ from ob.term import save, reset
 from ob.trace import get_exception
 
 def __dir__():
-    return ("daemon", "execute", "parse_cli")
+    return ("daemon", "execute", "parse_cli", "set_completer")
 
 opts = [
     ('-b', '', 'store_true', False, 'daemon', 'enable daemon mode.'),

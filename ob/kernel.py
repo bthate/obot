@@ -48,7 +48,7 @@ class Kernel(Handler, Launcher):
         return event.result
 
     def init(self, modstr):
-        """ initialize a comaa seperated list of modules. """
+        """ initialize a comma seperated list of modules. """
         if not modstr:
             return
         for mn in modstr.split(","):

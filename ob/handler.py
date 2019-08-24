@@ -32,9 +32,6 @@ class Event(Command):
         self.name = ""
         self.sep = "\n"
 
-    def prompt(self):
-        """ optional prompt. """
-
     def ready(self):
         self._ready.set()
 

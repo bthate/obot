@@ -2,6 +2,7 @@
 
 __version__ = 1
 
+import ob
 import socket
 import time
 
@@ -12,13 +13,16 @@ def __dir__():
     return ("UDP", "Cfg", "init") 
 
 def init():
+    """ initialise udp server. """
     server = UDP()
     server.start()
     return server
 
 class Cfg(Cfg):
 
-    def __init__(self, *args, **kwargs):
+    """ UDP configuration file. """
+
+    def __init__(self):
         super().__init__()
         self.host = "localhost"
         self.port = 5500
@@ -29,6 +33,7 @@ class Cfg(Cfg):
 
 class UDP(Object):
 
+    """ UDP to channel server. """
 
     def __init__(self):
         super().__init__()
@@ -40,15 +45,19 @@ class UDP(Object):
         self._starttime = time.time()
         self.cfg = Cfg()
 
-    def exit(self):
-        self._stopped = True
-        self._sock.settimeout(0.01)
-        self._sock.sendto(bytes("bla", "utf-8"), (self.cfg.host, self.cfg.port))
+    def _output(self, txt, addr=None):
+        """ output txt to channel. """
+        try:
+            (passwd, text) = txt.split(" ", 1)
+        except ValueError:
+            return
+        text = text.replace("\00", "")
+        if passwd == self.cfg.password:
+            for b in fleet.bots:
+                b.announce(text)
 
-    def join(self):
-        pass
-
-    def server(self, host="", port=""):
+    def _server(self, host="", port=""):
+        """ loop to read from udp socket. """
         c = self.cfg
         self._sock.bind((host or c.host, port or c.port))
         while not self._stopped:
@@ -60,17 +69,13 @@ class UDP(Object):
                 break
             self.output(data, addr)
 
+    def exit(self):
+        """ stop the udp server. """
+        self._stopped = True
+        self._sock.settimeout(0.01)
+        self._sock.sendto(bytes("bla", "utf-8"), (self.cfg.host, self.cfg.port))
+
     def start(self):
+        """ start udp server. """
         self.cfg = k.db.last("obot.udp.Cfg") or Cfg()
-        k.launch(self.server)
-
-    def output(self, txt, addr=None):
-        try:
-            (passwd, text) = txt.split(" ", 1)
-        except ValueError:
-            return
-        text = text.replace("\00", "")
-        if passwd == self.cfg.password:
-            for b in fleet.bots:
-                b.announce(text)
-
+        ob.launch(self._server)
