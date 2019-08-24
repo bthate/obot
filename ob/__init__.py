@@ -167,12 +167,12 @@ def get(obj, key, default=None):
     """ get attribute. """
     return getattr(obj, key, default)
 
-def last(obj):
+def last(obj, skip=True):
     """ return the last version of this type. """
     from ob.kernel import k
     val = k.db.last(get_type(obj))
     if val:
-        update(obj, val, skip=True)
+        update(obj, val, skip=skip)
 
 def launch(func, *args):
     """ start a task. """
@@ -249,7 +249,7 @@ def typed(obj):
     """ return a types copy of obj. """
     return update(type(obj)(), obj)
 
-def update(obj1, obj2, keys=None, skip=False):
+def update(obj1, obj2, keys=None, skip=False, orig=False):
     """ update this object from the data of another. """
     if not obj2:
         return obj1
@@ -258,6 +258,8 @@ def update(obj1, obj2, keys=None, skip=False):
         if keys and key not in keys:
             continue
         if skip and not val:
+            continue
+        if orig and get(obj1, key, None):
             continue
         set(obj1, key, val)
     return obj1

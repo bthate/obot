@@ -23,8 +23,8 @@ def show(event):
     bot = k.fleet.get_bot(event.orig)
     cmd = event.args[0]
     if cmd == "cfg":
-        if len(event.args) == 1:
-            config = k.db.last("%s.%s.Cfg" % ("obot", event.args[0].lower()))
+        if len(event.args) == 2:
+            config = k.db.last("%s.%s.Cfg" % ("obot", event.args[1].lower()))
             event.reply(config)
         else:
             event.reply(k.cfg)
@@ -32,7 +32,7 @@ def show(event):
         event.reply("|".join(sorted(bot.handlers.keys())))
     elif cmd == "fleet":
         try:
-            index = int(event.args[1])
+            index = int(event.args[2])
             event.reply(k.fleet.bots[index])
             return
         except (ValueError, IndexError):

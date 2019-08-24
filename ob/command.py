@@ -8,6 +8,7 @@ def __dir__():
 
 aliases = {
            "c": "cmds",
+           "cfg": "show cfg",
            "f": "find",
            "l": "log",
            "ps": "show tasks",
