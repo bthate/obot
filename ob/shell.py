@@ -97,7 +97,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     import ob
     import ob.kernel
     ver = "%s %s" % (name.upper(), version)
-    usage = usage or "%s -m [mod1,mod2] cmd"  % name
+    usage = usage or "%s [options] cmd"  % name
     opt, arguments = make_opts(opts, usage, ver)
     cfg = ob.Cfg()
     ob.update(cfg, vars(opt))
@@ -105,7 +105,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     cfg.debug = False
     cfg.name = name
     cfg.version = version
-    cfg.workdir = cfg.workdir or wd or hd(".%s" % name)
+    cfg.workdir = cfg.workdir or wd or ""
     cfg.txt = " ".join(cfg.args)
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):

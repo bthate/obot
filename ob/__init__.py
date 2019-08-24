@@ -103,8 +103,8 @@ class Object:
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)
             path = os.path.join(otype, stime)
             self._path = path
-        logging.debug(self._path)
-        opath = os.path.join(WORKDIR, "store", self._path)
+        logging.debug("save %s" % path)
+        opath = os.path.join(WORKDIR, "store", path)
         cdir(opath)
         self["_type"] = self._type
         with open(opath, "w") as file:

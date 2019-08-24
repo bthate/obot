@@ -1,5 +1,7 @@
 """ show runtime data. """
 
+import ob
+import obot
 import os
 import threading
 import time
@@ -49,7 +51,7 @@ def show(event):
                 continue
             d = vars(thr)
             o = Object()
-            o.update(d)
+            ob.update(o, d)
             if getattr(o, "sleep", None):
                 up = o.sleep - int(time.time() - o.state.latest)
             else:
@@ -64,8 +66,6 @@ def show(event):
     elif cmd == "uptime":
         event.reply(elapsed(time.time() - k.state.starttime))
     elif cmd == "version":
-        import ob
-        import obot
         res = []
         event.reply("OBOT %s" % obot.__version__)
         event.reply("OB %s" % ob.__version__)
