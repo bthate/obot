@@ -2,7 +2,7 @@
 
 from ob.kernel import k
 from ob.loader import load, unload
-from ob.handler import Handler
+from ob.handler import Handler, modules
 
 def __dir__():
     return ("cmds", "help", "load", "mods", "unload")
@@ -25,4 +25,4 @@ def mods(event):
     h.walk("ob")
     h.walk("obot")
     h.walk(k.cfg.name)
-    event.reply("|".join([x.split(".")[-1] for x in h.table]))
+    event.reply("|".join({x.split(".")[-1] for x in modules.values()}))
