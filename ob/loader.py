@@ -42,14 +42,17 @@ def load(event):
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
-        from ob.handler import Handler
+        from ob.handler import Handler, modules
         h = Handler()
         h.walk("ob")
-        event.reply("|".join(sorted(h.table)))
+        h.walk("obot")
+        h.walk(k.cfg.name)
+        event.reply("|".join({x.split(".")[-1] for x in modules.values()}))
         return
+    mods = []
     for name in event.args[0].split(","):
         name = event.args[0]
-        mods = k.walk(name)
+        mods.extend(k.walk(name))
         k.init(name)
     bot = k.fleet.get_bot(event.orig)
     if bot:
@@ -65,7 +68,12 @@ def unload(event):
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
-        event.reply("|".join(sorted(k.table)))
+        from ob.handler import Handler, modules
+        h = Handler()
+        h.walk("ob")
+        h.walk("obot")
+        h.walk(k.cfg.name)
+        event.reply("|".join({x.split(".")[-1] for x in modules.values()}))
         return
     bot = k.fleet.get_bot(event.orig)
     name = event.args[0]

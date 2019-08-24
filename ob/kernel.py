@@ -69,9 +69,11 @@ class Kernel(Handler, Launcher):
                         except Exception as ex:
                             pass
             logging.warn("init %s" % get_name(mod))
-            if mod and "init" in dir(mod):
+            if mod:
                 try:
                     mod.init()
+                except AttributeError:
+                    pass
                 except EINIT:
                     _thread.interrupt_main()
                 except Exception as ex:
