@@ -20,10 +20,10 @@ from ob.times import fntime
 from ob.types import get_cls, get_type
 
 def __dir__():
-    return ('Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'WORKDIR', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')
+    return ('Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'workdir', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')
 
 classes = []
-WORKDIR = hd(".ob")
+workdir = ""
 
 class Object:
 
@@ -78,10 +78,11 @@ class Object:
     def load(self, path):
         """ load this object from disk. """
         assert path
-        assert WORKDIR
-        path = os.path.join(WORKDIR, "store", path)
+        assert workdir
+        path = os.path.join(workdir, "store", path)
         if not os.path.exists(path):
             assert ENOFILE(path)
+        logging.debug("load %s" % path)
         with open(path, "r") as ofile:
             val = json.load(ofile, object_hook=hooked)
             update(self, val)
@@ -90,7 +91,7 @@ class Object:
 
     def save(self, path="", stime=None, timed=False, strict=False):
         """ save this object to disk. """
-        assert WORKDIR
+        assert workdir
         from ob.utils import cdir
         if self._path and not timed:
             path = self._path
@@ -104,7 +105,7 @@ class Object:
             path = os.path.join(otype, stime)
             self._path = path
         logging.debug("save %s" % path)
-        opath = os.path.join(WORKDIR, "store", path)
+        opath = os.path.join(workdir, "store", path)
         cdir(opath)
         self["_type"] = self._type
         with open(opath, "w") as file:
@@ -196,14 +197,14 @@ def names(name, delta=None):
         return []
     if not delta:
         delta = 0
-    assert WORKDIR
-    p = os.path.join(WORKDIR, "store", name) + os.sep
+    assert workdir
+    p = os.path.join(workdir, "store", name) + os.sep
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(WORKDIR, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(workdir, "store"))[-1]
             if delta:
                 if ime(fnn) < past:
                     continue

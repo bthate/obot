@@ -15,8 +15,8 @@ from ob.kernel import k
 from ob.shell import execute, hd, parse_cli
 
 def main():
-    parse_cli("ob", __version__, hd(".ob"), "ob options cmd [arg1 arg2}")
-    k.walk("ob.cmds")
+    parse_cli("ob", __version__, hd(".obot"), "ob options cmd [arg1 arg2}")
+    k.walk("ob")
     k.start()
     k.init(k.cfg.modules)        
     for line in k.cmd(" ".join(k.cfg.args)):

@@ -105,13 +105,13 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     cfg.debug = False
     cfg.name = name
     cfg.version = version
-    cfg.workdir = cfg.workdir or wd or ""
+    cfg.workdir = cfg.workdir or wd or hd(".%s" % cfg.name)
     cfg.txt = " ".join(cfg.args)
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
-    ob.WORKDIR = cfg.workdir
-    ob.update(ob.kernel.k.cfg, cfg, skip=False, orig=True)
+    ob.workdir = cfg.workdir
+    ob.update(ob.kernel.k.cfg, cfg)
     level(cfg.level or "error")
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)

@@ -54,7 +54,6 @@ class Token(ob.Default):
             pass
         if nr == 1:
             self.match = ob.handler.names.get(word, word)
-            logging.warn("match %s" % self.match)
             self.arg = word
             return
         if "http" in word:

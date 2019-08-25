@@ -58,27 +58,3 @@ class Launcher:
         while not self._stopped:
             t = self._queue.get()
             t.start()
-
-def ps(event):
-    """ show running tasks. """
-    from ob.kernel import k
-    from ob.times import elapsed
-    psformat = "%-8s %-60s"
-    result = []
-    for thr in sorted(threading.enumerate(), key=lambda x: x.getName()):
-        if str(thr).startswith("<_"):
-            continue
-        d = vars(thr)
-        o = ob.Object()
-        ob.update(o, d)
-        if ob.get(o, "sleep", None):
-            up = o.sleep - int(time.time() - o.state.latest)
-        else:
-            up = int(time.time() - k.state.starttime)
-        result.append((up, thr.getName(), o))
-    nr = -1
-    for up, thrname, o in sorted(result, key=lambda x: x[0]):
-        nr += 1
-        res = "%s %s" % (nr, psformat % (elapsed(up), thrname[:60]))
-        if res.strip():
-            event.reply(res)
