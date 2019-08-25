@@ -20,7 +20,7 @@ def __dir__():
 def show(event):
     """ display runtime information. """
     if not event.args:
-        event.reply("config|cmds|fleet|kernel|tasks|version")
+        event.reply("cfg|cmds|fleet|kernel|ls|pid|tasks|version")
         return
     bot = k.fleet.get_bot(event.orig)
     cmd = event.args[0]
@@ -43,6 +43,8 @@ def show(event):
         event.reply(k)
     elif cmd == "ls":
         event.reply("|".join(os.listdir(os.path.join(k.cfg.workdir, "store"))))
+    elif cmd == "pid":
+        event.reply(str(os.getpid()))
     elif cmd == "tasks":
         psformat = "%-8s %-60s"
         result = []

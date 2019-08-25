@@ -15,8 +15,6 @@ def main():
     if k.cfg.daemon:
         daemon()
     k.walk("ob.cmds")
-    k.walk("ob.loader")
-    k.walk("ob.show")
     k.init(k.cfg.modules)
     k.start()
     bot = Console()

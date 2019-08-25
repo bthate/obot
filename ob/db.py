@@ -113,7 +113,7 @@ def find(event):
             event.reply("|".join(sorted({x for x in o.keys() if not x.startswith("_")})))
             return
     if not event.args:
-        fns = os.listdir(os.path.join(ob.WORKDIR, "store"))
+        fns = os.listdir(os.path.join(ob.workdir, "store"))
         fns = sorted({x.split(".")[-1].lower() for x in fns})
         if fns:
             event.reply("|".join(fns))
