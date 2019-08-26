@@ -29,12 +29,12 @@ def init():
             if k.cfg.prompting or not bot.cfg.password:
                 bot.cfg.password = getpass.getpass()
             bot.cfg.save()
-        except ValueError:
+        except (ValueError, IndexError):
             sys.stdout.write("%s -m xmpp <JID>" % k.cfg.name)
             sys.stdout.flush()
             raise EINIT
     bot.start()
-    return xmpp
+    return bot
 
 try:
     import sleekxmpp
