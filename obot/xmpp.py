@@ -21,33 +21,19 @@ def __dir__():
 
 def init():
     """ initialize xmpp bot. """
-    xmpp = XMPP()
-    ob.last(xmpp.cfg)
-    if xmpp.cfg.user:
-        logging.warning("using %s" % xmpp.cfg.user)
-    dosave = False
-    if k.cfg.prompting or not xmpp.cfg.user:
-        xmpp.cfg.user = input("user: ")
-        dosave = True
-    elif k.cfg.argparse or k.cfg.args:
-        if k.cfg.args:
-            xmpp.cfg.user = k.cfg.args[0]
-            dosave = True
-        else:
+    bot = XMPP()
+    ob.last(bot.cfg)
+    if k.cfg.prompting or not bot.cfg.user:
+        try:
+            bot.cfg.user = k.cfg.args[0]
+            if k.cfg.prompting or not bot.cfg.password:
+                bot.cfg.password = getpass.getpass()
+            bot.cfg.save()
+        except ValueError:
+            sys.stdout.write("%s -m xmpp <JID>" % k.cfg.name)
+            sys.stdout.flush()
             raise EINIT
-    if not xmpp.cfg.user:
-        raise EINIT
-    if not xmpp.cfg.password:
-        xmpp.cfg.password = getpass.getpass()
-    if not xmpp.cfg.password:
-        raise EINIT
-    if dosave:
-        xmpp.cfg.save()
-    if not xmpp.cfg.user:
-        sys.stdout.write("%s <jid>" % k.cfg.name)
-        sys.stdout.flush()
-        raise EINIT
-    xmpp.start()
+    bot.start()
     return xmpp
 
 try:
@@ -142,7 +128,7 @@ class XMPP(Bot):
         self.client.add_event_handler('presence_unsubscribe', self.presenced)
         self.client.add_event_handler('presence_unsubscribed', self.presenced)
         self.client.add_event_handler("session_bind", self._bind)
-        self.client.add_event_handler("session_start", self.start)
+        self.client.add_event_handler("session_start", self._start)
         self.client.add_event_handler("ssl_invalid_cert", self.handled)
         self.client.exception = self.handled
         self.client.reconnect_max_attempts = 3
@@ -215,7 +201,7 @@ class XMPP(Bot):
         if ok:
             if self.cfg.channel:
                 self.join(self.cfg.channel, self.cfg.nick)
-        ob.launch(self.output)
+        ob.launch(self._output)
         ob.launch(self._sleek)
         return self
 
