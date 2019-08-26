@@ -82,7 +82,6 @@ class Object:
         path = os.path.join(workdir, "store", path)
         if not os.path.exists(path):
             assert ENOFILE(path)
-        logging.debug("load %s" % path)
         with open(path, "r") as ofile:
             val = json.load(ofile, object_hook=hooked)
             update(self, val)
@@ -168,10 +167,13 @@ def get(obj, key, default=None):
     """ get attribute. """
     return getattr(obj, key, default)
 
+def last_fn(otype):
+    val = k.db.last(str(get_type(obj)))
+    
 def last(obj, skip=True):
     """ return the last version of this type. """
     from ob.kernel import k
-    val = k.db.last(get_type(obj))
+    val = k.db.last(str(get_type(obj)))
     if val:
         update(obj, val, skip=skip)
 

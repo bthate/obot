@@ -91,7 +91,6 @@ class Handler(Loader):
             event.orig = repr(self)
         event._func = self.get_handler(event.chk)
         if event._func:
-            logging.warn("dispatch %s" % event.chk)
             try:
                 event._func(event)
             except Exception as ex:
@@ -117,8 +116,13 @@ class Handler(Loader):
                 thr.join()
 
     def load_mod(self, name, mod=None):
-        mod = super().load_mod(name, mod)
-        self.scan(mod)
+        try:
+            mod = super().load_mod(name, mod)
+            self.scan(mod)
+        except ModuleNotFoundError:
+            pass
+        except Exception as ex:
+            logging.error(get_exception())
         return mod
 
     def put(self, event):
@@ -142,7 +146,7 @@ class Handler(Loader):
                     ob.classes.append(t)
                 w = t.split(".")[-1].lower()
                 if w not in names:
-                    names[w] = t
+                    names[w] = str(t)
 
     def sync(self, bot):
         self.handlers.update(bot.handlers, skip=True)

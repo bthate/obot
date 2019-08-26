@@ -383,7 +383,7 @@ class IRC(Bot):
         """ start irc bot. """
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
-        launch(self.output)
+        launch(self._output)
         super().start()
         self.connect()
         

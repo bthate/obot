@@ -6,6 +6,7 @@ import threading
 import time
 import types
 
+from ob.trace import get_exception
 from ob.utils import get_name
 
 def __dir__():
@@ -28,7 +29,10 @@ class Task(threading.Thread):
 
     def run(self):
         func, args = self._queue.get()
-        self._result = func(*args)
+        try:
+            self._result = func(*args)
+        except Exception as ex:
+            logging.error(get_exception())
 
     def join(self, timeout=None):
         super().join(timeout)

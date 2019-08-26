@@ -21,9 +21,7 @@ class Todo(ob.Object):
 
 def log(event):
     if not event.rest:
-        nr = 0
-        for o in k.db.find("obot.entry.Log", {"rss": ""}):
-            event.reply("%s %s" % (nr, o.rss))
+        event.reply("log <txt>")
         return
     obj = Log()
     obj.txt = event.rest
@@ -32,9 +30,7 @@ def log(event):
 
 def todo(event):
     if not event.rest:
-        nr = 0
-        for o in k.db.find("obot.entry.Todo", {"rss": ""}):
-            event.reply("%s %s" % (nr, o.rss))
+        event.reply("todo <txt>")
         return
     obj = Todo()
     obj.txt = event.rest

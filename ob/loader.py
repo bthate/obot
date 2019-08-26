@@ -2,12 +2,14 @@
 
 import importlib
 import importlib.util
+import logging
 import ob
 import os
 import threading
 import time
 
 from ob.shell import set_completer
+from ob.trace import get_exception
 from ob.utils import get_name
 
 def __dir__():

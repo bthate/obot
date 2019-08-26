@@ -60,6 +60,13 @@ class Db(ob.Object):
                     continue
                 yield o
 
+    def last_fn(self, type, index=None, delta=0):
+        fns = ob.names(type, delta)
+        if fns:
+            fn = fns[-1]
+            return (fn, cached(fn))
+        return (None, None)
+
     def last(self, otype, selector=None, index=None, delta=0):
         """ return last object of type otype. """
         if not selector:
@@ -91,7 +98,6 @@ def cached(fn):
         cache[fn] = hook(fn)
     return cache[fn]
 
-
 def hook(fn):
     """ read json file from fn and create corresponding object. """
     t = fn.split(os.sep)[0]
@@ -119,9 +125,8 @@ def find(event):
             event.reply("|".join(fns))
         return
     if len(event.args) == 1 and not event.selector:
-        fn = k.db.last(event.match)
+        fn, o = k.db.last_fn(event.match)
         if fn:
-            o = ob.Object().load(fn)
             res = sorted({x.split(".")[-1].lower() for x in o})
             if len(res) > 1:
                 event.reply("|".join(res))
