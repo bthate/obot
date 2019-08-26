@@ -142,7 +142,7 @@ class XMPP(Bot):
         self.client.add_event_handler('presence_unsubscribe', self.presenced)
         self.client.add_event_handler('presence_unsubscribed', self.presenced)
         self.client.add_event_handler("session_bind", self._bind)
-        self.client.add_event_handler("session_start", self_start)
+        self.client.add_event_handler("session_start", self.start)
         self.client.add_event_handler("ssl_invalid_cert", self.handled)
         self.client.exception = self.handled
         self.client.reconnect_max_attempts = 3
