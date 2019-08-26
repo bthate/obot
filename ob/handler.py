@@ -10,6 +10,7 @@ import threading
 
 from ob.command import Command
 from ob.loader import Loader
+from ob.times import days
 from ob.trace import get_exception
 from ob.types import get_type
 
@@ -31,6 +32,26 @@ class Event(Command):
         self.type = "chat"
         self.name = ""
         self.sep = "\n"
+
+    def display(self, o, txt=""):
+        if "k" in self.options:
+            self.reply("|".join(o))
+            return
+        if "d" in self.options:
+            self.reply(str(o))
+            return
+        full = False
+        if "f" in self.options:
+            full = True
+        if self.dkeys:
+            txt += " " + ob.format(o, self.dkeys, full)
+        else:
+            txt += " " + ob.format(o, full=full)
+        if "t" in self.options:
+            txt += " " + days(o._path)
+        txt = txt.rstrip()
+        if txt:
+            self.reply(txt)
 
     def ready(self):
         self._ready.set()

@@ -31,8 +31,8 @@ def log(event):
 def todo(event):
     if not event.rest:
         nr = 0
-        for o in k.db.find("obot.entry.Todo", {"txt": ""}):
-            event.reply("%s %s" % (nr, o.txt))
+        for o in k.db.find("obot.entry.Todo", event.selector or {"txt": ""}):
+            event.display(o, str(nr))
             nr += 1
         return
     obj = Todo()

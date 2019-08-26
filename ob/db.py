@@ -49,14 +49,11 @@ class Db(ob.Object):
         """ find objects matching otype and selector. """
         if not selector:
             selector = {}
-        print(otype, selector)
         nr = -1
         for fn in ob.names(otype, delta):
-            print(fn)
             o = cached(fn)
             if not o:
                 continue
-            print(o)
             if ob.search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
@@ -142,22 +139,4 @@ def find(event):
     nr = -1
     for o in k.db.find(event.match, event.selector, event.index, event.delta):
         nr += 1
-        txt = ""
-        if "k" in event.options:
-            event.reply("|".join(o))
-            return
-        if "d" in event.options:
-            event.reply(str(o))
-            continue
-        full = False
-        if "f" in event.options:
-            full = True
-        if event.dkeys:
-            txt = "%s %s" % (event.index or nr, ob.format(o, event.dkeys, full))
-        else:
-            txt = "%s %s" % (event.index or nr, ob.format(o, full=full))
-        if "t" in event.options:
-            txt += " " + days(o._path)
-        txt = txt.rstrip()
-        if txt:
-            event.reply(txt)
+        event.display(o, str(nr))
