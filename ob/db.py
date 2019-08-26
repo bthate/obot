@@ -49,11 +49,14 @@ class Db(ob.Object):
         """ find objects matching otype and selector. """
         if not selector:
             selector = {}
+        print(otype, selector)
         nr = -1
         for fn in ob.names(otype, delta):
+            print(fn)
             o = cached(fn)
             if not o:
                 continue
+            print(o)
             if ob.search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
