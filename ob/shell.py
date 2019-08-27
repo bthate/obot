@@ -22,12 +22,12 @@ def __dir__():
 opts = [
     ('-b', '', 'store_true', False, 'daemon', 'enable daemon mode.'),
     ('-d', '', 'string', "", 'workdir', 'set working directory.'),
-    ('-l', '', 'string', 'error', 'level', 'loglevel.'),
+    ('-l', '', 'string', '', 'level', 'loglevel.'),
     ('-m', '', 'string', '', 'modules', 'modules to load.'),
     ('-o', '', "string", "", 'options', "options to use."),
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
-    ('', '--owner', "string", "root@shell", 'owner', "owner's userhost or JID.")
+    ('', '--owner', "string", "", 'owner', "owner's userhost or JID.")
 ]
 
 def close_history():
@@ -111,7 +111,8 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     if not os.path.exists(sp):
         cdir(sp)
     ob.workdir = cfg.workdir
-    ob.update(ob.kernel.k.cfg, cfg)
+    ob.last(ob.kernel.k.cfg)
+    ob.update(ob.kernel.k.cfg, cfg, skip=True)
     level(cfg.level or "error")
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)

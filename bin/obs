@@ -11,6 +11,7 @@ from ob.utils import hd
 def main():
     parse_cli("ob", __version__, hd(".obot"), "obs [options]")
     k.walk("ob")
+    k.walk("oper")
     k.start()
     k.init(k.cfg.modules)
     bot = Console()

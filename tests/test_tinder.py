@@ -28,6 +28,8 @@ bot = ob.bot.Bot()
 bot.cfg.prompt = False
 bot.cfg.verbose = k.cfg.verbose
 bot.walk("ob")
+bot.walk("oper")
+bot.walk("obot")
 bot.start()
 
 e = Event()

@@ -86,5 +86,10 @@ class Kernel(Handler, Launcher):
             self.cfg.prompting = False
             self.cfg.save()
 
+    def wait(self):
+        while not self._stopped:
+            time.sleep(1)
+            
+
 #:
 k = Kernel()

@@ -39,7 +39,7 @@ def main():
     level(k.cfg.level)
     test_path = os.getcwd() + os.sep + "tests"
     p = ""
-    if k.cfg.args and not int(k.cfg.args[0]):
+    if k.cfg.args:
         p = "test_%s*" % k.cfg.args[0]
     if not p:
         p = "test_*"
