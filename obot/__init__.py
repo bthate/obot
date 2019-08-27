@@ -1,4 +1,4 @@
 """ object bot """
 
-__version__ = 7
+__version__ = 8
 
