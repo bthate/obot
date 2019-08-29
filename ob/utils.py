@@ -155,12 +155,12 @@ def locked(func):
         return res
     return lockedfunc
 
-
-def level(loglevel="error", logdir="", logfile="ob.log", nostream=False):
+def level(loglevel="", logdir="", logfile="ob.log", nostream=False):
     """ initiate logging. """
     from ob.kernel import k
-    if not logdir:
-        logdir = os.path.join(hd(".obot", "logs"))
+    if not loglevel:
+        loglevel = "error"
+    logdir = k.cfg.logdir or logdir or os.path.join(hd(".obot"), "logs")
     logfile = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
         cdir(logfile)

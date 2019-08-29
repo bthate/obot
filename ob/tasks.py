@@ -1,5 +1,6 @@
 """ OB threads (tasks). """
 
+import logging
 import ob
 import queue
 import threading
@@ -29,10 +30,7 @@ class Task(threading.Thread):
 
     def run(self):
         func, args = self._queue.get()
-        try:
-            self._result = func(*args)
-        except Exception as ex:
-            logging.error(get_exception())
+        self._result = func(*args)
 
     def join(self, timeout=None):
         super().join(timeout)

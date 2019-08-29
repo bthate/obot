@@ -13,6 +13,7 @@ from ob.loader import Loader
 from ob.times import days
 from ob.trace import get_exception
 from ob.types import get_type
+from ob.utils import get_name
 
 def __dir__():
     return ("Event", "Handler")
@@ -60,11 +61,6 @@ class Event(Command):
         """ reply to the origin. """
         from ob.kernel import k
         self.result.append(txt)
-        if self.direct:
-            bot = k.fleet.get_bot(self.orig)
-            bot.say(self.channel, txt, self.type)
-        elif not self.batch:
-            k.fleet.say(self.orig, self.channel, txt, self.type)
 
     def wait(self):
         """ wait for event to finish. """
@@ -96,11 +92,9 @@ class Handler(Loader):
         self._stopped = False
         self._threaded = False
         self._type = get_type(self)
+        self.cbs = {}
         self.cfg = ob.Cfg()
         self.handlers = {}
-
-    def get_event(self):
-        return self._queue.get()
 
     def get_handler(self, cmd):
         return self.handlers.get(cmd, None)
@@ -112,29 +106,22 @@ class Handler(Loader):
             event.orig = repr(self)
         event._func = self.get_handler(event.chk)
         if event._func:
-            try:
-                event._func(event)
-            except Exception as ex:
-                logging.error(get_exception())
-        return self.handle_event(event)
-
-    def handle_event(self, event):
+            event._func(event)
+        for cb in self.cbs.values():
+            logging.warning("cb %s" % str(cb))
+            cb(e)
+        self.show(event)
         event.ready()
-        return event
-
-    def loop(self):
+        
+    def handler(self):
         while not self._stopped:
-            try:
-                event = self.get_event()
-            except EOFError:
-                break
-            if not event:
-                continue
-            thr = ob.launch(self.dispatch, event)
+            e = self._queue.get()
+            logging.debug(e)
+            thr2 = ob.launch(self.dispatch, e)
             if self._threaded:
-                event._thrs.append(thr)
+                event._thrs.append(thr2)
             else:
-                thr.join()
+                thr2.join()
 
     def load_mod(self, name, mod=None):
         try:
@@ -160,6 +147,8 @@ class Handler(Loader):
             if "event" in o.__code__.co_varnames:
                 self.register(key, o)
                 modules[key] = o.__module__
+                if "cb_" in key:
+                    self.cbs[key] = o
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, ob.Object):
                 t = get_type(o)
@@ -169,11 +158,17 @@ class Handler(Loader):
                 if w not in names:
                     names[w] = str(t)
 
+    def show(self, event):
+        for line in event.result:
+            print(line)
+
     def sync(self, bot):
         self.handlers.update(bot.handlers, skip=True)
+        self.cbs.update(bot.cbs, skip=True)
 
     def start(self):
-        return ob.launch(self.loop)
+        logging.warning("start %s" % get_name(self))
+        return ob.launch(self.handler)
 
     def stop(self):
         self._stopped = True

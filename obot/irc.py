@@ -19,7 +19,7 @@ from ob.trace import get_exception
 from ob.utils import locked
 
 def __dir__():
-    return ('Bot', 'Cfg', 'DCC', 'DEvent', 'IEvent', 'IRC', 'init')
+    return ('Bot', 'Cfg', 'DCC', 'DEvent', 'IEvent', 'IRC', 'init', "cb_log")
 
 def init():
     """ initialise irc bot. """
@@ -290,16 +290,7 @@ class IRC(Bot):
         if not k.cfg.resume:
             self.logon(self.cfg.server, self.cfg.nick)
 
-    def dispatch(self, event):
-        """ event to handler dispatcher. """
-        if event.command:
-            h = self.get_handler(event.command)
-            if h:
-                h(event)
-                return
-        super().dispatch(event)
-
-    def get_event(self):
+    def event(self):
         """ return (blocking) event from irc server. """
         self._connected.wait()
         if not self._buffer:
@@ -311,24 +302,14 @@ class IRC(Bot):
                 e.chk = "ERROR"
                 return e
         e = self._parsing(self._buffer.pop(0))
-        return e
-
-    def handle_error(self, event):
-        """ error handler. """
-        self._connected.clear()
-        time.sleep(self.state.nrconnect * self.cfg.sleep)
-        self.connect()
-
-    def handle_event(self, event):
-        """ default event handler. """
-        cmd = event.command
+        cmd = e.command
         if cmd == "001":
             if "servermodes" in dir(self.cfg):
                 self._raw("MODE %s %s" % (self.cfg.nick, self.cfg.servermodes))
             self.joinall()
         elif cmd == "PING":
             self.state.pongcheck = True
-            self._command("PONG", event.txt)
+            self._command("PONG", e.txt)
         elif cmd == "PONG":
             self.state.pongcheck = False
         elif cmd == "433":
@@ -337,6 +318,13 @@ class IRC(Bot):
             self._raw("NICK %s" % self.cfg.nick or "ob", True)
         elif cmd == "ERROR":
             self.state.error = event
+        k.put(e)
+
+    def handle_error(self, event):
+        """ error handler. """
+        self._connected.clear()
+        time.sleep(self.state.nrconnect * self.cfg.sleep)
+        self.connect()
 
     def handle_notice(self, event):
         """ notice handler. """
@@ -448,3 +436,6 @@ class DCC(Bot):
     def say(self, channel, txt, type="chat"):
         """ echo to DCC client. """
         self._raw(txt)
+
+def cb_log(event):
+    event.save()

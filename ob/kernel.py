@@ -2,6 +2,7 @@
 
 import logging
 import ob
+import threading
 import time
 import _thread
 
@@ -10,6 +11,7 @@ from ob.db import Db
 from ob.errors import EINIT 
 from ob.fleet import Fleet
 from ob.handler import Event, Handler
+from ob.shell import enable_history, set_completer
 from ob.tasks import Launcher
 from ob.trace import get_exception
 from ob.user import Users
@@ -28,6 +30,9 @@ class Kernel(Handler, Launcher):
 
     def __init__(self):
         super().__init__()
+        self._outputed = False
+        self._prompted = threading.Event()
+        self._prompted.set()
         self.cfg = Cfg()
         self.db = Db()
         self.fleet = Fleet()
@@ -36,16 +41,22 @@ class Kernel(Handler, Launcher):
         self.state.starttime = time.time()
         self.users = Users()
 
+    def _raw(self, txt):
+        """ print to console. """
+        print(txt)
+
     def cmd(self, txt, origin=""):
         """ execute a string as a command. """
+        if not txt:
+            return
         event = Event()
         event.batch = True
         event.txt = txt
         event.options = self.cfg.options
         event.origin = origin or "root@shell"
-        k.dispatch(event)
+        event.parse(event.txt)
+        self.dispatch(event)
         event.wait()
-        return event.result
 
     def init(self, modstr):
         """ initialize a comma seperated list of modules. """
@@ -76,20 +87,37 @@ class Kernel(Handler, Launcher):
                 except Exception as ex:
                      logging.error(get_exception())
 
-    def raw(self, txt):
-        print(txt)
+    def prompt(self, e):
+        """ return a event by prompting for some text. """
+        self._prompted.wait()
+        e.txt = input("> ")
+        e.txt = e.txt.rstrip()
+        self._prompted.set()
+        return e
 
-    def start(self):
+    def say(self, orig, channel, txt, type="chat"):
+        self._raw(txt)
+
+    def shell(self):
+        logging.warn("starting shell")
+        while not self._stopped:
+            e = Event()
+            e.direct = True
+            e.options = k.cfg.options
+            e.origin = "root@shell"
+            self.put(self.prompt(e))
+            e.wait()
+
+    def start(self, shell=True):
         """ start the kernel. """
         super().start()
         if self.cfg.prompting:
             self.cfg.prompting = False
             self.cfg.save()
-
-    def wait(self):
-        while not self._stopped:
-            time.sleep(1)
-            
+        if shell:
+            ob.launch(self.shell)
+        set_completer(k.handlers)
+        enable_history()
 
 #:
 k = Kernel()

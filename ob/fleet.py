@@ -16,6 +16,7 @@ class Fleet(Object):
 
     def add(self, bot):
         if bot not in self.bots:
+            logging.warning("add %s" % str(self))
             self.bots.append(bot)
         return self
 
@@ -44,11 +45,7 @@ class Fleet(Object):
 
     def say(self, bid, channel, txt, mtype="chat"):
         b = self.get_bot(bid)
-        if not b:
-            from ob.kernel import k
-            k.raw(txt)
+        if b._outputed:
+            b._outqueue.put_nowait((channel, txt, mtype))
         else:
-            if b._outputed:
-                b._outqueue.put_nowait((channel, txt, mtype))
-            else:
-                b.say(channel, txt, mtype)
+            b.say(channel, txt, mtype)

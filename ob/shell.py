@@ -27,6 +27,7 @@ opts = [
     ('-o', '', "string", "", 'options', "options to use."),
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('', '--logdir', "string", "", 'logdir', "directory to log to."),
     ('', '--owner', "string", "", 'owner', "owner's userhost or JID.")
 ]
 
@@ -111,7 +112,8 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     if not os.path.exists(sp):
         cdir(sp)
     ob.workdir = cfg.workdir
-    ob.last(ob.kernel.k.cfg)
+    if cfg.daemon:
+        ob.last(ob.kernel.k.cfg)
     ob.update(ob.kernel.k.cfg, cfg, skip=True)
     level(cfg.level or "error")
     st = time.ctime(time.time())

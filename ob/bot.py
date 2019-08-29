@@ -31,7 +31,7 @@ class Bot(Handler):
         while not self._stopped:
             channel, txt, otype = self._outqueue.get()
             if txt:
-                self._say(channel, txt, otype)
+                self.say(repr(self), channel, txt, otype)
 
     def _raw(self, txt):
         """ write directly to display. """
@@ -40,73 +40,18 @@ class Bot(Handler):
         sys.stdout.write(txt)
         sys.stdout.flush()
 
-    def _say(self, *args):
-        """ say some text on some channel. """
-        if self.cfg.verbose and len(args) > 1:
-            self._raw(str(args[1]) + "\n")
-
     def announce(self, txt):
         """ announce txt on all registered channels. """
         if self.cfg.verbose:
             for channel in self.channels:
                 self.say(channel, txt)
 
-    def cmd(self, txt, origin=""):
-        """ execute a command on this bot. """
-        event = Event()
-        event.batch = True
-        event.txt = txt
-        event.options = k.cfg.options
-        event.origin = origin or "root@shell"
-        k.dispatch(event)
-        event.wait()
-        for val in event.result:
-            self.say("", val)
-
     def say(self, channel, txt, mtype=None):
         """ say some txt on a channel. """
-        self._say(channel, txt, mtype)
+        self._raw(channel, txt, mtype)
 
     def start(self):
         """ start the bot and add it to kernel's fleet. """
         super().start()
         k.fleet.add(self)
-
-class Console(Bot):
-
-    """ A console bot. """
-
-    def __init__(self):
-        super().__init__()
-        self._prompted = threading.Event()
-        self._prompted.set()
-
-    def announce(self, txt):
-        """ announce to console. """
-        self._raw(str(txt) + "\n")
-
-    def dispatch(self, event):
-        """ dispatch and wait for the event to finish. """
-        super().dispatch(event)
-        event.wait()
-        self._prompted.set()
-        return event
-
-    def get_event(self):
-        """ return a event by prompting for some text. """
-        event = Event()
-        event.direct = True
-        event.options = k.cfg.options
-        event.origin = "root@shell"
-        self._prompted.wait()
-        if self.cfg.prompt:
-            event.txt = input("> ")
-            event.txt = event.txt.rstrip()
-        self._prompted.clear()
-        return event
-
-    def start(self):
-        """ start the console. """
-        super().start()
-        set_completer(k.handlers)
-        enable_history()
+        ob.launch(self.shell)

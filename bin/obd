@@ -10,7 +10,7 @@ from ob.utils import level, hd
 
 def main():
     parse_cli("obd", __version__, wd=hd(".obot"))
-    level("debug")
+    level("debug", k.cfg.logdir or os.path.join(hd(".obot"), "logs"))
     print(k.cfg)
     daemon()
     k.start()

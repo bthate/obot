@@ -3,7 +3,6 @@
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 from ob import __version__
-from ob.bot import Console
 from ob.kernel import k
 from ob.shell import execute, parse_cli
 from ob.utils import hd
@@ -12,12 +11,9 @@ def main():
     parse_cli("ob", __version__, hd(".obot"), "obs [options]")
     k.walk("ob")
     k.walk("oper")
-    k.start()
     k.init(k.cfg.modules)
-    bot = Console()
-    bot.sync(k)
-    bot.start()
-    bot.wait()
+    k.start()
+    k.wait()
         
 execute(main)
 os._exit(0)

@@ -89,6 +89,7 @@ class Command(ob.Default):
 
     def __init__(self):
         super().__init__()
+        self._cb = None
         self._error = None
         self._func = None
         self._thrs = []
@@ -141,7 +142,6 @@ class Command(ob.Default):
         if not self.txt:
             self.txt = txt
         nr = -1
-        self.cfrom = ob.trace.get_from()
         self.args = []
         self.dkeys = []
         self.options = options or self.options or ""
