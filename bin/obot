@@ -2,9 +2,6 @@
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import ob
-
-from ob.bot import Console
 from ob.shell import daemon, execute,parse_cli
 from obot import __version__
 
@@ -17,10 +14,7 @@ def main():
     k.walk("ob.cmds")
     k.init(k.cfg.modules)
     k.start()
-    bot = Console()
-    bot.sync(k)
-    bot.start()
-    bot.wait()
+    k.wait()
 
 execute(main)
 os._exit(0)
