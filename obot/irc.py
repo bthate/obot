@@ -13,10 +13,11 @@ import threading
 from ob import Object, launch, last 
 from ob.errors import EINIT
 from ob.handler import Event
-from ob.bot import Bot
 from ob.kernel import k
 from ob.trace import get_exception
 from ob.utils import locked
+
+from obot import Bot
 
 def __dir__():
     return ('Bot', 'Cfg', 'DCC', 'DEvent', 'IEvent', 'IRC', 'init', "cb_log")
@@ -56,7 +57,7 @@ class Cfg(ob.Cfg):
         self.verbose = True
         self.username = "ob"
 
-class IEvent(Event):
+class Event(Event):
 
     """ IRC event. """
 
@@ -113,9 +114,9 @@ class IRC(Bot):
         self.state.nrsend = 0
         self.state.pongcheck = False
         self.state.resume = None
-        self.register("ERROR", self.handle_error)
-        self.register("NOTICE", self.handle_notice)
-        self.register("PRIVMSG", self.handle_privmsg)
+        self.register("ERROR", self.errored)
+        self.register("NOTICE", self.noticed)
+        self.register("PRIVMSG", self.privmsged)
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
 
@@ -173,12 +174,17 @@ class IRC(Bot):
         self._connected.set()
         return True
 
+    def input(self):
+        while not self._stopped:
+            e = self.event()
+            self.put(e)
+
     def _parsing(self, txt):
         """ parse incoming text into an event. """
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
-        o = IEvent()
+        o = Event()
         o.orig = repr(self)
         o.txt = rawstr
         o.cc = self.cc
@@ -297,7 +303,7 @@ class IRC(Bot):
             try:
                 self._some()
             except (ConnectionResetError, socket.timeout):
-                e = IEvent()
+                e = Event()
                 e._error = get_exception()
                 e.chk = "ERROR"
                 return e
@@ -318,21 +324,21 @@ class IRC(Bot):
             self._raw("NICK %s" % self.cfg.nick or "ob", True)
         elif cmd == "ERROR":
             self.state.error = event
-        k.put(e)
+        return e
 
-    def handle_error(self, event):
+    def errored(self, event):
         """ error handler. """
         self._connected.clear()
         time.sleep(self.state.nrconnect * self.cfg.sleep)
         self.connect()
 
-    def handle_notice(self, event):
+    def noticed(self, event):
         """ notice handler. """
         if event.txt.startswith("VERSION"):
             txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, __version__, k.cfg.description)
             self._command("NOTICE", event.channel, txt)
 
-    def handle_privmsg(self, event):
+    def privmsged(self, event):
         """ privmsg handler. """
         if event.origin != k.cfg.owner:
             setattr(k.users.userhosts, event.nick, event.origin)
@@ -349,7 +355,8 @@ class IRC(Bot):
             if not k.users.allowed(event.origin, "USER"):
                 return
             event.parse(event.txt[1:])
-            k.dispatch(event)
+            k.put(event)
+
 
     def joinall(self):
         for channel in self.channels:
@@ -363,15 +370,14 @@ class IRC(Bot):
         self._raw("NICK %s" % nick, True)
         self._raw("USER %s %s %s :%s" % (self.cfg.username or "ob", server, server, self.cfg.realname or "ob"), True)
 
-    def say(self, channel, txt, mtype=None):
+    def say(self, orig, channel, txt, mtype=None):
         """ say text on channel. """
-        self._outqueue.put_nowait((channel, txt, mtype))
+        self._outqueue.put_nowait((orig, channel, txt, mtype))
 
     def start(self):
         """ start irc bot. """
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
-        launch(self._output)
         super().start()
         self.connect()
         

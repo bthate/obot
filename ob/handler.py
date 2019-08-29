@@ -28,7 +28,6 @@ class Event(Command):
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()
-        self.batch = False
         self.direct = False
         self.type = "chat"
         self.name = ""
@@ -59,8 +58,12 @@ class Event(Command):
 
     def reply(self, txt):
         """ reply to the origin. """
-        from ob.kernel import k
         self.result.append(txt)
+
+    def show(self):
+        from ob.kernel import k
+        for line in self.result:
+            k.say(self.orig, self.channel, line, self.type)
 
     def wait(self):
         """ wait for event to finish. """
@@ -87,6 +90,7 @@ class Handler(Loader):
 
     def __init__(self):
         super().__init__()
+        self._outqueue = queue.Queue()
         self._queue = queue.Queue()
         self._ready = threading.Event()
         self._stopped = False
@@ -109,14 +113,21 @@ class Handler(Loader):
             event._func(event)
         for cb in self.cbs.values():
             logging.warning("cb %s" % str(cb))
-            cb(e)
-        self.show(event)
+            cb(event)
+        event.show()
         event.ready()
-        
+
+    def event(self):
+        return self._queue.get()
+
+    def input(self):
+        while not self._stopped:
+            e = self.event()
+            self.put(e)
+
     def handler(self):
         while not self._stopped:
             e = self._queue.get()
-            logging.debug(e)
             thr2 = ob.launch(self.dispatch, e)
             if self._threaded:
                 event._thrs.append(thr2)
@@ -133,6 +144,13 @@ class Handler(Loader):
             logging.error(get_exception())
         return mod
 
+    def output(self):
+        """ an optional output thread. """
+        while not self._stopped:
+            orig, channel, txt, otype = self._outqueue.get()
+            if txt:
+                self.say(orig, channel, txt, otype)
+
     def put(self, event):
         self._queue.put_nowait(event)
 
@@ -145,10 +163,11 @@ class Handler(Loader):
     def scan(self, mod):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
-                self.register(key, o)
-                modules[key] = o.__module__
                 if "cb_" in key:
                     self.cbs[key] = o
+                else:
+                    self.register(key, o)
+                    modules[key] = o.__module__
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, ob.Object):
                 t = get_type(o)
@@ -158,9 +177,8 @@ class Handler(Loader):
                 if w not in names:
                     names[w] = str(t)
 
-    def show(self, event):
-        for line in event.result:
-            print(line)
+    def say(self, orig, channel, txt, type):
+        pass
 
     def sync(self, bot):
         self.handlers.update(bot.handlers, skip=True)
@@ -168,7 +186,9 @@ class Handler(Loader):
 
     def start(self):
         logging.warning("start %s" % get_name(self))
-        return ob.launch(self.handler)
+        ob.launch(self.handler)
+        ob.launch(self.input)
+        ob.launch(self.output)
 
     def stop(self):
         self._stopped = True

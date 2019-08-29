@@ -1,6 +1,9 @@
 """ list of bots. """
 
+import logging
+
 from ob import Object
+from ob.utils import get_name
 
 def __dir__():
     return ("Fleet",)
@@ -16,7 +19,7 @@ class Fleet(Object):
 
     def add(self, bot):
         if bot not in self.bots:
-            logging.warning("add %s" % str(self))
+            logging.warning("add %s" % get_name(bot))
             self.bots.append(bot)
         return self
 

@@ -94,7 +94,6 @@ class Command(ob.Default):
         self._func = None
         self._thrs = []
         self.args = []
-        self.batch = False
         self.delta = 0
         self.dkeys = []
         self.index = None

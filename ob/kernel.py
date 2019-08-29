@@ -50,7 +50,6 @@ class Kernel(Handler, Launcher):
         if not txt:
             return
         event = Event()
-        event.batch = True
         event.txt = txt
         event.options = self.cfg.options
         event.origin = origin or "root@shell"
@@ -96,13 +95,15 @@ class Kernel(Handler, Launcher):
         return e
 
     def say(self, orig, channel, txt, type="chat"):
-        self._raw(txt)
+        if orig == repr(self):
+            self._raw(txt)
+        else:
+            self.fleet.say(orig, channel, txt, type)
 
     def shell(self):
         logging.warn("starting shell")
         while not self._stopped:
             e = Event()
-            e.direct = True
             e.options = k.cfg.options
             e.origin = "root@shell"
             self.put(self.prompt(e))
