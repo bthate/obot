@@ -2,14 +2,6 @@
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import json
-import ob
-import os
-import time
-
-from ob.times import days, fntime
-from ob.utils import last
-
 from ob import __version__
 from ob.kernel import k
 from ob.shell import execute, hd, parse_cli
@@ -18,7 +10,6 @@ def main():
     parse_cli("ob", __version__, hd(".obot"), "ob options cmd [arg1 arg2}")
     k.walk("ob")
     k.walk("oper")
-    k.start(shell=False)
     k.init(k.cfg.modules)        
     k.cmd(" ".join(k.cfg.args))
 

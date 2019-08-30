@@ -98,9 +98,9 @@ class Kernel(Handler, Launcher):
         if orig == repr(self):
             self._raw(txt)
         else:
-            self.fleet.say(orig, channel, txt, type)
+            self.fleet.echo(orig, channel, txt, type)
 
-    def shell(self):
+    def input(self):
         logging.warn("starting shell")
         while not self._stopped:
             e = Event()
@@ -109,14 +109,12 @@ class Kernel(Handler, Launcher):
             self.put(self.prompt(e))
             e.wait()
 
-    def start(self, shell=True):
+    def start(self):
         """ start the kernel. """
         super().start()
         if self.cfg.prompting:
             self.cfg.prompting = False
             self.cfg.save()
-        if shell:
-            ob.launch(self.shell)
         set_completer(k.handlers)
         enable_history()
 

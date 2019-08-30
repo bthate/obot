@@ -27,6 +27,13 @@ class Fleet(Object):
         for b in self.bots:
             b.announce(str(txt))
 
+    def echo(self, bid, channel, txt, mtype="chat"):
+        b = self.get_bot(bid)
+        if b._outputed:
+            b._outqueue.put_nowait((bid, channel, txt, mtype))
+        else:
+            b.say(bid, channel, txt, mtype)
+
     def get_bot(self, bid):
         res = None
         for b in self.bots:
@@ -45,10 +52,3 @@ class Fleet(Object):
 
     def remove(self, bot):
         self.bots.remove(bot)
-
-    def say(self, bid, channel, txt, mtype="chat"):
-        b = self.get_bot(bid)
-        if b._outputed:
-            b._outqueue.put_nowait((channel, txt, mtype))
-        else:
-            b.say(channel, txt, mtype)

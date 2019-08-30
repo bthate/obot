@@ -357,7 +357,6 @@ class IRC(Bot):
             event.parse(event.txt[1:])
             k.put(event)
 
-
     def joinall(self):
         for channel in self.channels:
             self._command("JOIN", channel)
@@ -372,7 +371,8 @@ class IRC(Bot):
 
     def say(self, orig, channel, txt, mtype=None):
         """ say text on channel. """
-        self._outqueue.put_nowait((orig, channel, txt, mtype))
+        self._command("PRIVMSG", channel, txt)
+        #self._outqueue.put_nowait((orig, channel, txt, mtype))
 
     def start(self):
         """ start irc bot. """
