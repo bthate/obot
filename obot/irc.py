@@ -427,7 +427,7 @@ class DCC(Bot):
         """ error handler. """
         self.state.error = event
 
-    def get_event(self, txt):
+    def event(self):
         """ return event from dcc socket. """
         self._connected.wait()
         e = DEvent()
@@ -439,7 +439,7 @@ class DCC(Bot):
         e.origin = self.origin or "root@dcc"
         return e
 
-    def say(self, channel, txt, type="chat"):
+    def say(self, orig, channel, txt, type="chat"):
         """ echo to DCC client. """
         self._raw(txt)
 

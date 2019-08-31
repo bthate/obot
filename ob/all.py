@@ -5,11 +5,9 @@ import ob.utils
 import ob.user
 import ob.fleet
 import ob.db
-import ob.entry
 import ob.loader
 import ob.handler
 import ob.kernel
-import ob.bot
 import ob.command
 import ob.cmds
 import ob.errors

@@ -66,15 +66,19 @@ class Kernel(Handler, Launcher):
                 continue
             mod = None
             ex = None
-            mod = self.load_mod(mn)
-            if not mod:
-                mod = self.load_mod("ob.%s" % mn)
-            if not mod:
-                mod = self.load_mod("obot.%s" % mn)
-            if not mod:
-                mod = self.load_mod("%s.%s" % (self.cfg.name, mn))
-            if not mod:
-                logging.error("not found %s" % mn)
+            try:
+               mod = self.load_mod(mn)
+            except ModuleNotFoundError:
+                try:
+                    mod = self.load_mod("ob.%s" % mn)
+                except ModuleNotFoundError:
+                   try:
+                       mod = self.load_mod("obot.%s" % mn)
+                   except ModuleNotFoundError:
+                       try:
+                           mod = self.load_mod("%s.%s" % (self.cfg.name, mn))
+                       except ModuleNotFoundError:
+                           logging.error("not found %s" % mn)
             logging.warn("init %s" % get_name(mod))
             if mod:
                 try:

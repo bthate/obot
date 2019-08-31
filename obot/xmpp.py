@@ -1,4 +1,4 @@
-""" XMPP bot for OBOT. """
+""" XMPP bot for obot. """
 
 __version__ = 1
 
@@ -11,13 +11,13 @@ import sys
 import threading
 
 from ob import Cfg, Object
-from ob.bot import Bot
+from obot import Bot
 from ob.errors import EINIT
 from ob.handler import Event
 from ob.kernel import k
 
 def __dir__():
-    return ("XMPP", "XEvent", "Cfg", "init", "stripped")
+    return ("XMPP", "Event", "Cfg", "init", "stripped")
 
 def init():
     """ initialize xmpp bot. """
@@ -55,7 +55,7 @@ class Cfg(Cfg):
         self.server = ""
         self.user = ""
 
-class XEvent(Event):
+class Event(Event):
 
     """ Event used by the XMPP bot. """
 
@@ -183,7 +183,7 @@ class XMPP(Bot):
                                                nick,
                                                wait=True)
 
-    def say(self, room, txt, mtype=None):
+    def say(self, orig, room, txt, mtype=None):
         """ say text in a room. """
         self._say(room, txt, mtype)
 
@@ -218,7 +218,7 @@ class XMPP(Bot):
             if not k.users.allowed(origin, "USER"):
                 return
         txt = data["body"]
-        m = XEvent()
+        m = Event()
         m.parse(txt)
         m.txt = txt
         m.jid = origin
@@ -239,7 +239,7 @@ class XMPP(Bot):
 
     def presenced(self, data):
         """ presence handler. """
-        o = XEvent()
+        o = Event()
         o.mtype = data["type"]
         o.orig = repr(self)
         o.cc = ""
@@ -254,9 +254,9 @@ class XMPP(Bot):
         if self.cfg.user in o.origin:
             return
         if o.mtype == 'subscribe':
-            pres = XEvent({'to': o.origin, 'type': 'subscribed'})
+            pres = Event({'to': o.origin, 'type': 'subscribed'})
             self.client.send_presence(pres)
-            pres = XEvent({'to': o.origin, 'type': 'subscribe'})
+            pres = Event({'to': o.origin, 'type': 'subscribe'})
             self.client.send_presence(pres)
             self.channels.append(o.origin)
         elif o.mtype == "unsubscribe":

@@ -34,6 +34,7 @@ class Event(Command):
         self.sep = "\n"
 
     def display(self, o, txt=""):
+        """ display an object. """
         if "k" in self.options:
             self.reply("|".join(o))
             return
@@ -54,6 +55,7 @@ class Event(Command):
             self.reply(txt)
 
     def ready(self):
+        """ signal ready. """
         self._ready.set()
 
     def reply(self, txt):
@@ -61,6 +63,7 @@ class Event(Command):
         self.result.append(txt)
 
     def show(self):
+        """ echo result to originating bot. """
         from ob.kernel import k
         for line in self.result:
             k.say(self.orig, self.channel, line, self.type)
@@ -88,6 +91,8 @@ class Event(Command):
 
 class Handler(Loader):
 
+    """ Event Handler class. """
+
     def __init__(self):
         super().__init__()
         self._outqueue = queue.Queue()
@@ -101,9 +106,11 @@ class Handler(Loader):
         self.handlers = {}
 
     def get_handler(self, cmd):
+        """ return a handler for a command. """
         return self.handlers.get(cmd, None)
 
     def dispatch(self, event):
+        """ dispatch a event to its handler/callbacks. """
         if not event.chk and event.txt:
             event.parse(event.txt)
         if not event.orig:
@@ -118,14 +125,17 @@ class Handler(Loader):
         event.ready()
 
     def event(self):
+        """ return the event to be handled. """
         return self._queue.get()
 
     def input(self):
+        """ input loop. override event() to return the event to be handled."""
         while not self._stopped:
             e = self.event()
             self.put(e)
 
     def handler(self):
+        """ basic event handler routine. """
         while not self._stopped:
             e = self._queue.get()
             thr2 = ob.launch(self.dispatch, e)
@@ -135,13 +145,9 @@ class Handler(Loader):
                 thr2.join()
 
     def load_mod(self, name, mod=None):
-        try:
-            mod = super().load_mod(name, mod)
-            self.scan(mod)
-        except ModuleNotFoundError:
-            pass
-        except Exception as ex:
-            logging.error(get_exception())
+        """ loading a module and scan for handlers/commands. """
+        mod = super().load_mod(name, mod)
+        self.scan(mod)
         return mod
 
     def output(self):
@@ -152,15 +158,19 @@ class Handler(Loader):
                 self.say(orig, channel, txt, otype)
 
     def put(self, event):
+        """ put event on queue. """
         self._queue.put_nowait(event)
 
     def ready(self):
+        """ signal this handler as ready. """
         self._ready.set()
 
     def register(self, cmd, handler):
+        """ register a handler for a command. """
         self.handlers[cmd] = handler
 
     def scan(self, mod):
+        """ scan a module for commands/callbacks. """
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if "cb_" in key:
@@ -178,22 +188,27 @@ class Handler(Loader):
                     names[w] = str(t)
 
     def say(self, orig, channel, txt, type):
+        """ say txt in channel of bot with origin orig. """
         pass
 
     def sync(self, bot):
+        """ synchronize this handler handlers/callbacks with that of provided bot's. """
         self.handlers.update(bot.handlers, skip=True)
         self.cbs.update(bot.cbs, skip=True)
 
     def start(self):
+        """ start this handler. """
         logging.warning("start %s" % get_name(self))
         ob.launch(self.handler)
         ob.launch(self.input)
         ob.launch(self.output)
 
     def stop(self):
+        """ stop this handler. """
         self._stopped = True
 
     def unload(self, modname):
+        """ unload a module. """
         mod = self.table.get(modname, None)
         if mod:
             for key, func, name, kind in self.scan(mod):
@@ -207,26 +222,12 @@ class Handler(Loader):
         super().unload(modname)
 
     def wait(self):
+        """ wait for this handler to be ready. """
         self._ready.wait()
 
     def walk(self, pkgname):
-        mod = None
-        try:
-            mod = self.load_mod(pkgname)
-        except ModuleNotFoundError:
-            try:
-                mod = self.load_mod("ob.%s" % pkgname)
-            except ModuleNotFoundError:
-                try:
-                    mod = self.load_mod("obot.%s" % pkgname)
-                except ModuleNotFoundError:
-                    try:
-                        mod = self.load_mod("%s.%s" % (self.cfg.name, pkgname))
-                    except ModuleNotFoundError:
-                       pass
-        if not mod:
-            logging.warn("not found %s" % pkgname)
-            return
+        """ scan package for module to load. """
+        mod = self.load_mod(pkgname)
         res = [mod,]
         try:
             mods = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
