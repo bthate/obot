@@ -105,7 +105,13 @@ class Handler(Loader):
 
     def get_handler(self, cmd):
         """ return a handler for a command. """
-        return self.handlers.get(cmd, None)
+        h = self.handlers.get(cmd, None)
+        if not h and cmd in ob.tables.modules:
+            mn = ob.tables.modules[cmd]
+            self.load_mod(mn)
+            h = self.handlers.get(cmd, None)
+            logging.warning("autoload %s" % mn)
+        return h
 
     def dispatch(self, event):
         """ dispatch a event to its handler/callbacks. """
@@ -169,6 +175,14 @@ class Handler(Loader):
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """
+        if "classes" not in dir(ob.tables):
+            ob.tables.classes = []
+        if "modules" not in dir(ob.tables):
+            ob.tables.modules = {}
+        if "names" not in dir(ob.tables):
+            ob.tables.names = {}
+        if "classes" not in dir(ob.tables):
+            ob.tables.classes = []
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if "cb_" in key and key not in self.cbs:
