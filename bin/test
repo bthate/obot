@@ -18,7 +18,7 @@ from ob.utils import level
 
 def initialize():
     k.walk("ob")
-    for c in ob.classes:
+    for c in ob.tables.classes:
         try:
             o = get_cls(c)()
             o.txt = "yo!"

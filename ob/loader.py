@@ -44,11 +44,7 @@ def load(event):
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
-        from ob.handler import Handler, modules
-        h = Handler()
-        h.walk("ob")
-        h.walk("obot")
-        h.walk(k.cfg.name)
+        from ob.tables import modules
         event.reply("|".join({x.split(".")[-1] for x in modules.values()}))
         return
     mods = []
@@ -65,16 +61,11 @@ def load(event):
 def unload(event):
     """ unload a module from the table. """
     from ob.kernel import k
-    from ob.handler import modules
+    from ob.tables import modules
     if event.origin != k.cfg.owner:
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
-        from ob.handler import Handler, modules
-        h = Handler()
-        h.walk("ob")
-        h.walk("obot")
-        h.walk(k.cfg.name)
         event.reply("|".join({x.split(".")[-1] for x in modules.values()}))
         return
     bot = k.fleet.get_bot(event.orig)

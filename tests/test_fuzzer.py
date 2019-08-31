@@ -4,7 +4,8 @@ import unittest
 
 from obot import Bot
 from ob.kernel import k
-from ob.handler import Event, modules, names
+from ob.handler import Event
+from ob.tables import modules, names
 from ob.types import get_cls
 from ob.trace import get_exception
 

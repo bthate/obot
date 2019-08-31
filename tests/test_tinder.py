@@ -44,12 +44,12 @@ except ValueError:
 k.users.oper("test@shell")
 
 param = Param()
-param.ed = ["%s txt==yo channel=#mekker" % x for x in ob.handler.names]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in ob.handler.names])
-param.find = ["%s txt==yo" % x for x in ob.handler.names]
+param.ed = ["%s txt==yo channel=#mekker" % x for x in ob.tables.names]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in ob.tables.names])
+param.find = ["%s txt==yo" % x for x in ob.tables.names]
 param.load = bot.table.keys()
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % x for x in ob.handler.names]
+param.rm = ["%s txt==yo" % x for x in ob.tables.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
 #param.mbox = ["~/evidence/25-1-2013",]
 
