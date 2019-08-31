@@ -80,6 +80,13 @@ class DEvent(Event):
         self._fsock = None
         self.channel = ""
 
+    def _raw(self, txt):
+        self._fsock.write(txt.rstrip() + "\n") 
+        self._fsock.flush()
+
+    def reply(self, txt):
+        self._raw(txt)
+
 class TextWrap(textwrap.TextWrapper):
 
     """ textwrapper (default 500 chars). """
