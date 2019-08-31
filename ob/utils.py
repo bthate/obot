@@ -189,8 +189,12 @@ def level(loglevel="", logdir="", logfile="ob.log", nostream=False):
         handler = logging.StreamHandler()
         handler.propagate = False
         handler.setFormatter(formatter)
-        handler.setLevel(loglevel)
-        logger.addHandler(handler)
+        try:
+            handler.setLevel(loglevel)
+            logger.addHandler(handler)
+        except ValueError:
+            logging.warn("worng level %s" % loglevel)
+            loglevel = "error"
     formatter2 = logging.Formatter(format_time, datefmt)
     filehandler = logging.handlers.TimedRotatingFileHandler(logfile, 'midnight')
     filehandler.propagate = False

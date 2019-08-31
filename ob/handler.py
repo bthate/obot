@@ -208,10 +208,11 @@ class Handler(Loader):
         self.handlers.update(bot.handlers)
         self.cbs.update(bot.cbs)
 
-    def start(self):
+    def start(self, nohandler=False):
         """ start this handler. """
         logging.warning("start %s" % get_name(self))
-        ob.launch(self.handler)
+        if not nohandler:
+            ob.launch(self.handler)
         ob.launch(self.input)
         ob.launch(self.output)
 

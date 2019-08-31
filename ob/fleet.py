@@ -29,10 +29,7 @@ class Fleet(Object):
 
     def echo(self, bid, channel, txt, mtype="chat"):
         b = self.get_bot(bid)
-        if b._outputed:
-            b._outqueue.put_nowait((bid, channel, txt, mtype))
-        else:
-            b.say(bid, channel, txt, mtype)
+        b.say(bid, channel, txt, mtype)
 
     def get_bot(self, bid):
         res = None

@@ -44,7 +44,7 @@ class Bot(Handler):
         """ say some txt on a channel. """
         self._raw(txt)
 
-    def start(self):
+    def start(self, nohandler=False):
         """ start the bot and add it to kernel's fleet. """
-        super().start()
+        super().start(nohandler)
         k.fleet.add(self)

@@ -149,10 +149,6 @@ class XMPP(Bot):
             channel = stripped(channel)
         self.client.send_message(channel, str(txt), mtype)
 
-    def _sleek(self):
-        """ sleek event handler. """
-        self.client.process(block=True)
-
     def _start(self, data):
         """ handles session start. """
         try:
@@ -173,7 +169,6 @@ class XMPP(Bot):
         self._connect(user, password)
         return True
 
-
     def join(self, room, nick="obot"):
         """ join a room. """
         if room not in self.rooms:
@@ -187,6 +182,9 @@ class XMPP(Bot):
         """ say text in a room. """
         self._say(room, txt, mtype)
 
+    def sleek(self):
+        """ sleek event handler. """
+        self.client.process(block=True)
 
     def stop(self):
         """ stop xmpp server. """
@@ -201,8 +199,7 @@ class XMPP(Bot):
         if ok:
             if self.cfg.channel:
                 self.join(self.cfg.channel, self.cfg.nick)
-        ob.launch(self._output)
-        ob.launch(self._sleek)
+        ob.launch(self.sleek)
         return self
 
     def handled(self, data):

@@ -7,7 +7,7 @@ def __dir__():
 
 def cmds(event):
     bot = k.fleet.get_bot(event.orig)
-    if bot:
+    if bot and bot.handlers:
         event.reply("|".join(sorted(bot.handlers)))
     else:
         event.reply("|".join(sorted(k.handlers)))
