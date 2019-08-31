@@ -21,15 +21,13 @@ import ob.clock
 def init():
     from ob.kernel import k
     for mn in __dir__():
-        k.walk(mn)
+        k.walk("ob.%s" % mn)
 
 def __dir__():
-    return ("bot",
-            "clock",
+    return ("clock",
             "cmds",
             "command",
             "db",
-            "entry",
             "errors",
             "fleet",
             "handler",

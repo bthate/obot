@@ -39,6 +39,3 @@ def todo(event):
     obj.txt = event.rest
     obj.save()
     event.reply("ok")
-
-def cb_log(event):
-    log(event)

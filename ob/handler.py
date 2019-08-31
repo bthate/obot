@@ -173,7 +173,7 @@ class Handler(Loader):
         """ scan a module for commands/callbacks. """
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
-                if "cb_" in key:
+                if "cb_" in key and key not in self.cbs:
                     self.cbs[key] = o
                 else:
                     self.register(key, o)
@@ -193,8 +193,8 @@ class Handler(Loader):
 
     def sync(self, bot):
         """ synchronize this handler handlers/callbacks with that of provided bot's. """
-        self.handlers.update(bot.handlers, skip=True)
-        self.cbs.update(bot.cbs, skip=True)
+        self.handlers.update(bot.handlers)
+        self.cbs.update(bot.cbs)
 
     def start(self):
         """ start this handler. """

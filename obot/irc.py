@@ -443,5 +443,3 @@ class DCC(Bot):
         """ echo to DCC client. """
         self._raw(txt)
 
-def cb_log(event):
-    event.save()

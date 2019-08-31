@@ -27,19 +27,11 @@ class Bot(Handler):
         ob.update(self.cfg, {"prompt": True, "verbose": True})
         self.channels = []
 
-    def _output(self):
-        """ an optional output thread. """
-        self._outputed = True
-        while not self._stopped:
-            channel, txt, otype = self._outqueue.get()
-            if txt:
-                self.say(channel, txt, otype)
-
     def _raw(self, txt):
         """ write directly to display. """
         if not txt:
             return
-        sys.stdout.write(txt)
+        sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()
 
     def announce(self, txt):
@@ -48,9 +40,9 @@ class Bot(Handler):
             for channel in self.channels:
                 self.say(channel, txt)
 
-    def say(self, channel, txt, mtype=None):
+    def say(self, orig, channel, txt, mtype=None):
         """ say some txt on a channel. """
-        self._raw(channel, txt, mtype)
+        self._raw(txt)
 
     def start(self):
         """ start the bot and add it to kernel's fleet. """

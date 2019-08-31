@@ -2,7 +2,7 @@ import logging
 import random
 import unittest
 
-from ob.bot import Bot
+from obot import Bot
 from ob.kernel import k
 from ob.handler import Event, modules, names
 from ob.types import get_cls
@@ -25,7 +25,7 @@ class Test_Fuzzer(unittest.TestCase):
                     e.parse(e.txt)
                     e.orig = repr(b)
                     e.origin = "test@shell"
-                    e.update(o,skip=True)
+                    ob.update(e, o,skip=True)
                     v = b.get_handler(key)
                     if v:
                         v(e)

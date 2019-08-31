@@ -6,6 +6,8 @@ import sys
 import time
 import unittest
 
+import obot
+
 from ob.kernel import k
 from ob.handler import Event
 
@@ -24,7 +26,7 @@ class Param(ob.Object):
 
     pass
 
-bot = ob.bot.Bot()
+bot = obot.Bot()
 bot.cfg.prompt = False
 bot.cfg.verbose = k.cfg.verbose
 bot.walk("ob")
