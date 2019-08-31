@@ -3,6 +3,7 @@
 import inspect
 import logging
 import ob
+import ob.tables
 import os
 import pkgutil
 import queue
@@ -17,9 +18,6 @@ from ob.utils import get_name
 
 def __dir__():
     return ("Event", "Handler")
-
-modules = {}
-names = {}
 
 class Event(Command):
 
@@ -177,15 +175,15 @@ class Handler(Loader):
                     self.cbs[key] = o
                 else:
                     self.register(key, o)
-                    modules[key] = o.__module__
+                    ob.tables.modules[key] = o.__module__
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, ob.Object):
                 t = get_type(o)
-                if t not in ob.classes:
-                    ob.classes.append(t)
+                if t not in ob.tables.classes:
+                    ob.tables.classes.append(t)
                 w = t.split(".")[-1].lower()
-                if w not in names:
-                    names[w] = str(t)
+                if w not in ob.tables.names:
+                    ob.tables.names[w] = str(t)
 
     def say(self, orig, channel, txt, type):
         """ say txt in channel of bot with origin orig. """

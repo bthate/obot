@@ -7,10 +7,11 @@ import queue
 import sys
 import threading
 
-from ob import Cfg, classes
+from ob import Cfg
 from ob.kernel import k
 from ob.handler import Event, Handler
 from ob.shell import enable_history, set_completer
+from ob.tables import classes
 
 def __dir__():
     return ("Bot",)

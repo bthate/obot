@@ -22,7 +22,6 @@ from ob.types import get_cls, get_type
 def __dir__():
     return ('Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'workdir', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')
 
-classes = []
 workdir = ""
 
 class Object:
@@ -97,7 +96,8 @@ class Object:
         else:
             otype = get_type(self)
             if strict:
-                if otype not in classes:
+                import ob.types
+                if otype not in ob.types.classes:
                     raise ECLASS(otype)
             if not stime:
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)

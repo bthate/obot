@@ -53,7 +53,7 @@ class Token(ob.Default):
         except ValueError:
             pass
         if nr == 1:
-            self.match = ob.handler.names.get(word, word)
+            self.match = ob.tables.names.get(word, word)
             self.arg = word
             return
         if "http" in word:
