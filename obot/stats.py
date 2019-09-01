@@ -1,3 +1,5 @@
+""" suicide stats since informedness of the king. """
+
 import ob
 import random
 import time
