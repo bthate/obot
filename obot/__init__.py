@@ -40,6 +40,18 @@ class Bot(Handler):
             for channel in self.channels:
                 self.say(channel, txt)
 
+    def dispatch(self, event):
+        """ run handlers/callbacks for this event. """
+        return super().dispatch(event)
+
+    def event(self):
+        """ return the event to be handled, default takes event from queue. """
+        return super().event()
+
+    def put(self, event):
+        """ send an event to the handler. """
+        return super().put(event)
+        
     def say(self, orig, channel, txt, mtype=None):
         """ say some txt on a channel. """
         self._raw(txt)
