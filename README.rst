@@ -247,6 +247,7 @@ obot
     obot.irc
     obot.mbox
     obot.rss
+    obot.stats
     obot.udp
     obot.xmpp
     obot.wisdom
