@@ -326,11 +326,11 @@ class IRC(Bot):
         elif cmd == "PONG":
             self.state.pongcheck = False
         elif cmd == "433":
-            nick = event.target + "_"
+            nick = e.target + "_"
             self.cfg.nick = nick
             self._raw("NICK %s" % self.cfg.nick or "ob", True)
         elif cmd == "ERROR":
-            self.state.error = event
+            self.state.error = e
         return e
 
     def errored(self, event):
