@@ -50,6 +50,7 @@ class Kernel(Handler, Launcher):
         """ execute a string as a command. """
         if not txt:
             return
+        self.cfg.verbose = True
         event = Event()
         event.txt = txt
         event.options = self.cfg.options
