@@ -43,7 +43,8 @@ class Kernel(Handler, Launcher):
 
     def _raw(self, txt):
         """ print to console. """
-        print(txt)
+        if self.cfg.verbose:
+            print(txt)
 
     def cmd(self, txt, origin=""):
         """ execute a string as a command. """

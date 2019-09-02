@@ -227,7 +227,7 @@ class XMPP(Bot):
             return
         m.nick = m.origin.split("/")[-1]
         m.user = m.jid = stripped(m.origin)
-        m.channel = stripped(m.origin)
+        m.channel = m.origin
         if self.cfg.user == m.user:
             return
         if m.origin not in self.channels:
