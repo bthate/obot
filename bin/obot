@@ -9,7 +9,6 @@ from ob.kernel import k
 
 def main():
     parse_cli("obot", __version__)
-    k.cfg.verbose = not k.cfg.verbose
     if k.cfg.daemon:
         daemon()
     k.walk("ob.cmds")

@@ -160,9 +160,9 @@ class XMPP(Bot):
     def announce(self, txt):
         """ announce to channels/rooms. """
         for channel in self.channels:
-            self.say(channel, txt, "chat")
+            self._say(channel, txt, "chat")
         for room in self.rooms:
-            self.say(channel, txt, "groupchat")
+            self._say(channel, txt, "groupchat")
 
     def connect(self, user="", password=""):
         """ connect to server with user/passowrd credentials. """
@@ -227,11 +227,11 @@ class XMPP(Bot):
             return
         m.nick = m.origin.split("/")[-1]
         m.user = m.jid = stripped(m.origin)
-        m.channel = m.origin
+        m.channel = stripped(m.origin)
         if self.cfg.user == m.user:
             return
-        if m.origin not in self.channels:
-            self.channels.append(m.origin)
+        if m.channel not in self.channels:
+            self.channels.append(m.channel)
         k.put(m)
 
     def presenced(self, data):
