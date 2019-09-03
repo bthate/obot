@@ -8,6 +8,7 @@ from ob.shell import execute, hd, parse_cli
 
 def main():
     parse_cli("ob", __version__, hd(".obot"), "ob options cmd [arg1 arg2}")
+    k.load_mod("ob.cmds")
     k.init(k.cfg.modules)        
     k.cmd(" ".join(k.cfg.args))
 

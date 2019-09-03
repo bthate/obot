@@ -16,7 +16,6 @@ from ob.utils import get_name
 def __dir__():
     return ("show",)
 
-
 def show(event):
     """ display runtime information. """
     if not event.args:

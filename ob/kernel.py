@@ -1,5 +1,6 @@
 """ runtime objects and boot code. """
 
+import inspect
 import logging
 import ob
 import threading
@@ -41,22 +42,21 @@ class Kernel(Handler, Launcher):
         self.state.starttime = time.time()
         self.users = Users()
 
-    def _raw(self, txt):
-        """ print to console. """
-        print(txt)
+    def add(self, cmd, func):
+        self.cmds[cmd] = func
 
     def cmd(self, txt, origin=""):
         """ execute a string as a command. """
         if not txt:
             return
         self.cfg.verbose = True
-        event = Event()
-        event.txt = txt
-        event.options = self.cfg.options
-        event.origin = origin or "root@shell"
-        event.parse(event.txt)
-        self.dispatch(event)
-        event.wait()
+        self.start()
+        e = Event()
+        e.txt = txt
+        e.options = self.cfg.options
+        e.origin = origin or "root@shell"
+        self.event(e)
+        e.wait()
 
     def init(self, modstr):
         """ initialize a comma seperated list of modules. """
@@ -80,6 +80,7 @@ class Kernel(Handler, Launcher):
                            mod = self.load_mod("%s.%s" % (self.cfg.name, mn))
                        except ModuleNotFoundError:
                            logging.error("not found %s" % mn)
+            self.scan(mod)
             logging.warn("init %s" % get_name(mod))
             if mod:
                 try:
@@ -93,20 +94,15 @@ class Kernel(Handler, Launcher):
 
     def prompt(self, e):
         """ return a event by prompting for some text. """
-        self._prompted.wait()
-        e.txt = input("> ")
-        e.txt = e.txt.rstrip()
-        self._prompted.set()
+        if self.cfg.args:
+            e.txt = " ".join(self.cfg.args)
+        else:
+            e.txt = input("> ")
+            e.txt = e.txt.rstrip()
         return e
 
-    def say(self, orig, channel, txt, type="chat"):
-        if orig == repr(self):
-            self._raw(txt)
-        else:
-            self.fleet.echo(orig, channel, txt, type)
-
     def input(self):
-        logging.warn("starting shell")
+        """ start a input loop. """
         while not self._stopped:
             e = Event()
             e.options = k.cfg.options
@@ -114,14 +110,30 @@ class Kernel(Handler, Launcher):
             self.put(self.prompt(e))
             e.wait()
 
+    def raw(self, txt):
+        """ print to console. """
+        print(txt)
+
+    def say(self, orig, channel, txt, type="chat"):
+        """ output text on console or relay to fleet. """
+        if orig == repr(self):
+            self.raw(txt)
+        else:
+            self.fleet.echo(orig, channel, txt, type)
+
     def start(self):
         """ start the kernel. """
         super().start()
         if self.cfg.prompting:
             self.cfg.prompting = False
             self.cfg.save()
-        set_completer(k.handlers)
+        set_completer(k.cmds)
         enable_history()
+
+    def wait(self):
+        """ sleep in a loop. """
+        while not self._stopped:
+            time.sleep(1.0)
 
 #:
 k = Kernel()

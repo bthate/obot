@@ -53,7 +53,8 @@ class Token(ob.Default):
         except ValueError:
             pass
         if nr == 1:
-            self.match = ob.tables.names.get(word, word)
+            from ob.kernel import k
+            self.match = ob.get(k.names, word, word)
             self.arg = word
             return
         if "http" in word:
@@ -98,7 +99,6 @@ class Command(ob.Default):
         self.dkeys = []
         self.index = None
         self.match = None
-        self.orig = None
         self.result = []
         self.selector = {}
         self.setter = {}
@@ -127,7 +127,7 @@ class Command(ob.Default):
             tokens.append(token)
         return tokens
 
-    def parse(self, txt, options=""):
+    def parse(self, txt="", options=""):
         """ parse txt into a command. """
         if not txt:
             txt = self.txt 
@@ -185,3 +185,4 @@ class Command(ob.Default):
             continue
         self.rest = " ".join(self.args)
         self.time = to_day(self.rest)
+        

@@ -40,13 +40,22 @@ class Bot(Handler):
             for channel in self.channels:
                 self.say(channel, txt)
 
-    def dispatch(self, event):
-        """ run handlers/callbacks for this event. """
-        return super().dispatch(event)
-
-    def event(self):
+    def poll(self):
         """ return the event to be handled, default takes event from queue. """
         return super().event()
+
+    def input(self):
+        """ input loop. override event() to return the event to be handled."""
+        while not self._stopped:
+            e = self.poll()
+            self.put(e)
+
+    def output(self):
+        self._outputed = True
+        while not self._stopped:
+            channel, txt, type = self._outqueue.get()
+            if txt:
+                self.say(channel, txt, type)
 
     def put(self, event):
         """ send an event to the handler. """
@@ -56,7 +65,7 @@ class Bot(Handler):
         """ say some txt on a channel. """
         self._raw(txt)
 
-    def start(self, nohandler=False):
+    def start(self, handler=None):
         """ start the bot and add it to kernel's fleet. """
-        super().start(nohandler)
+        super().start(handler)
         k.fleet.add(self)

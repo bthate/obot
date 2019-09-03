@@ -3,12 +3,12 @@
 import inspect
 import logging
 import ob
-import ob.tables
 import os
 import pkgutil
 import queue
 import threading
 
+from ob import Object
 from ob.command import Command
 from ob.loader import Loader
 from ob.times import days
@@ -29,6 +29,8 @@ class Event(Command):
         self.direct = False
         self.type = "chat"
         self.name = ""
+        self.orig = None
+        self.origin = ""
         self.sep = "\n"
 
     def display(self, o, txt=""):
@@ -64,6 +66,9 @@ class Event(Command):
         """ echo result to originating bot. """
         from ob.kernel import k
         for line in self.result:
+            if self.orig == k:
+                print(line)
+                continue
             k.say(self.orig, self.channel, line, self.type)
 
     def wait(self):
@@ -99,154 +104,85 @@ class Handler(Loader):
         self._stopped = False
         self._threaded = False
         self._type = get_type(self)
-        self.cbs = {}
         self.cfg = ob.Cfg()
-        self.handlers = {}
+        self.classes = []
+        self.cmds = Object()
+        self.handlers = []
+        self.modules = Object()
+        self.names = Object()
 
-    def get_handler(self, cmd):
-        """ return a handler for a command. """
-        h = self.handlers.get(cmd, None)
-        if not h and cmd in ob.tables.modules:
-            mn = ob.tables.modules[cmd]
-            self.load_mod(mn)
-            h = self.handlers.get(cmd, None)
-            logging.warning("autoload %s" % mn)
-        return h
-
-    def dispatch(self, event):
-        """ dispatch a event to its handler/callbacks. """
-        if not event.chk and event.txt:
-            event.parse(event.txt)
-        if not event.orig:
-            event.orig = repr(self)
-        event._func = self.get_handler(event.chk)
-        if event._func:
-            event._func(event)
-        for cb in self.cbs.values():
-            logging.warning("cb %s" % str(cb))
-            cb(event)
-        event.show()
-        event.ready()
-
-    def event(self):
+    def event(self, e):
         """ return the event to be handled. """
-        return self._queue.get()
-
-    def input(self):
-        """ input loop. override event() to return the event to be handled."""
-        while not self._stopped:
-            e = self.event()
-            self.put(e)
+        for h in self.handlers:
+            h(self, e)
+            e.ready()
 
     def handler(self):
         """ basic event handler routine. """
         while not self._stopped:
             e = self._queue.get()
-            thr2 = ob.launch(self.dispatch, e)
-            if self._threaded:
-                event._thrs.append(thr2)
-            else:
-                thr2.join()
+            for h in self.handlers:
+                self.event(e)
 
-    def load_mod(self, name, mod=None):
-        """ loading a module and scan for handlers/commands. """
-        mod = super().load_mod(name, mod)
+    def load_mod(self, mn):
+        """ load module and scan for functions. """
+        mod = super().load_mod(mn)
         self.scan(mod)
         return mod
-
-    def output(self):
-        """ an optional output thread. """
-        while not self._stopped:
-            orig, channel, txt, otype = self._outqueue.get()
-            if txt:
-                self.say(orig, channel, txt, otype)
 
     def put(self, event):
         """ put event on queue. """
         self._queue.put_nowait(event)
 
-    def ready(self):
-        """ signal this handler as ready. """
-        self._ready.set()
-
-    def register(self, cmd, handler):
+    def register(self, handler):
         """ register a handler for a command. """
-        self.handlers[cmd] = handler
+        if handler not in self.handlers:
+            self.handlers.append(handler)
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """
-        if "classes" not in dir(ob.tables):
-            ob.tables.classes = []
-        if "modules" not in dir(ob.tables):
-            ob.tables.modules = {}
-        if "names" not in dir(ob.tables):
-            ob.tables.names = {}
-        if "classes" not in dir(ob.tables):
-            ob.tables.classes = []
         for key, o in inspect.getmembers(mod, inspect.isfunction):
-            if "event" in o.__code__.co_varnames:
-                if "cb_" in key and key not in self.cbs:
-                    self.cbs[key] = o
-                else:
-                    self.register(key, o)
-                    ob.tables.modules[key] = o.__module__
+            if o.__code__.co_argcount == 1 and "event" in o.__code__.co_varnames:
+                self.cmds[key] = o
+                self.modules[key] = o.__module__
+            elif o.__code__.co_argcount == 2 and "handler" in o.__code__.co_varnames:
+                self.register(o)
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, ob.Object):
                 t = get_type(o)
-                if t not in ob.tables.classes:
-                    ob.tables.classes.append(t)
+                if t not in self.classes:
+                    self.classes.append(t)
                 w = t.split(".")[-1].lower()
-                if w not in ob.tables.names:
-                    ob.tables.names[w] = str(t)
+                if w not in self.names:
+                    self.names[w] = str(t)
 
-    def say(self, orig, channel, txt, type):
-        """ say txt in channel of bot with origin orig. """
-        pass
-
-    def sync(self, bot):
-        """ synchronize this handler handlers/callbacks with that of provided bot's. """
-        self.handlers.update(bot.handlers)
-        self.cbs.update(bot.cbs)
-
-    def start(self, nohandler=False):
+    def start(self, handler=None):
         """ start this handler. """
         logging.warning("start %s" % get_name(self))
-        if not nohandler:
-            ob.launch(self.handler)
-        ob.launch(self.input)
-        ob.launch(self.output)
-
-    def stop(self):
-        """ stop this handler. """
-        self._stopped = True
-
-    def unload(self, modname):
-        """ unload a module. """
-        mod = self.table.get(modname, None)
-        if mod:
-            for key, func, name, kind in self.scan(mod):
-                if name == modname:
-                    try:
-                        del self.handlers[key]
-                    except KeyError:
-                        pass
-                    if kind == "class":
-                        ob.table.classes.remove(key)
-        super().unload(modname)
-
-    def wait(self):
-        """ wait for this handler to be ready. """
-        self._ready.wait()
+        self.register(dispatch)
+        ob.launch(handler or self.handler)
 
     def walk(self, pkgname):
         """ scan package for module to load. """
         mod = self.load_mod(pkgname)
-        res = [mod,]
+        mods = [mod,]
         try:
-            mods = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
+            mns = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
         except:
-            mods = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
-        for n in mods:
+            mns = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
+        for n in mns:
             logging.warn("load %s" % n[1])
-            res.append(self.load_mod(n[1]))
-        return res
+            mods.append(self.load_mod(n[1]))
+        for m in mods:
+            self.scan(m)
+        return mods
+
+def dispatch(h, e):
+    e.parse()
+    e.orig = e.orig or repr(h)
+    e._func = ob.get(h.cmds, e.chk, None)
+    res = None
+    if e._func:
+        res = e._func(e)
+    e.show()
+    return res
