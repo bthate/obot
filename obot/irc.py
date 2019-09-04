@@ -80,12 +80,12 @@ class DEvent(Event):
         self._fsock = None
         self.channel = ""
 
-    def _raw(self, txt):
+    def raw(self, txt):
         self._fsock.write(txt.rstrip() + "\n") 
         self._fsock.flush()
 
     def reply(self, txt):
-        self._raw(txt)
+        self.raw(txt)
 
 class TextWrap(textwrap.TextWrapper):
 
@@ -130,16 +130,16 @@ class IRC(Bot):
     def _command(self, cmd, *args):
         """ send command to server. """
         if not args:
-            self._raw(cmd)
+            self.raw(cmd)
             return
         if len(args) == 1:
-            self._raw("%s %s" % (cmd.upper(), args[0]))
+            self.raw("%s %s" % (cmd.upper(), args[0]))
             return
         if len(args) == 2:
-            self._raw("%s %s :%s" % (cmd.upper(), args[0], " ".join(args[1:])))
+            self.raw("%s %s :%s" % (cmd.upper(), args[0], " ".join(args[1:])))
             return
         if len(args) >= 3:
-            self._raw("%s %s %s :%s" % (cmd.upper(), args[0], args[1], " ".join(args[2:])))
+            self.raw("%s %s %s :%s" % (cmd.upper(), args[0], args[1], " ".join(args[2:])))
             return
 
     def _connect(self):
@@ -180,11 +180,6 @@ class IRC(Bot):
         os.set_inheritable(self.state.resume, os.O_RDWR)
         self._connected.set()
         return True
-
-    def input(self):
-        while not self._stopped:
-            e = self.event()
-            self.put(e)
 
     def _parsing(self, txt):
         """ parse incoming text into an event. """
@@ -246,7 +241,7 @@ class IRC(Bot):
         return o
 
     @locked
-    def _raw(self, txt, direct=False):
+    def raw(self, txt, direct=False):
         """ send txt on the socket. """
         txt = txt.rstrip()
         logging.debug(txt)
@@ -318,7 +313,7 @@ class IRC(Bot):
         cmd = e.command
         if cmd == "001":
             if "servermodes" in dir(self.cfg):
-                self._raw("MODE %s %s" % (self.cfg.nick, self.cfg.servermodes))
+                self.raw("MODE %s %s" % (self.cfg.nick, self.cfg.servermodes))
             self.joinall()
         elif cmd == "PING":
             self.state.pongcheck = True
@@ -328,12 +323,12 @@ class IRC(Bot):
         elif cmd == "433":
             nick = e.target + "_"
             self.cfg.nick = nick
-            self._raw("NICK %s" % self.cfg.nick or "ob", True)
+            self.raw("NICK %s" % self.cfg.nick or "ob", True)
         elif cmd == "ERROR":
             self.state.error = e
         return e
 
-    def errored(self, event):
+    def errored(self, handler, event):
         """ error handler. """
         if event.chk != "ERROR":
             return
@@ -341,7 +336,7 @@ class IRC(Bot):
         time.sleep(self.state.nrconnect * self.cfg.sleep)
         self.connect()
 
-    def noticed(self, event):
+    def noticed(self, handler, event):
         """ notice handler. """
         if event.chk != "NOTICE":
             return
@@ -349,7 +344,7 @@ class IRC(Bot):
             txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, __version__, k.cfg.description)
             self._command("NOTICE", event.channel, txt)
 
-    def privmsged(self, event):
+    def privmsged(self, handler, event):
         """ privmsg handler. """
         if event.chk != "PRIVMSG":
             return
@@ -368,9 +363,11 @@ class IRC(Bot):
             if not k.users.allowed(event.origin, "USER"):
                 return
             event.parse(event.txt[1:])
+            print(event)
             k.put(event)
 
     def joinall(self):
+        """ join all channels. """
         for channel in self.channels:
             self._command("JOIN", channel)
 
@@ -379,8 +376,8 @@ class IRC(Bot):
         if k.cfg.resume:
             return
         self._connected.wait()
-        self._raw("NICK %s" % nick, True)
-        self._raw("USER %s %s %s :%s" % (self.cfg.username or "ob", server, server, self.cfg.realname or "ob"), True)
+        self.raw("NICK %s" % nick, True)
+        self.raw("USER %s %s %s :%s" % (self.cfg.username or "ob", server, server, self.cfg.realname or "ob"), True)
 
     def say(self, orig, channel, txt, mtype=None):
         """ say text on channel. """
@@ -406,7 +403,7 @@ class DCC(Bot):
         self.encoding = "utf-8"
         self.origin = ""
 
-    def _raw(self, txt):
+    def raw(self, txt):
         """ raw socket output. """
         self._fsock.write(txt.rstrip())
         self._fsock.write("\n")
@@ -414,7 +411,7 @@ class DCC(Bot):
 
     def announce(self, txt):
         """ announce to client. """
-        self._raw(txt)
+        self.raw(txt)
 
     def connect(self, event):
         """ connect to dcc client. """
@@ -454,5 +451,4 @@ class DCC(Bot):
 
     def say(self, orig, channel, txt, type="chat"):
         """ echo to DCC client. """
-        self._raw(txt)
-
+        self.raw(txt)

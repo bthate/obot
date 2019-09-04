@@ -25,7 +25,7 @@ class Cfg(Cfg):
 
     """ kernel config. """
 
-class Kernel(Handler, Launcher):
+class Kernel(Handler):
 
     """ contains the basic data structures and exception trap code. """
 
@@ -121,7 +121,7 @@ class Kernel(Handler, Launcher):
         else:
             self.fleet.echo(orig, channel, txt, type)
 
-    def start(self):
+    def start(self, shell=False):
         """ start the kernel. """
         super().start()
         if self.cfg.prompting:
@@ -129,6 +129,8 @@ class Kernel(Handler, Launcher):
             self.cfg.save()
         set_completer(k.cmds)
         enable_history()
+        if shell:
+            ob.launch(self.input)
 
     def wait(self):
         """ sleep in a loop. """

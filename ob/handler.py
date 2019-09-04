@@ -106,23 +106,28 @@ class Handler(Loader):
         self._type = get_type(self)
         self.cfg = ob.Cfg()
         self.classes = []
-        self.cmds = Object()
+        self.cmds = {}
         self.handlers = []
-        self.modules = Object()
-        self.names = Object()
+        self.modules = {}
+        self.names = {}
 
-    def event(self, e):
+    def event(self):
+        return self._queue.get()
+
+    def handle(self, e):
         """ return the event to be handled. """
         for h in self.handlers:
             h(self, e)
-            e.ready()
+        e.ready()
 
     def handler(self):
         """ basic event handler routine. """
         while not self._stopped:
-            e = self._queue.get()
-            for h in self.handlers:
-                self.event(e)
+            e = self.event()
+            try:
+                self.handle(e)
+            except Exception as ex:
+                logging.error(get_exception())
 
     def load_mod(self, mn):
         """ load module and scan for functions. """
@@ -159,7 +164,6 @@ class Handler(Loader):
     def start(self, handler=None):
         """ start this handler. """
         logging.warning("start %s" % get_name(self))
-        self.register(dispatch)
         ob.launch(handler or self.handler)
 
     def walk(self, pkgname):
@@ -176,13 +180,3 @@ class Handler(Loader):
         for m in mods:
             self.scan(m)
         return mods
-
-def dispatch(h, e):
-    e.parse()
-    e.orig = e.orig or repr(h)
-    e._func = ob.get(h.cmds, e.chk, None)
-    res = None
-    if e._func:
-        res = e._func(e)
-    e.show()
-    return res

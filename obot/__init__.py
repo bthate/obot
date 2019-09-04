@@ -27,7 +27,7 @@ class Bot(Handler):
         ob.update(self.cfg, {"prompt": True, "verbose": True})
         self.channels = []
 
-    def _raw(self, txt):
+    def raw(self, txt):
         """ write directly to display. """
         if not txt:
             return
@@ -63,9 +63,14 @@ class Bot(Handler):
         
     def say(self, orig, channel, txt, mtype=None):
         """ say some txt on a channel. """
-        self._raw(txt)
+        self.raw(txt)
 
-    def start(self, handler=None):
+    def start(self, handler=None, input=True, output=True):
         """ start the bot and add it to kernel's fleet. """
+        self.load_mod("ob.dispatch")
         super().start(handler)
+        if input:
+            ob.launch(self.input)
+        if output:
+            ob.launch(self.output)
         k.fleet.add(self)

@@ -179,8 +179,9 @@ def last(obj, skip=True):
 
 def launch(func, *args):
     """ start a task. """
-    from ob.kernel import k
-    return k.launch(func, *args)
+    from ob.tasks import Launcher
+    l = Launcher()
+    return l.launch(func, *args)
 
 def hooked(d):
     """ construct obj from _type. """
