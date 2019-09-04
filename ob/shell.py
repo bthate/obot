@@ -28,6 +28,7 @@ opts = [
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('', '--debug', "string", "", 'debug', "enable debug mode"),
     ('', '--logdir', "string", "", 'logdir', "directory to log to."),
     ('', '--owner', "string", "", 'owner', "owner's userhost or JID.")
 ]

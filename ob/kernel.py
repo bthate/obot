@@ -82,7 +82,7 @@ class Kernel(Handler, Launcher):
                            logging.error("not found %s" % mn)
             self.scan(mod)
             logging.warn("init %s" % get_name(mod))
-            if mod:
+            if mod and not k.cfg.debug:
                 try:
                     mod.init()
                 except AttributeError:

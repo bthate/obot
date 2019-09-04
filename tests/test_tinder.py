@@ -26,13 +26,10 @@ class Param(ob.Object):
 
     pass
 
-bot = obot.Bot()
-bot.cfg.prompt = False
-bot.cfg.verbose = k.cfg.verbose
-bot.walk("ob")
-bot.walk("oper")
-bot.walk("obot")
-bot.start()
+k.cfg.prompt = False
+k.walk("oper")
+k.walk("obot")
+k.start()
 
 e = Event()
 if k.cfg.args:
@@ -44,30 +41,30 @@ except ValueError:
 k.users.oper("test@shell")
 
 param = Param()
-param.ed = ["%s txt==yo channel=#mekker" % x for x in ob.tables.names]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in ob.tables.names])
-param.find = ["%s txt==yo" % x for x in ob.tables.names]
-param.load = bot.table.keys()
+param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
+param.find = ["%s txt==yo" % x for x in k.names]
+param.load = k.table.keys()
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % x for x in ob.tables.names]
+param.rm = ["%s txt==yo" % x for x in k.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
-#param.mbox = ["~/evidence/25-1-2013",]
+param.mbox = ["~/evidence/25-1-2013",]
 
 class Test_Tinder(unittest.TestCase):
 
     def test_tinder(self):
         thrs = []
         for x in range(e.index or 1):
-            thrs.append(ob.launch(tests, bot))
+            thrs.append(ob.launch(tests, k))
         for thr in thrs:
             thr.join()
 
     def test_tinder2(self):
         for x in range(e.index or 1):
-            tests(bot)
+            tests(k)
         
 def tests(b):
-    keys = list(b.handlers.keys())
+    keys = list(b.cmds)
     random.shuffle(keys)
     for cmd in keys:
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:

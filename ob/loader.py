@@ -44,36 +44,32 @@ def load(event):
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
-        from ob.tables import modules
-        event.reply("|".join({x.split(".")[-1] for x in modules.values()}))
+        event.reply("|".join({x.split(".")[-1] for x in k.modules.values()}))
         return
     mods = []
     for name in event.args[0].split(","):
         name = event.args[0]
         mods.extend(k.walk(name))
         k.init(name)
-    bot = k.fleet.get_bot(event.orig)
-    if bot:
-        bot.sync(k)
-    set_completer(k.handlers)
+    set_completer(k.cmds)
     event.reply("%s loaded" % ",".join([get_name(x) for x in mods]))
 
 def unload(event):
     """ unload a module from the table. """
     from ob.kernel import k
-    from ob.tables import modules
     if event.origin != k.cfg.owner:
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
-        event.reply("|".join({x.split(".")[-1] for x in modules.values()}))
+        event.reply("|".join({x.split(".")[-1] for x in k.modules.values()}))
         return
     bot = k.fleet.get_bot(event.orig)
     name = event.args[0]
-    for key, mn in modules.items():
+    for key in k.modules:
+        mn = k.modules[key]
         if name in mn:
-            del k.handlers[key]
-            del bot.handlers[key]
+            k.handlers.remove(key)
+            del k.cmds[key]
     todo = []
     for key in k.table:
         if name in key:
@@ -81,10 +77,8 @@ def unload(event):
     for key in todo:
         try:
             del k.table[key]
-            del bot.table[key]
         except KeyError:
             event.reply("%s is not loaded." % name)
             return
-    bot.sync(k)
-    set_completer(k.handlers)
+    set_completer(k.cmds)
     event.reply("unload %s" % name)

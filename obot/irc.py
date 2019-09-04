@@ -121,9 +121,9 @@ class IRC(Bot):
         self.state.nrsend = 0
         self.state.pongcheck = False
         self.state.resume = None
-        self.register("ERROR", self.errored)
-        self.register("NOTICE", self.noticed)
-        self.register("PRIVMSG", self.privmsged)
+        self.register(self.errored)
+        self.register(self.noticed)
+        self.register(self.privmsged)
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
 
@@ -335,18 +335,24 @@ class IRC(Bot):
 
     def errored(self, event):
         """ error handler. """
+        if event.chk != "ERROR":
+            return
         self._connected.clear()
         time.sleep(self.state.nrconnect * self.cfg.sleep)
         self.connect()
 
     def noticed(self, event):
         """ notice handler. """
+        if event.chk != "NOTICE":
+            return
         if event.txt.startswith("VERSION"):
             txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, __version__, k.cfg.description)
             self._command("NOTICE", event.channel, txt)
 
     def privmsged(self, event):
         """ privmsg handler. """
+        if event.chk != "PRIVMSG":
+            return
         if event.origin != k.cfg.owner:
             setattr(k.users.userhosts, event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):

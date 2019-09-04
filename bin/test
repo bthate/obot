@@ -17,8 +17,10 @@ from ob.times import elapsed
 from ob.utils import level
 
 def initialize():
+    k.walk("obot")
     k.walk("ob")
-    for c in ob.tables.classes:
+    k.walk("oper")
+    for c in k.classes:
         try:
             o = get_cls(c)()
             o.txt = "yo!"

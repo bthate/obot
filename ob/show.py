@@ -30,7 +30,7 @@ def show(event):
         else:
             event.reply(k.cfg)
     elif cmd == "cmds":
-        event.reply("|".join(sorted(bot.handlers.keys())))
+        event.reply("|".join(sorted(k.cmds)))
     elif cmd == "fleet":
         try:
             index = int(event.args[2])
