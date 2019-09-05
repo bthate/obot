@@ -298,7 +298,7 @@ class IRC(Bot):
         if not k.cfg.resume:
             self.logon(self.cfg.server, self.cfg.nick)
 
-    def event(self):
+    def poll(self):
         """ return (blocking) event from irc server. """
         self._connected.wait()
         if not self._buffer:
@@ -437,7 +437,7 @@ class DCC(Bot):
         """ error handler. """
         self.state.error = event
 
-    def event(self):
+    def poll(self):
         """ return event from dcc socket. """
         self._connected.wait()
         e = DEvent()

@@ -50,8 +50,9 @@ class Kernel(Handler):
         if not txt:
             return
         self.load_mod("ob.dispatch")
+        self.cfg.prompt = False
         self.cfg.verbose = True
-        self.start(False)
+        k.fleet.add(self)
         e = Event()
         e.txt = txt
         e.options = self.cfg.options
@@ -99,14 +100,12 @@ class Kernel(Handler):
         e.txt = e.txt.rstrip()
         return e
 
-    def input(self):
-        """ start a input loop. """
-        while not self._stopped:
-            e = Event()
-            e.options = k.cfg.options
-            e.origin = "root@shell"
-            self.put(self.prompt(e))
-            e.wait()
+    def poll(self):
+        e = Event()
+        e.options = k.cfg.options
+        e.origin = "root@shell"
+        self.prompt(e)
+        return e
 
     def raw(self, txt):
         """ print to console. """
@@ -119,16 +118,14 @@ class Kernel(Handler):
         else:
             self.fleet.echo(orig, channel, txt, type)
 
-    def start(self, shell=False):
+    def start(self, handler=None, input=True, output=True):
         """ start the kernel. """
-        super().start()
+        super().start(handler or self.handler, input, output)
         if self.cfg.prompting:
             self.cfg.prompting = False
             self.cfg.save()
         set_completer(k.cmds)
         enable_history()
-        if shell:
-            ob.launch(self.input)
 
     def wait(self):
         """ sleep in a loop. """

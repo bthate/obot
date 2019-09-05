@@ -21,8 +21,6 @@ class Bot(Handler):
 
     def __init__(self):
         super().__init__()
-        self._outputed = False
-        self._outqueue = queue.Queue()
         self.cfg = Cfg()
         self.cfg.update({"prompt": True, "verbose": True})
         self.channels = []
@@ -40,37 +38,14 @@ class Bot(Handler):
             for channel in self.channels:
                 self.say(channel, txt)
 
-    def poll(self):
-        """ return the event to be handled, default takes event from queue. """
-        return super().event()
-
-    def input(self):
-        """ input loop. override event() to return the event to be handled."""
-        while not self._stopped:
-            e = self.poll()
-            self.put(e)
-
-    def output(self):
-        self._outputed = True
-        while not self._stopped:
-            channel, txt, type = self._outqueue.get()
-            if txt:
-                self.say(channel, txt, type)
-
-    def put(self, event):
-        """ send an event to the handler. """
-        return super().put(event)
-        
     def say(self, orig, channel, txt, mtype=None):
         """ say some txt on a channel. """
-        self.raw(txt)
+        if self._outputed:
+            self._outqueue.put((orig, channel, txt, type))
+        else:
+            self.raw(txt)
 
     def start(self, handler=None, input=True, output=True):
         """ start the bot and add it to kernel's fleet. """
-        self.load_mod("ob.dispatch")
-        super().start(handler)
-        if input:
-            ob.launch(self.input)
-        if output:
-            ob.launch(self.output)
+        super().start(handler, input, output)
         k.fleet.add(self)

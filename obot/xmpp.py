@@ -194,7 +194,7 @@ class XMPP(Bot):
 
     def start(self):
         """ start xmpp server. """
-        super().start()
+        k.fleet.add(self)
         ok = self.connect(self.cfg.user, self.cfg.password)
         if ok:
             if self.cfg.channel:

@@ -24,11 +24,8 @@ e = Event()
 def init():
     cdir(os.path.join("testdata", "store", ""))
     ob.workdir = "testdata"
+    k.cfg.workdir = "testdata"
     k.cfg.prompt = False
-    k.walk("ob")
-    k.walk("obot")
-    k.walk("oper")
-    k.start()
     k.users.oper("test@shell")
     global param
     global e

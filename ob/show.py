@@ -77,6 +77,7 @@ def show(event):
                 continue
             ver = getattr(mod, "__version__", None)
             if ver:
-                res.append("%s %s" % (name, ver))
+                txt = "%s %s" % (name, ver)
+                res.append(txt.upper())
         if res:
             event.reply(" | ".join(res))

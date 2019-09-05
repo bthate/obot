@@ -13,7 +13,7 @@ def main():
         daemon()
     k.walk("ob")
     k.init(k.cfg.modules)
-    k.start(True)
+    k.start()
     k.wait()
 
 execute(main)
