@@ -34,7 +34,7 @@ def main():
         shutil.rmtree("testdata")
     except:
         pass
-    ob.WORKDIR = "testdata"
+    ob.workdir = "testdata"
     level("debug")
     initialize()
     k.cfg.debug = True

@@ -100,8 +100,8 @@ class Fetcher(Object):
             if not o:
                 continue
             feed = Feed()
-            ob.update(feed, o)
-            ob.update(feed, obj)
+            feed.update(o)
+            feed.update(obj)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             if url in self.seen.urls:
@@ -145,6 +145,8 @@ class Fetcher(Object):
 def get_feed(url):
     """ return entries of a RSS feed. """
     result = ""
+    if k.cfg.debug:
+        return [Object(), Object()]
     try:
         result = get_url(url).data
     except urllib.error.HTTPError as ex:

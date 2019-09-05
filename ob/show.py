@@ -52,7 +52,7 @@ def show(event):
                 continue
             d = vars(thr)
             o = Object()
-            ob.update(o, d)
+            o.update(d)
             if getattr(o, "sleep", None):
                 up = o.sleep - int(time.time() - o.state.latest)
             else:
@@ -75,7 +75,7 @@ def show(event):
                 continue
             if not mod:
                 continue
-            ver = ob.get(mod, "__version__", None)
+            ver = getattr(mod, "__version__", None)
             if ver:
                 res.append("%s %s" % (name, ver))
         if res:

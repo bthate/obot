@@ -22,12 +22,12 @@ class Test_Fuzzer(unittest.TestCase):
                 t = k.names[n]
                 try:
                     e = get_cls(t)()
-                    e.txt = key + " " + random.choice(k.names)
+                    e.txt = key + " " + random.choice(list(k.names))
                     e.parse(e.txt)
                     e.orig = repr(b)
                     e.origin = "test@shell"
-                    ob.update(e, o,skip=True)
-                    v = b.get_cmd(key)
+                    e.update(o)
+                    v = k.get_cmd(key)
                     if v:
                         v(e)
                 except AttributeError:

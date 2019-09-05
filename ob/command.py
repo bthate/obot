@@ -54,7 +54,7 @@ class Token(ob.Default):
             pass
         if nr == 1:
             from ob.kernel import k
-            self.match = ob.get(k.names, word, word)
+            self.match = k.names.get(word, word)
             self.arg = word
             return
         if "http" in word:

@@ -40,7 +40,7 @@ class Loader(ob.Object):
 def load(event):
     """ load a module into the kernel. """
     from ob.kernel import k
-    if event.origin != k.cfg.owner:
+    if event.origin != k.cfg.owner and not k.cfg.debug:
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
@@ -49,15 +49,20 @@ def load(event):
     mods = []
     for name in event.args[0].split(","):
         name = event.args[0]
-        mods.extend(k.walk(name))
-        k.init(name)
+        try:
+            mods.extend(k.walk(name))
+            k.init(name)
+        except ModuleNotFoundError:
+            logging.error("ENOMODULE %s" % name)
+        except Exception as ex:
+            logging.error(get_exception())
     set_completer(k.cmds)
     event.reply("%s loaded" % ",".join([get_name(x) for x in mods]))
 
 def unload(event):
     """ unload a module from the table. """
     from ob.kernel import k
-    if event.origin != k.cfg.owner:
+    if event.origin != k.cfg.owner and not k.cfg.debug:
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:

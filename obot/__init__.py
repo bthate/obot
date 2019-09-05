@@ -24,7 +24,7 @@ class Bot(Handler):
         self._outputed = False
         self._outqueue = queue.Queue()
         self.cfg = Cfg()
-        ob.update(self.cfg, {"prompt": True, "verbose": True})
+        self.cfg.update({"prompt": True, "verbose": True})
         self.channels = []
 
     def raw(self, txt):

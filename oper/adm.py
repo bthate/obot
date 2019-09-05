@@ -32,7 +32,7 @@ def edit(obj, setter=None):
 def ed(event):
     """ edit an object, select with key==value, set with key=value. """
     if not event.args:
-        fns = os.listdir(os.path.join(ob.WORKDIR, "store"))
+        fns = os.listdir(os.path.join(ob.workdir, "store"))
         fns = sorted({x.split(".")[-1].lower() for x in fns})
         event.reply("|".join(fns))
         return

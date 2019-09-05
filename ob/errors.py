@@ -20,6 +20,10 @@ class ENOFUNCTION(Exception):
 
     """ could not fetch handler. """
 
+class ENOMODULE(Exception):
+
+    """ not module could be found. """
+
 class ENOTFOUND(Exception):
 
     """ item is not found. """

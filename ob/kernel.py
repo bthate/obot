@@ -88,7 +88,7 @@ class Kernel(Handler):
                 except AttributeError:
                     pass
                 except EINIT:
-                     if k.cfg.debug:
+                     if not self.cfg.debug:
                          _thread.interrupt_main()
                 except Exception as ex:
                      logging.error(get_exception())

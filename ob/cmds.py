@@ -6,8 +6,13 @@ def __dir__():
     return ("cmds", )
 
 def cmds(event):
+    """ show commands. """
     bot = k.fleet.get_bot(event.orig)
     if bot and bot.cmds:
         event.reply("|".join(sorted(bot.cmds)))
     else:
         event.reply("|".join(sorted(k.cmds)))
+
+def test(event):
+    """ echo origin. """
+    event.reply("hello %s" % event.origin)

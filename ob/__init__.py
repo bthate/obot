@@ -49,7 +49,7 @@ class Object:
 
     def __getitem__(self, name, default=None):
         """ wrap getattr. """
-        return get(self, name, default)
+        return self.get(name, default)
 
     def __hash__(self):
         """ return a hashable version. """
@@ -68,12 +68,21 @@ class Object:
         return iter(self.__dict__)
 
     def __setitem__(self, key, val):
-        self.__dict__.__setitem__(key, val)
+        return self.set(key, val)
 
     def __str__(self):
         """ return json string. """
         return json.dumps(self, default=default, indent=4, sort_keys=True)
 
+    def get(self, key, default=None):
+        return getattr(self, key, default)
+
+    def items(self):
+        return self.__dict__.items()
+
+    def keys(self):
+        return self.__dict__.keys()
+        
     def load(self, path):
         """ load this object from disk. """
         assert path
@@ -87,6 +96,7 @@ class Object:
         self._path = path
         return self
 
+    @locked
     def save(self, path="", stime=None, timed=False, strict=False):
         """ save this object to disk. """
         assert workdir
@@ -111,6 +121,15 @@ class Object:
             json.dump(self, file, default=default, indent=4, sort_keys=True)
         return path
 
+    def set(self, key, val):
+        setattr(self, key, val)
+
+    def values(self):
+        return self.__dict__.values()
+
+    def update(self, val):
+        return self.__dict__.update(val)
+
 class Default(Object):
 
     """ default empty string value. """
@@ -122,8 +141,8 @@ class Default(Object):
 
     def __getattr__(self, key):
         if key not in dir(self):
-            set(self, key, "")
-        return get(self, key)
+            self.set(key, "")
+        return self.get(key)
 
 class Cfg(Default):
 
@@ -149,7 +168,7 @@ def format(obj, keys=None, full=False):
     res = []
     txt = ""
     for key in keys:
-        val = get(obj, key, None)
+        val = obj.get(key, None)
         if key == "text":
             val = val.replace("\\n", "\n")
         if not val:
@@ -163,9 +182,6 @@ def format(obj, keys=None, full=False):
         txt += "%s " % val.strip()
     return txt.strip()
 
-def get(obj, key, default=None):
-    """ get attribute. """
-    return getattr(obj, key, default)
 
 def last_fn(otype):
     val = k.db.last(str(get_type(obj)))
@@ -220,7 +236,7 @@ def search(obj, match: None):
         match = {}
     res = False
     for key, value in match.items():
-        val = get(obj, key, None)
+        val = obj.get(key, None)
         if val:
             if value is None:
                 res = True
@@ -232,10 +248,6 @@ def search(obj, match: None):
             res = False
             break
     return res
-
-def set(obj, key, value):
-    """ set attribute. """
-    return setattr(obj, key, value)
 
 def sliced(obj, keys=None):
     """ return a new object with the sliced result. """
@@ -263,7 +275,7 @@ def update(obj1, obj2, keys=None, skip=False, orig=False):
             continue
         if skip and not val:
             continue
-        if orig and get(obj1, key, None):
+        if orig and obj1.get(key, None):
             continue
-        set(obj1, key, val)
+        obj1.set(key, val)
     return obj1

@@ -7,6 +7,8 @@ import traceback
 def __dir__():
     return ("get_exception", "get_from")
 
+exceptions = []
+
 def get_exception(txt="", sep=""):
     exctype, excvalue, tb = sys.exc_info()
     trace = traceback.extract_tb(tb)
@@ -24,6 +26,7 @@ def get_exception(txt="", sep=""):
         ownname = '.'.join(mod[::-1])
         result += "%s:%s %s %s " % (ownname, linenr, func, sep)
     res = "%s%s: %s %s" % (result, exctype, excvalue, str(txt))
+    exceptions.append(res)
     del trace
     return res
 

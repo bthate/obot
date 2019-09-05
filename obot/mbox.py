@@ -89,7 +89,7 @@ def mbox(event):
         pass
     for m in thing:
         o = Email()
-        ob.update(o, m)
+        o.update(m)
         try:
             sdate = os.sep.join(to_date(o.Date).split())
         except AttributeError:
