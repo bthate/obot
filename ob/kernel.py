@@ -66,30 +66,30 @@ class Kernel(Handler):
         for mn in modstr.split(","):
             if not mn:
                 continue
-            mod = None
+            mods = []
             ex = None
             try:
-               mod = self.walk(mn)
+               mods = self.walk(mn)
             except ModuleNotFoundError:
                 try:
-                    mod = self.walk("ob.%s" % mn)
+                    mods = self.walk("ob.%s" % mn)
                 except ModuleNotFoundError:
                    try:
-                       mod = self.walk("obot.%s" % mn)
+                       mods = self.walk("obot.%s" % mn)
                    except ModuleNotFoundError:
                        try:
-                           mod = self.walk("%s.%s" % (self.cfg.name, mn))
+                           mods = self.walk("%s.%s" % (self.cfg.name, mn))
                        except ModuleNotFoundError:
                            logging.error("not found %s" % mn)
-            self.scan(mod)
-            logging.warn("init %s" % get_name(mod))
-            if mod and not k.cfg.debug:
+            for mod in mods:
+                logging.warn("init %s" % get_name(mod))
                 try:
                     mod.init()
                 except AttributeError:
                     pass
                 except EINIT:
-                    _thread.interrupt_main()
+                     if k.cfg.debug:
+                         _thread.interrupt_main()
                 except Exception as ex:
                      logging.error(get_exception())
 

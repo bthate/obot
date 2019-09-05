@@ -1,4 +1,11 @@
-""" rss feed fetcher. """
+"""
+     rss feed fetcher.
+
+     to fetch all feeds from the commandline use:
+
+         ./bin/ob -m rss fetch
+
+"""
 
 import datetime
 import io

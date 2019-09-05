@@ -9,7 +9,7 @@ from ob.utils import hd
 
 def main():
     parse_cli("obs", __version__, hd(".obot"), "obs [options]")
-    k.load_mod("ob.dispatch")
+    k.walk("ob")
     k.init(k.cfg.modules)
     k.start(True)
     k.wait()
