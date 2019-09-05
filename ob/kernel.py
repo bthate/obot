@@ -49,13 +49,14 @@ class Kernel(Handler):
         """ execute a string as a command. """
         if not txt:
             return
+        self.load_mod("ob.dispatch")
         self.cfg.verbose = True
-        self.start()
+        self.start(False)
         e = Event()
         e.txt = txt
         e.options = self.cfg.options
         e.origin = origin or "root@shell"
-        self.event(e)
+        self.handle(e)
         e.wait()
 
     def init(self, modstr):
@@ -68,16 +69,16 @@ class Kernel(Handler):
             mod = None
             ex = None
             try:
-               mod = self.load_mod(mn)
+               mod = self.walk(mn)
             except ModuleNotFoundError:
                 try:
-                    mod = self.load_mod("ob.%s" % mn)
+                    mod = self.walk("ob.%s" % mn)
                 except ModuleNotFoundError:
                    try:
-                       mod = self.load_mod("obot.%s" % mn)
+                       mod = self.walk("obot.%s" % mn)
                    except ModuleNotFoundError:
                        try:
-                           mod = self.load_mod("%s.%s" % (self.cfg.name, mn))
+                           mod = self.walk("%s.%s" % (self.cfg.name, mn))
                        except ModuleNotFoundError:
                            logging.error("not found %s" % mn)
             self.scan(mod)
@@ -94,11 +95,8 @@ class Kernel(Handler):
 
     def prompt(self, e):
         """ return a event by prompting for some text. """
-        if self.cfg.args:
-            e.txt = " ".join(self.cfg.args)
-        else:
-            e.txt = input("> ")
-            e.txt = e.txt.rstrip()
+        e.txt = input("> ")
+        e.txt = e.txt.rstrip()
         return e
 
     def input(self):

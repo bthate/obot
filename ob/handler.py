@@ -114,11 +114,13 @@ class Handler(Loader):
     def event(self):
         return self._queue.get()
 
+    def get_cmd(self, cmd):
+        return self.cmds.get(cmd, None)
+
     def handle(self, e):
         """ return the event to be handled. """
         for h in self.handlers:
             h(self, e)
-        e.ready()
 
     def handler(self):
         """ basic event handler routine. """
