@@ -81,7 +81,7 @@ class Fetcher(Object):
         else:
             dl = self.cfg.display_list
         for key in dl:
-            data = ob.get(o, key, None)
+            data = o.get(key, None)
             if data:
                 data = data.replace("\n", " ")
                 data = strip_html(data.rstrip())

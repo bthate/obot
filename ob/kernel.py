@@ -94,6 +94,13 @@ class Kernel(Handler):
                 except Exception as ex:
                      logging.error(get_exception())
 
+    def input(self):
+        """ start a input loop. """
+        while not self._stopped:
+            e = self.poll()
+            self.put(e)
+            e.wait()
+
     def prompt(self, e):
         """ return a event by prompting for some text. """
         e.txt = input("> ")

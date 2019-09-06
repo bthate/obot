@@ -67,7 +67,7 @@ class Event(Command):
         """ echo result to originating bot. """
         from ob.kernel import k
         for line in self.result:
-            if self.orig == k:
+            if self.orig == repr(k):
                 print(line)
                 continue
             k.say(self.orig, self.channel, line, self.type)
@@ -114,6 +114,7 @@ class Handler(Loader):
         self.names = {}
 
     def get_cmd(self, cmd):
+        """ return matching function. """
         return self.cmds.get(cmd, None)
 
     def handle(self, e):
@@ -136,7 +137,6 @@ class Handler(Loader):
         while not self._stopped:
             e = self.poll()
             self.put(e)
-            e.wait()
 
     def load_mod(self, mn):
         """ load module and scan for functions. """
@@ -149,7 +149,8 @@ class Handler(Loader):
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
             if txt:
-                self.say(repr(self), channel, txt, type)
+                print(channel, txt, type)
+                self.say(channel, txt, type)
 
     def poll(self):
         """ poll for an event. """
@@ -164,9 +165,8 @@ class Handler(Loader):
         if handler not in self.handlers:
             self.handlers.append(handler)
 
-    def say(self, orig, channel, txt, type="chat"):
-        from ob.kernel import k
-        k.fleet.echo(orig, channel, txt, type)
+    def say(self, channel, txt, type="chat"):
+        self.command("PRIVMSG", channel, txt)
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """

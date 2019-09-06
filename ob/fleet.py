@@ -29,7 +29,7 @@ class Fleet(Object):
 
     def echo(self, bid, channel, txt, mtype="chat"):
         b = self.get_bot(bid)
-        b.say(bid, channel, txt, mtype)
+        b.say(channel, txt, mtype)
 
     def get_bot(self, bid):
         res = None

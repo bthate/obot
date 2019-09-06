@@ -135,19 +135,6 @@ class XMPP(Bot):
         self.client.ssl_version = ssl.PROTOCOL_SSLv23
         self.client.use_ipv6 = self.cfg.ipv6
 
-    def _say(self, channel, txt, mtype="chat"):
-        """ raw output to channel. """
-        try:
-            sleekxmpp.jid.JID(channel)
-        except sleekxmpp.jid.InvalidJID:
-            return
-        if self.cfg.user in channel:
-            return
-        if channel in self.rooms:
-            mtype = "groupchat"
-        if mtype == "groupchat":
-            channel = stripped(channel)
-        self.client.send_message(channel, str(txt), mtype)
 
     def _start(self, data):
         """ handles session start. """
@@ -160,9 +147,9 @@ class XMPP(Bot):
     def announce(self, txt):
         """ announce to channels/rooms. """
         for channel in self.channels:
-            self._say(channel, txt, "chat")
-        for room in self.rooms:
-            self._say(channel, txt, "groupchat")
+            self.say(repr(self), channel, txt, "chat")
+        #for room in self.rooms:
+        #    self.say(channel, txt, "groupchat")
 
     def connect(self, user="", password=""):
         """ connect to server with user/passowrd credentials. """
@@ -178,9 +165,19 @@ class XMPP(Bot):
                                                nick,
                                                wait=True)
 
-    def say(self, orig, room, txt, mtype=None):
+    def say(self, orig, channel, txt, mtype="chat"):
         """ say text in a room. """
-        self._say(room, txt, mtype)
+        try:
+            sleekxmpp.jid.JID(channel)
+        except sleekxmpp.jid.InvalidJID:
+            return
+        if self.cfg.user in channel:
+            return
+        if channel in self.rooms:
+            mtype = "groupchat"
+        if mtype == "groupchat":
+            channel = stripped(channel)
+        self.client.send_message(channel, str(txt), mtype)
 
     def sleek(self):
         """ sleek event handler. """
@@ -230,8 +227,8 @@ class XMPP(Bot):
         m.channel = stripped(m.origin)
         if self.cfg.user == m.user:
             return
-        if m.channel not in self.channels:
-            self.channels.append(m.channel)
+        if m.user not in self.channels:
+            self.channels.append(m.user)
         k.put(m)
 
     def presenced(self, data):
@@ -245,6 +242,7 @@ class XMPP(Bot):
         o.nick = o.origin.split("/")[-1]
         o.server = self.cfg.server
         o.room = stripped(o.origin)
+        o.user = stripped(o.origin)
         if "txt" not in o:
             o.txt = ""
         o.element = "presence"
@@ -255,17 +253,17 @@ class XMPP(Bot):
             self.client.send_presence(pres)
             pres = Event({'to': o.origin, 'type': 'subscribe'})
             self.client.send_presence(pres)
-            self.channels.append(o.origin)
+            self.channels.append(o.user)
         elif o.mtype == "unsubscribe":
             if o.origin in self.channels:
-                self.channels.remove(o.origin)
+                self.channels.remove(o.user)
             return
         elif o.mtype == "available":
-            if o.origin not in self.channels:
-                self.channels.append(o.origin)
+            if o.user not in self.channels:
+                self.channels.append(o.user)
         elif o.mtype == "unavailable":
-            if o.origin in self.channels:
-                self.channels.remove(o.origin)
+            if o.user in self.channels:
+                self.channels.remove(o.user)
 
 def stripped(jid):
     """ strip everything after the / """

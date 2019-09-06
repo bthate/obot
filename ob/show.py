@@ -33,7 +33,7 @@ def show(event):
         event.reply("|".join(sorted(k.cmds)))
     elif cmd == "fleet":
         try:
-            index = int(event.args[2])
+            index = int(event.args[1])
             event.reply(k.fleet.bots[index])
             return
         except (ValueError, IndexError):

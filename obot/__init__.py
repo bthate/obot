@@ -38,14 +38,14 @@ class Bot(Handler):
             for channel in self.channels:
                 self.say(channel, txt)
 
-    def say(self, orig, channel, txt, mtype=None):
+    def say(self, channel, txt, mtype=None):
         """ say some txt on a channel. """
         if self._outputed:
-            self._outqueue.put((orig, channel, txt, type))
+            self._outqueue.put((channel, txt, mtype))
         else:
             self.raw(txt)
 
-    def start(self, handler=None, input=True, output=True):
+    def start(self, handler=True, input=True, output=True):
         """ start the bot and add it to kernel's fleet. """
         super().start(handler, input, output)
         k.fleet.add(self)
