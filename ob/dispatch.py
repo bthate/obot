@@ -18,3 +18,5 @@ def dispatch(handler, event):
     event.show()
     event.ready()
     return res
+
+dispatch.threaded = True

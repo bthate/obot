@@ -87,6 +87,7 @@ class Object:
         """ load this object from disk. """
         assert path
         assert workdir
+        logging.debug("load %s" % path)
         path = os.path.join(workdir, "store", path)
         if not os.path.exists(path):
             assert ENOFILE(path)
@@ -117,6 +118,7 @@ class Object:
         opath = os.path.join(workdir, "store", path)
         cdir(opath)
         self["_type"] = self._type
+        logging.debug("save %s" % self._path)
         with open(opath, "w") as file:
             json.dump(self, file, default=default, indent=4, sort_keys=True)
         return path

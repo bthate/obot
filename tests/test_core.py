@@ -2,7 +2,7 @@ import logging
 import os
 import unittest
 
-from ob import WORKDIR
+from ob import workdir
 from ob import Object
 from ob.kernel import  k
 
@@ -21,4 +21,4 @@ class Test_Core(unittest.TestCase):
     def test_save(self):
         o = Object()
         p = o.save()
-        self.assertTrue(os.path.exists(os.path.join(WORKDIR, "store", p)))
+        self.assertTrue(os.path.exists(os.path.join(workdir, "store", p)))

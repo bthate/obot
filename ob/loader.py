@@ -10,7 +10,7 @@ import time
 
 from ob.shell import set_completer
 from ob.trace import get_exception
-from ob.utils import get_name
+from ob.utils import get_name, mods
 
 def __dir__():
     return ("Loader", "load", "unload")
@@ -46,18 +46,13 @@ def load(event):
     if not event.args:
         event.reply("|".join({x.split(".")[-1] for x in k.modules.values()}))
         return
-    mods = []
+    m = []
     for name in event.args[0].split(","):
         name = event.args[0]
-        try:
-            mods.extend(k.walk(name))
-            k.init(name)
-        except ModuleNotFoundError:
-            logging.error("ENOMODULE %s" % name)
-        except Exception as ex:
-            logging.error(get_exception())
+        m.extend(mods(k, name))
+        k.init(name)
     set_completer(k.cmds)
-    event.reply("%s loaded" % ",".join([get_name(x) for x in mods]))
+    event.reply("%s loaded" % ",".join([get_name(x) for x in m]))
 
 def unload(event):
     """ unload a module from the table. """
@@ -73,8 +68,11 @@ def unload(event):
     for key in k.modules:
         mn = k.modules[key]
         if name in mn:
-            k.handlers.remove(key)
-            del k.cmds[key]
+            try:
+                k.handlers.remove(key)
+                del k.cmds[key]
+            except (RuntimeError, KeyError, ValueError):
+                continue
     todo = []
     for key in k.table:
         if name in key:
@@ -82,7 +80,7 @@ def unload(event):
     for key in todo:
         try:
             del k.table[key]
-        except KeyError:
+        except (KeyError, ValueError):
             event.reply("%s is not loaded." % name)
             return
     set_completer(k.cmds)

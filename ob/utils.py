@@ -229,6 +229,30 @@ def level(loglevel="", logdir="", logfile="ob.log", nostream=False):
     logger.addHandler(filehandler)
     return logger
 
+def match(a, b):
+    for n in b:
+        if n in a:
+            return True
+    return False        
+
+def mods(h, ms):
+    m = []
+    for mn in ms.split(","):
+        try:
+            m = h.walk(mn)
+        except ModuleNotFoundError:
+            try:
+                m = h.walk("ob.%s" % mn)
+            except ModuleNotFoundError:
+                try:
+                    m = h.walk("obot.%s" % mn)
+                except ModuleNotFoundError:
+                    try:
+                        m = h.walk("%s.%s" % (h.cfg.name, mn))
+                    except ModuleNotFoundError:
+                        logging.error("not found %s" % mn)
+    return m
+
 def names(name, delta=None):
     """ show all object filenames on disk. """
     if not name:

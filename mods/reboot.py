@@ -3,6 +3,7 @@ import os
 import sys
 
 from ob.kernel import k
+from ob.term import reset
 
 def reboot(event):
     if not k.cfg.owner:

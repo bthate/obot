@@ -91,6 +91,7 @@ class Event(Command):
                 pass
         for thr in thrs:
             self._thrs.remove(thr)
+        self.ready()
         return self
 
 class Handler(Loader):
@@ -119,18 +120,27 @@ class Handler(Loader):
 
     def handle(self, e):
         """ return the event to be handled. """
+        thrs = []
         for h in self.handlers:
-            h(self, e)
+            if "_threaded" in dir(h) and h._threaded:
+                thrs.append(ob.launch(h, self, e))
+            else:
+                h(self, e)
+        for thr in thrs:
+            thr.join()
         e.ready()
 
     def handler(self):
         """ basic event handler routine. """
         while not self._stopped:
             e = self._queue.get()
+            if not e:
+                break
             try:
                 self.handle(e)
             except Exception as ex:
                 logging.error(get_exception())
+        self._ready.set()
 
     def input(self):
         """ start a input loop. """
@@ -194,6 +204,10 @@ class Handler(Loader):
             ob.launch(self.input)
         if output:
             ob.launch(self.output)
+
+    def stop(self):
+        self._stopped = True
+        self._queue.put(None)
         
     def walk(self, pkgname):
         """ scan package for module to load. """

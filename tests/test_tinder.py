@@ -10,6 +10,7 @@ import obot
 
 from ob.kernel import k
 from ob.handler import Event
+from ob.utils import consume, randomname
 
 def consume(elems):
     fixed = []
@@ -72,7 +73,7 @@ def tests(b):
         do_cmd(b, cmd)
 
 def do_cmd(b, cmd):
-    exs = ob.get(param, cmd, ["mekker",])
+    exs = param.get(cmd, [randomname(), randomname()])
     e = list(exs)
     random.shuffle(e)
     events = []

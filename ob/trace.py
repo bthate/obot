@@ -3,6 +3,7 @@
 import os
 import sys
 import traceback
+import _thread
 
 def __dir__():
     return ("get_exception", "get_from")
@@ -10,6 +11,7 @@ def __dir__():
 exceptions = []
 
 def get_exception(txt="", sep=""):
+    from ob.kernel import k
     exctype, excvalue, tb = sys.exc_info()
     trace = traceback.extract_tb(tb)
     result = ""
@@ -28,6 +30,8 @@ def get_exception(txt="", sep=""):
     res = "%s%s: %s %s" % (result, exctype, excvalue, str(txt))
     exceptions.append(res)
     del trace
+    if k.cfg.bork:
+        _thread.interrupt_main()
     return res
 
 def get_from(nr=2):

@@ -12,8 +12,9 @@ import unittest
 import ob
 from ob.kernel import k
 from ob.shell import execute, parse_cli
-from ob.types import get_cls
 from ob.times import elapsed
+from ob.trace import exceptions
+from ob.types import get_cls
 from ob.utils import level
 
 def initialize():
@@ -47,7 +48,9 @@ def main():
         p = "test_*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=p)
     unittest.TextTestRunner(verbosity=3).run(suite)
-    print(elapsed(time.time() - k.state.starttime))
-
+   
 execute(main)
+for ex in exceptions:
+    print(ex)
+print(elapsed(time.time() - k.state.starttime))
 os._exit(0)

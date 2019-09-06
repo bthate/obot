@@ -26,8 +26,10 @@ opts = [
     ('-m', '', 'string', '', 'modules', 'modules to load.'),
     ('-o', '', "string", "", 'options', "options to use."),
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
+    ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
     ('', '--debug', "string", "", 'debug', "enable debug mode"),
     ('', '--logdir', "string", "", 'logdir', "directory to log to."),
     ('', '--owner', "string", "", 'owner', "owner's userhost or JID.")

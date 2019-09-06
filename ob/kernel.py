@@ -3,6 +3,7 @@
 import inspect
 import logging
 import ob
+import sys
 import threading
 import time
 import _thread
@@ -16,7 +17,7 @@ from ob.shell import enable_history, set_completer
 from ob.tasks import Launcher
 from ob.trace import get_exception
 from ob.user import Users
-from ob.utils import get_name
+from ob.utils import get_name, mods
 
 def __dir__():
     return ("cfg", "Kernel", "k")
@@ -45,6 +46,9 @@ class Kernel(Handler):
     def add(self, cmd, func):
         self.cmds[cmd] = func
 
+    def announce(self, txt):
+        print(txt)
+
     def cmd(self, txt, origin=""):
         """ execute a string as a command. """
         if not txt:
@@ -64,35 +68,17 @@ class Kernel(Handler):
         """ initialize a comma seperated list of modules. """
         if not modstr:
             return
-        for mn in modstr.split(","):
-            if not mn:
-                continue
-            mods = []
-            ex = None
+        for mod in mods(self, modstr):
+            logging.warn("init %s" % get_name(mod))
             try:
-               mods = self.walk(mn)
-            except ModuleNotFoundError:
-                try:
-                    mods = self.walk("ob.%s" % mn)
-                except ModuleNotFoundError:
-                   try:
-                       mods = self.walk("obot.%s" % mn)
-                   except ModuleNotFoundError:
-                       try:
-                           mods = self.walk("%s.%s" % (self.cfg.name, mn))
-                       except ModuleNotFoundError:
-                           logging.error("not found %s" % mn)
-            for mod in mods:
-                logging.warn("init %s" % get_name(mod))
-                try:
-                    mod.init()
-                except AttributeError:
-                    pass
-                except EINIT:
-                     if not self.cfg.debug:
-                         _thread.interrupt_main()
-                except Exception as ex:
-                     logging.error(get_exception())
+                mod.init()
+            except AttributeError:
+                pass
+            except EINIT:
+                if not self.cfg.debug:
+                    _thread.interrupt_main()
+            except Exception as ex:
+                logging.error(get_exception())
 
     def input(self):
         """ start a input loop. """
@@ -115,8 +101,11 @@ class Kernel(Handler):
         return e
 
     def raw(self, txt):
-        """ print to console. """
-        print(txt)
+        """ write directly to display. """
+        if not txt:
+            return
+        sys.stdout.write(str(txt) + "\n")
+        sys.stdout.flush()
 
     def say(self, orig, channel, txt, type="chat"):
         """ output text on console or relay to fleet. """
