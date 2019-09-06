@@ -43,6 +43,7 @@ def init():
     param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
     param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
     param.find = ["%s txt==yo" % x for x in k.names]
+    
     param.load = {x.split(".")[-1] for x in k.modules.values() if not match(x, skip)}
     param.log = ["yo!",]
     param.mbox = ["~/evidence/25-1-2013",]
