@@ -123,7 +123,7 @@ class Handler(Loader):
         thrs = []
         for h in self.handlers:
             if "threaded" in dir(h) and h.threaded:
-                thrs.append(ob.launch(h, self, e))
+                thrs.append(self.launch(h, self, e))
             else:
                 h(self, e)
         for thr in thrs:
@@ -196,11 +196,11 @@ class Handler(Loader):
         """ start this handler. """
         logging.warning("start %s" % get_name(self))
         if handler:
-            ob.launch(self.handler)
+            self.launch(self.handler)
         if input:
-            ob.launch(self.input)
+            self.launch(self.input)
         if output:
-            ob.launch(self.output)
+            self.launch(self.output)
 
     def stop(self):
         self._stopped = True

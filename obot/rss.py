@@ -20,7 +20,8 @@ import random
 import re
 import urllib
 
-from ob import Cfg, Object, launch, last
+from ob import Cfg, Object
+from ob.obj import last
 from ob.clock import Repeater
 from ob.times import to_time
 from ob.utils import get_url, strip_html, unescape
@@ -127,7 +128,7 @@ class Fetcher(Object):
     def run(self):
         """ run a poll on all registered feeds. """
         for o in k.db.all("obot.rss.Rss"):
-            self._thrs.append(launch(self.fetch, o))
+            self._thrs.append(k.launch(self.fetch, o))
         return self._thrs
 
     def start(self, repeat=True):

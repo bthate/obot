@@ -12,11 +12,12 @@ import textwrap
 import time
 import threading
 
-from ob import Object, launch, last 
+from ob import Object 
 from ob.dispatch import dispatch
 from ob.errors import EINIT
 from ob.handler import Event
 from ob.kernel import k
+from ob.obj import last
 from ob.trace import get_exception
 from ob.utils import locked
 
@@ -321,7 +322,10 @@ class IRC(Bot):
 
     @locked
     def raw(self, txt, direct=False):
-        """ send txt on the socket. """
+        """ raw(txt, direct=False)
+
+            send txt on the socket.
+        """
         txt = txt.rstrip()
         logging.debug(txt)
         if self._stopped:
@@ -438,7 +442,7 @@ def privmsged(handler, event):
             dcc = DCC()
             dcc.walk("ob")
             dcc.encoding = "utf-8"
-            launch(dcc.connect, event)
+            k.launch(dcc.connect, event)
             return
         except ConnectionRefusedError:
             return

@@ -7,7 +7,7 @@ import time
 from ob.kernel import k
 from ob.times import elapsed
 
-def edit(obj, setter=None):
+def editset(obj, setter):
     """ edit an objects with the setters key/value. """
     if not setter:
         setter = {}
@@ -29,6 +29,23 @@ def edit(obj, setter=None):
         count += 1
     return count
 
+def edit(obj, setter):
+    """ edit an objects with the setters key/value. """
+    if not setter:
+        setter = {}
+    count = 0
+    for key, value in setter.items():
+        if "," in value:
+            value = value.split(",")
+        if value in ["True", "true"]:
+            obj[key] = True
+        elif value in ["False", "false"]:
+            obj[key] = False
+        else:
+            obj[key] = value
+        count += 1
+    return count
+
 def ed(event):
     """ edit an object, select with key==value, set with key=value. """
     if not event.args:
@@ -42,8 +59,8 @@ def ed(event):
     nr = 0
     objs = k.db.find(event.match, event.selector, event.index, event.delta)
     for o in objs:
-        got = edit(o, event.setter)
-        if got:
+        ok = edit(o, event.setter)
+        if ok:
             o.save()
             nr += 1
     event.reply("edit %s" % nr)

@@ -12,6 +12,7 @@ import time
 cmds = []
 HISTFILE = ""
 
+from ob.obj import update
 from ob.utils import cdir, hd, level
 from ob.term import save, reset 
 from ob.trace import get_exception

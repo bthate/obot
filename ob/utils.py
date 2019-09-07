@@ -176,6 +176,7 @@ def locked(func):
         finally:
             lock.release()
         return res
+    lockedfunc.__doc__ = func.__doc__
     return lockedfunc
 
 def level(loglevel="", logdir="", logfile="ob.log", nostream=False):
