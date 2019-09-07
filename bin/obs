@@ -10,6 +10,7 @@ from ob.utils import hd
 def main():
     parse_cli("obs", __version__, hd(".obot"), "obs [options]")
     k.walk("ob")
+    k.walk("obot")
     k.walk("oper")
     k.init(k.cfg.modules)
     k.start()
