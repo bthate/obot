@@ -122,7 +122,7 @@ class Handler(Loader):
         """ return the event to be handled. """
         thrs = []
         for h in self.handlers:
-            if "_threaded" in dir(h) and h._threaded:
+            if "threaded" in dir(h) and h.threaded:
                 thrs.append(ob.launch(h, self, e))
             else:
                 h(self, e)
@@ -159,7 +159,6 @@ class Handler(Loader):
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
             if txt:
-                print(channel, txt, type)
                 self.say(channel, txt, type)
 
     def poll(self):
@@ -176,7 +175,7 @@ class Handler(Loader):
             self.handlers.append(handler)
 
     def say(self, channel, txt, type="chat"):
-        self.command("PRIVMSG", channel, txt)
+        print(txt)
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """

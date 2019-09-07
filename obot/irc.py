@@ -29,7 +29,6 @@ def init():
     """ initialise irc bot. """
     bot = IRC()
     last(bot.cfg)
-    print(bot)
     if k.cfg.prompting or not bot.cfg.server:
         try:
             server, channel, nick = k.cfg.args
@@ -125,7 +124,6 @@ class IRC(Bot):
         self.state.nrsend = 0
         self.state.pongcheck = False
         self.state.resume = None
-        self.register(dispatch)
         self.register(errored)
         self.register(noticed)
         self.register(privmsged)
@@ -344,7 +342,7 @@ class IRC(Bot):
         wrapper = TextWrap()
         for line in txt.split("\n"):
             for t in wrapper.wrap(line):
-                self.command("PRIVMSG", channel, txt)
+                self.command("PRIVMSG", channel, t)
 
     def start(self):
         """ start irc bot. """
@@ -364,6 +362,7 @@ class DCC(Bot):
         self._fsock = None
         self.encoding = "utf-8"
         self.origin = ""
+        self.register(dispatch)
 
     def raw(self, txt):
         """ raw socket output. """
@@ -394,9 +393,6 @@ class DCC(Bot):
         self.origin = event.origin
         self._connected.set()
         super().start()
-
-    def errored(self, event):
-        """ error handler. """
 
     def poll(self):
         """ return event from dcc socket. """
