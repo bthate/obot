@@ -34,7 +34,6 @@ def init():
             sys.stdout.flush()
             raise EINIT
     bot.start()
-    print(bot)
     return bot
 
 try:
@@ -166,7 +165,7 @@ class XMPP(Bot):
                                                nick,
                                                wait=True)
 
-    def say(self, orig, channel, txt, mtype="chat"):
+    def say(self, channel, txt, mtype="chat"):
         """ say text in a room. """
         try:
             sleekxmpp.jid.JID(channel)
