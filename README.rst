@@ -217,10 +217,12 @@ ob
     :template: module.rst
 
     ob
+    ob.all
     ob.clock
     ob.cmds
     ob.command
     ob.db
+    ob.dispatch
     ob.errors
     ob.fleet
     ob.handler

@@ -3,11 +3,13 @@
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 from ob import __version__
+from ob.dispatch import dispatch
 from ob.kernel import k
 from ob.shell import execute, hd, parse_cli
 
 def main():
     parse_cli("ob", __version__, hd(".obot"), "ob options cmd [arg1 arg2}")
+    k.register(dispatch)
     k.walk("ob")
     k.walk("obot")
     k.walk("oper")

@@ -22,9 +22,6 @@ import _thread
 
 allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 
-def __dir__():
-    return ('cdir', 'check_permissions', 'fntime', 'fromfile', 'get_name', 'get_url', 'hd', 'hook', 'kill', 'last', 'level', 'locked', 'strip_html', 'touch', 'unescape', 'urllib', 'useragent')
-
 class DumpHandler(logging.StreamHandler):
 
     """ handles nothing. """
@@ -230,12 +227,14 @@ def level(loglevel="", logdir="", logfile="ob.log", nostream=False):
     return logger
 
 def match(a, b):
+    """ match in items of b are in string a. """
     for n in b:
         if n in a:
             return True
     return False        
 
 def mods(h, ms):
+    """ walk packages and load modules into the handler. """
     modules = []
     for mn in ms.split(","):
         m = None

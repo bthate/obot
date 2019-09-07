@@ -7,6 +7,8 @@
 
 """
 
+__version__ = 1
+
 import datetime
 import io
 import logging

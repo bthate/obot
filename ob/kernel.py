@@ -10,6 +10,7 @@ import _thread
 
 from ob import Cfg, Object
 from ob.db import Db
+from ob.dispatch import dispatch
 from ob.errors import EINIT 
 from ob.fleet import Fleet
 from ob.handler import Event, Handler
@@ -38,6 +39,7 @@ class Kernel(Handler):
         self.cfg = Cfg()
         self.db = Db()
         self.fleet = Fleet()
+        self.register(dispatch)
         self.state = Object()
         self.state.started = False
         self.state.starttime = time.time()
@@ -70,10 +72,10 @@ class Kernel(Handler):
             return
         for mod in mods(self, modstr):
             logging.warn("init %s" % get_name(mod))
+            if "init" not in dir(mod):
+                continue
             try:
                 mod.init()
-            except AttributeError:
-                pass
             except EINIT:
                 if not self.cfg.debug:
                     _thread.interrupt_main()

@@ -2,19 +2,21 @@
 
 __version__ = 1
 
-import _thread
 import getpass
 import logging
 import ob
 import ssl
 import sys
 import threading
+import _thread
 
 from ob import Cfg, Object
-from obot import Bot
+from ob.dispatch import dispatch
 from ob.errors import EINIT
 from ob.handler import Event
 from ob.kernel import k
+
+from obot import Bot
 
 def __dir__():
     return ("XMPP", "Event", "Cfg", "init", "stripped")
@@ -85,6 +87,7 @@ class XMPP(Bot):
         self.jid = None
         self.rooms = []
         self.state = Object()
+        self.register(dispatch)
 
     def _bind(self, data):
         """ session_bind. """
@@ -147,7 +150,7 @@ class XMPP(Bot):
     def announce(self, txt):
         """ announce to channels/rooms. """
         for channel in self.channels:
-            self.say(repr(self), channel, txt, "chat")
+            self.say(channel, txt, "chat")
         #for room in self.rooms:
         #    self.say(channel, txt, "groupchat")
 

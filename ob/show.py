@@ -68,8 +68,8 @@ def show(event):
         event.reply(elapsed(time.time() - k.state.starttime))
     elif cmd == "version":
         res = []
-        event.reply("OBOT %s" % obot.__version__)
-        event.reply("OB %s" % ob.__version__)
+        res.append("OB %s" % ob.__version__)
+        res.append("OBOT %s" % obot.__version__)
         for name, mod in k.table.items():
             if name in ["ob", "obot"]:
                 continue

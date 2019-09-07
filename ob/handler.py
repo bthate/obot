@@ -184,8 +184,6 @@ class Handler(Loader):
             if o.__code__.co_argcount == 1 and "event" in o.__code__.co_varnames:
                 self.cmds[key] = o
                 self.modules[key] = o.__module__
-            elif o.__code__.co_argcount == 2 and "handler" in o.__code__.co_varnames:
-                self.register(o)
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, ob.Object):
                 t = get_type(o)

@@ -1,5 +1,7 @@
 """ IRC bot for OBOT. """
 
+__version__ = 1
+
 import ob
 import logging
 import os
@@ -11,6 +13,7 @@ import time
 import threading
 
 from ob import Object, launch, last 
+from ob.dispatch import dispatch
 from ob.errors import EINIT
 from ob.handler import Event
 from ob.kernel import k
@@ -20,12 +23,13 @@ from ob.utils import locked
 from obot import Bot
 
 def __dir__():
-    return ('Bot', 'Cfg', 'DCC', 'DEvent', 'IEvent', 'IRC', 'init', "cb_log")
+    return ('Bot', 'Cfg', 'DCC', 'DEvent', 'IEvent', 'IRC', 'init', "cb_log", "errored", "noticed", "privmsged")
 
 def init():
     """ initialise irc bot. """
     bot = IRC()
     last(bot.cfg)
+    print(bot)
     if k.cfg.prompting or not bot.cfg.server:
         try:
             server, channel, nick = k.cfg.args
@@ -121,9 +125,10 @@ class IRC(Bot):
         self.state.nrsend = 0
         self.state.pongcheck = False
         self.state.resume = None
-        self.register(self.errored)
-        self.register(self.noticed)
-        self.register(self.privmsged)
+        self.register(dispatch)
+        self.register(errored)
+        self.register(noticed)
+        self.register(privmsged)
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
 
@@ -273,22 +278,6 @@ class IRC(Bot):
         if not k.cfg.resume:
             self.logon(self.cfg.server, self.cfg.nick)
 
-    def errored(self, handler, event):
-        """ error handler. """
-        if event.chk != "ERROR":
-            return
-        self._connected.clear()
-        time.sleep(self.state.nrconnect * self.cfg.sleep)
-        self.connect()
-
-    def noticed(self, handler, event):
-        """ notice handler. """
-        if event.chk != "NOTICE":
-            return
-        if event.txt.startswith("VERSION"):
-            txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, __version__, k.cfg.description)
-            self.command("NOTICE", event.channel, txt)
-
     def poll(self):
         """ return (blocking) event from irc server. """
         self._connected.wait()
@@ -318,27 +307,6 @@ class IRC(Bot):
         elif cmd == "ERROR":
             self.state.error = e
         return e
-
-    def privmsged(self, handler, event):
-        """ privmsg handler. """
-        if event.chk != "PRIVMSG":
-            return
-        if event.origin != k.cfg.owner:
-            k.users.userhosts.set(event.nick, event.origin)
-        if event.txt.startswith("DCC CHAT"):
-            try:
-                dcc = DCC()
-                dcc.walk("ob")
-                dcc.encoding = "utf-8"
-                launch(dcc.connect, event)
-                return
-            except ConnectionRefusedError:
-                return
-        if event.txt and event.txt[0] == self.cc:
-            if not k.users.allowed(event.origin, "USER"):
-                return
-            event.parse(event.txt[1:])
-            k.put(event)
 
     def joinall(self):
         """ join all channels. """
@@ -429,7 +397,6 @@ class DCC(Bot):
 
     def errored(self, event):
         """ error handler. """
-        self.state.error = event
 
     def poll(self):
         """ return event from dcc socket. """
@@ -446,3 +413,41 @@ class DCC(Bot):
     def say(self, channel, txt, type="chat"):
         """ echo to DCC client. """
         self.raw(txt)
+
+def errored(handler, event):
+    """ error handler. """
+    if event.chk != "ERROR":
+        return
+    handler.state.error = event
+    handler._connected.clear()
+    time.sleep(handler.state.nrconnect * handler.cfg.sleep)
+    handler.connect()
+
+def noticed(handler, event):
+    """ notice handler. """
+    if event.chk != "NOTICE":
+        return
+    if event.txt.startswith("VERSION"):
+        txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, __version__, k.cfg.description)
+        handler.command("NOTICE", event.channel, txt)
+
+def privmsged(handler, event):
+    """ privmsg handler. """
+    if event.chk != "PRIVMSG":
+        return
+    if event.origin != k.cfg.owner:
+        k.users.userhosts.set(event.nick, event.origin)
+    if event.txt.startswith("DCC CHAT"):
+        try:
+            dcc = DCC()
+            dcc.walk("ob")
+            dcc.encoding = "utf-8"
+            launch(dcc.connect, event)
+            return
+        except ConnectionRefusedError:
+            return
+    if event.txt and event.txt[0] == handler.cc:
+        if not k.users.allowed(event.origin, "USER"):
+            return
+        event.parse(event.txt[1:])
+        k.put(event)
