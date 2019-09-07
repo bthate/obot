@@ -12,6 +12,7 @@ from ob import Object
 from ob.command import Command
 from ob.errors import ENOTIMPLEMENTED
 from ob.loader import Loader
+from ob.obj import format
 from ob.times import days
 from ob.trace import get_exception
 from ob.types import get_type
@@ -30,8 +31,6 @@ class Event(Command):
         self.direct = False
         self.type = "chat"
         self.name = ""
-        self.orig = None
-        self.origin = ""
         self.sep = "\n"
 
     def display(self, o, txt=""):
@@ -46,53 +45,14 @@ class Event(Command):
         if "f" in self.options:
             full = True
         if self.dkeys:
-            txt += " " + ob.format(o, self.dkeys, full)
+            txt += " " + format(o, self.dkeys, full)
         else:
-            txt += " " + ob.format(o, full=full)
+            txt += " " + format(o, full=full)
         if "t" in self.options:
             txt += " " + days(o._path)
         txt = txt.rstrip()
         if txt:
             self.reply(txt)
-
-    def ready(self):
-        """ signal ready. """
-        self._ready.set()
-
-    def reply(self, txt):
-        """ reply to the origin. """
-        self.result.append(txt)
-
-    def show(self):
-        """ echo result to originating bot. """
-        from ob.kernel import k
-        for line in self.result:
-            if self.orig == repr(k):
-                print(line)
-                continue
-            k.say(self.orig, self.channel, line, self.type)
-
-    def wait(self):
-        """ wait for event to finish. """
-        self._ready.wait()
-        thrs = []
-        vals = []
-        for thr in self._thrs:
-            try:
-                thr.join()
-            except RuntimeError:
-                vals.append(thr)
-                continue
-            thrs.append(thr)
-        for val in vals:
-            try:
-                val.join()
-            except RuntimeError:
-                pass
-        for thr in thrs:
-            self._thrs.remove(thr)
-        self.ready()
-        return self
 
 class Handler(Loader):
 
@@ -116,6 +76,11 @@ class Handler(Loader):
 
     def get_cmd(self, cmd):
         """ return matching function. """
+        func = self.cmds.get(cmd, None)
+        if not func:
+            mn = self.names.get(func, None)
+            if mn:
+                self.load_mod(mn)
         return self.cmds.get(cmd, None)
 
     def handle(self, e):

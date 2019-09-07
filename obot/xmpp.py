@@ -15,7 +15,7 @@ from ob.dispatch import dispatch
 from ob.errors import EINIT
 from ob.handler import Event
 from ob.kernel import k
-
+from ob.obj import last
 from obot import Bot
 
 def __dir__():
@@ -23,8 +23,10 @@ def __dir__():
 
 def init():
     """ initialize xmpp bot. """
+    if k.cfg.debug:
+        return
     bot = XMPP()
-    ob.last(bot.cfg)
+    last(bot.cfg)
     if k.cfg.prompting or not bot.cfg.user:
         try:
             bot.cfg.user = k.cfg.args[0]

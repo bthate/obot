@@ -5,46 +5,8 @@ import os
 import time
 
 from ob.kernel import k
+from ob.obj import edit
 from ob.times import elapsed
-
-def editset(obj, setter):
-    """ edit an objects with the setters key/value. """
-    if not setter:
-        setter = {}
-    count = 0
-    for key, value in setter.items():
-        if "," in value:
-            value = value.split(",")
-        otype = type(value)
-        if value in ["True", "true"]:
-            setattr(obj, key, True)
-        elif value in ["False", "false"]:
-            setattr(obj, key, False)
-        elif otype == list:
-            setattr(obj, key, value)
-        elif otype == str:
-            setattr(obj, key, value)
-        else:
-            setattr(obj, key, value)
-        count += 1
-    return count
-
-def edit(obj, setter):
-    """ edit an objects with the setters key/value. """
-    if not setter:
-        setter = {}
-    count = 0
-    for key, value in setter.items():
-        if "," in value:
-            value = value.split(",")
-        if value in ["True", "true"]:
-            obj[key] = True
-        elif value in ["False", "false"]:
-            obj[key] = False
-        else:
-            obj[key] = value
-        count += 1
-    return count
 
 def ed(event):
     """ edit an object, select with key==value, set with key=value. """
@@ -56,13 +18,12 @@ def ed(event):
     if len(event.args) == 1 and not event.selector:
         event.reply("ed <type> key==value")
         return
-    nr = 0
     objs = k.db.find(event.match, event.selector, event.index, event.delta)
+    nr = 0
     for o in objs:
-        ok = edit(o, event.setter)
-        if ok:
-            o.save()
-            nr += 1
+        edit(o, event.setter)
+        o.save()
+        nr += 1
     event.reply("edit %s" % nr)
 
 def rm(event):

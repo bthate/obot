@@ -2,13 +2,14 @@
 
 import logging
 import ob
+import string
 
 from ob.utils import get_name
 
 def dispatch(handler, event):
     if not event or not event.txt:
         return
-    event.parse()
+    event.parse(event.txt)
     event.orig = event.orig or repr(handler)
     event._func = handler.get_cmd(event.chk)
     res = None

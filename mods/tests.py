@@ -86,7 +86,7 @@ def tinder(event):
                 e.parse()
                 logging.debug(e.txt)
                 func = k.cmds[cn]
-                e._thrs.append(ob.launch(func, e))
+                e._thrs.append(k.launch(func, e))
                 events.append(e)
     for e in events:
         e.ready()

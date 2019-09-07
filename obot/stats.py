@@ -24,7 +24,7 @@ def init():
                     e.name="stats.%s" % key
                     sec = seconds(val)
                     repeater = Repeater(sec, stat, e, name="stats.%s" % key)
-                    ob.launch(repeater.start)
+                    k.launch(repeater.start)
 
 startdate = "2018-10-05 00:00:00"
 starttime = to_day(startdate)

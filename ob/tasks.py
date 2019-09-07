@@ -30,8 +30,12 @@ class Task(threading.Thread):
 
     def run(self):
         func, args = self._queue.get()
-        self._result = func(*args)
-
+        try:
+            self._result = func(*args)
+        except Exception as ex:
+            logging.error(get_exception())
+        
+ 
     def join(self, timeout=None):
         super().join(timeout)
         return self._result

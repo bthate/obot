@@ -58,8 +58,14 @@ class UDP(Object):
 
     def _server(self, host="", port=""):
         """ loop to read from udp socket. """
+        if k.cfg.debug:
+            return
         c = self.cfg
-        self._sock.bind((host or c.host, port or c.port))
+        try:
+            self._sock.bind((host or c.host, port or c.port))
+        except socket.gaierror as ex:
+            logging.error("EBIND %s" % ex)
+            return
         while not self._stopped:
             (txt, addr) = self._sock.recvfrom(64000)
             if self._stopped:
@@ -78,4 +84,4 @@ class UDP(Object):
     def start(self):
         """ start udp server. """
         self.cfg = k.db.last("obot.udp.Cfg") or Cfg()
-        ob.launch(self._server)
+        k.launch(self._server)

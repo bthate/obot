@@ -4,20 +4,17 @@
 
 """ wijsheid, wijs ! """
 
-import ob
+import random
 
 from ob.clock import Repeater
 from ob.handler import Event
-
 from ob.kernel import k
-
-import random
 
 def init():
     e = Event()
     e.isinit = True
     repeater = Repeater(random.randint(60,120), wisdom, e)
-    ob.launch(repeater.start)
+    k.launch(repeater.start)
 
 def wisdom(event):
     x = random.choice([x.strip() for x in txt.split("\n") if x])

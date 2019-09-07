@@ -21,7 +21,10 @@ class Todo(ob.Object):
 
 def log(event):
     if not event.rest:
-        event.reply("log <txt>")
+        nr = 0
+        for o in k.db.find("obot.entry.Log", event.selector or {"txt": ""}):
+            event.display(o, str(nr))
+            nr += 1
         return
     obj = Log()
     obj.txt = event.rest

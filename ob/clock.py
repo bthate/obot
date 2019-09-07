@@ -40,7 +40,7 @@ class Timers(ob.Object):
                 continue
             if time.time() < int(e.time):
                 self.timers[e.time] = e
-        return ob.launch(self.loop)
+        return k.launch(self.loop)
 
     def stop(self):
         self._stopped = True
@@ -71,7 +71,7 @@ class Timer(ob.Object):
 
     def run(self, *args, **kwargs):
         self.state.latest = time.time()
-        ob.launch(self._func, *args, **kwargs)
+        k.launch(self._func, *args, **kwargs)
 
     def exit(self):
         self.timer.cancel()
@@ -80,4 +80,4 @@ class Repeater(Timer):
 
     def run(self, *args, **kwargs):
         self._func(*args, **kwargs)
-        return ob.launch(self.start)
+        return k.launch(self.start)

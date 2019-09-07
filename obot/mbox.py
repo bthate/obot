@@ -114,6 +114,15 @@ def cor(event):
         return
     event.selector["From"] = event.args[0]
     nr = 0
-    for email in k.db.all("obot.email.Email", event.selector):
+    for email in k.db.all("obot.mbox.Email", event.selector):
         event.reply("%s %s" % (nr, ob.format(email, event.selector.keys())))
+        nr += 1
+
+def email(event):
+    if not event.args:
+        event.reply("email <match> attr1 attr2")
+        return
+    nr = 0
+    for o in k.db.find("obot.mbox.Email", {"From": event.args[0]}):
+        event.display(o)
         nr += 1

@@ -21,6 +21,7 @@ from ob.utils import locked, hd
 from ob.errors import ECLASS, ENOFILE
 from ob.times import fntime
 from ob.types import get_cls, get_type
+from ob.obj import edit
 
 def __dir__():
     return ('Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'workdir', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')
@@ -30,10 +31,6 @@ workdir = ""
 class Persist:
 
     """ JSON object persistence. """
-
-    def __str__(self):
-        """ return json string. """
-        return json.dumps(self, default=default, indent=4, sort_keys=True)
 
     def load(self, path):
         """ load this object from disk. """
@@ -45,7 +42,7 @@ class Persist:
             assert ENOFILE(path)
         with open(path, "r") as ofile:
             val = json.load(ofile, object_hook=hooked)
-            update(self, val)
+            self.__dict__.update(val)
         return self
 
     @locked
@@ -61,14 +58,18 @@ class Persist:
             import ob.types
             if otype not in ob.types.classes:
                 raise ECLASS(otype)
-        if not path and not stime:
-            stime = str(datetime.datetime.now()).replace(" ", os.sep)
+        if not path and "_path" in dir(self):
+            path = self._path
+        if not path:
+            if not stime:
+                stime = str(datetime.datetime.now()).replace(" ", os.sep)
             path = os.path.join(otype, stime)
         logging.debug("save %s" % path)
         opath = os.path.join(workdir, "store", path)
         cdir(opath)
         logging.debug("save %s" % path)
         self._type = get_type(self)
+        self._path = path
         with open(opath, "w") as file:
             json.dump(self, file, default=default, indent=4, sort_keys=True)
         return path
@@ -76,6 +77,17 @@ class Persist:
 class Object(Persist, dict):
 
     """ persistent dict. """
+
+    def __repr__(self):
+        return '<%s.%s object at %s>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            hex(id(self))
+        )
+
+    def __str__(self):
+        """ return json string. """
+        return json.dumps(self, default=default, indent=4, sort_keys=True)
 
     def __getattr__(self, k):
         try:
@@ -131,7 +143,7 @@ def hooked(d):
     else:
         from ob import Object
         o = Object()
-    update(o, d)
+    o.update(d)
     return o
 
 def names(name, delta=None):

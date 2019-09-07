@@ -56,7 +56,7 @@ class Test_Tinder(unittest.TestCase):
     def test_tinder(self):
         thrs = []
         for x in range(e.index or 1):
-            thrs.append(ob.launch(tests, k))
+            thrs.append(k.launch(tests, k))
         for thr in thrs:
             thr.join()
 

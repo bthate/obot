@@ -5,6 +5,7 @@ import ob
 import os
 import time
 
+from ob.obj import search
 from ob.times import days, fntime
 from ob.utils import last
 
@@ -25,7 +26,7 @@ class Db(ob.Object):
             o = cached(fn)
             if index is not None and nr != index:
                 continue
-            if selector and not ob.search(o, selector):
+            if selector and not search(o, selector):
                 continue
             yield o
 
@@ -41,7 +42,7 @@ class Db(ob.Object):
                 continue
             if not o._deleted:
                 continue
-            if selector and not ob.search(o, selector):
+            if selector and not search(o, selector):
                 continue
             yield o
 
@@ -54,7 +55,7 @@ class Db(ob.Object):
             o = cached(fn)
             if not o:
                 continue
-            if ob.search(o, selector):
+            if search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue
@@ -77,7 +78,7 @@ class Db(ob.Object):
             o = cached(fn)
             if not o:
                 continue
-            if selector and ob.search(o, selector):
+            if selector and search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue
@@ -137,6 +138,7 @@ def find(event):
                     if a not in event.dkeys:
                         event.dkeys.append(a)
     nr = -1
+    print(event)
     for o in k.db.find(event.match, event.selector, event.index, event.delta):
         nr += 1
         event.display(o, str(nr))

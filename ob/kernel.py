@@ -36,6 +36,7 @@ class Kernel(Handler, Launcher):
         self._outputed = False
         self._prompted = threading.Event()
         self._prompted.set()
+        self._started = False
         self.cfg = Cfg()
         self.db = Db()
         self.fleet = Fleet()
@@ -118,6 +119,9 @@ class Kernel(Handler, Launcher):
 
     def start(self, handler=None, input=True, output=True):
         """ start the kernel. """
+        if self._started:
+            return
+        self._started = True
         super().start(handler or self.handler, input, output)
         if self.cfg.prompting:
             self.cfg.prompting = False

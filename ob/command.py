@@ -2,6 +2,7 @@
 
 import logging
 import ob
+import threading
 
 def __dir__():
     return ("Command", "Token", "aliases")
@@ -93,14 +94,19 @@ class Command(ob.Default):
         self._cb = None
         self._error = None
         self._func = None
+        self._ready = threading.Event()
         self._thrs = []
+        self._txt = ""
         self.args = []
         self.delta = 0
         self.dkeys = []
         self.index = None
         self.match = None
+        self.orig = ""
+        self.origin = ""
         self.result = []
         self.selector = {}
+        self.sep = "\n"
         self.setter = {}
         self.time = 0
 
@@ -117,7 +123,48 @@ class Command(ob.Default):
 
     def _tokens(self):
         """ return a list of tokens. """
-        words = self.txt.split()
+
+    def display(self, o, txt=""):
+        """ display an object. """
+        if "k" in self.options:
+            self.reply("|".join(o))
+            return
+        if "d" in self.options:
+            self.reply(str(o))
+            return
+        full = False
+        if "f" in self.options:
+            full = True
+        if self.dkeys:
+            txt += " " + format(o, self.dkeys, full)
+        else:
+            txt += " " + format(o, full=full)
+        if "t" in self.options:
+            txt += " " + days(o._path)
+        txt = txt.rstrip()
+        if txt:
+            self.reply(txt)
+
+    def parse(self, txt="", options=""):
+        """ parse txt into a command. """
+        if not txt:
+            txt = self._txt 
+        if not txt:
+            raise ENOTXT
+        self._txt = txt
+        txt = txt.replace("\u0001", "")
+        txt = txt.replace("\001", "")
+        if txt and self.cc == txt[0]:
+            txt = txt[1:]
+        self._txt = self._aliased(txt)
+        if not self._txt:
+            self._txt = txt
+        nr = -1
+        self.args = []
+        self.dkeys = []
+        self.options = options or self.options or ""
+        prev = ""
+        words = self._txt.split()
         tokens = []
         nr = -1
         for word in words:
@@ -125,27 +172,7 @@ class Command(ob.Default):
             token = Token()
             token.parse(nr, word)
             tokens.append(token)
-        return tokens
-
-    def parse(self, txt="", options=""):
-        """ parse txt into a command. """
-        if not txt:
-            txt = self.txt 
-        if not txt:
-            raise ENOTXT
-        txt = txt.replace("\u0001", "")
-        txt = txt.replace("\001", "")
-        if txt and self.cc == txt[0]:
-            txt = txt[1:]
-        self.txt = self._aliased(txt)
-        if not self.txt:
-            self.txt = txt
-        nr = -1
-        self.args = []
-        self.dkeys = []
-        self.options = options or self.options or ""
-        prev = ""
-        for token in self._tokens():
+        for token in tokens:
             nr += 1
             if token.chk:
                 self.chk = token.chk
@@ -185,4 +212,39 @@ class Command(ob.Default):
             continue
         self.rest = " ".join(self.args)
         self.time = to_day(self.rest)
-        
+
+    def ready(self):
+        self._ready.set()
+
+    def reply(self, txt):
+        self.result.append(txt)
+
+    def show(self):
+        from ob.kernel import k
+        for line in self.result:
+            if self.orig == repr(k):
+                print(line)
+                continue
+            k.say(self.orig, self.channel, line, self.type)
+
+    def wait(self):
+        """ wait for event to finish. """
+        self._ready.wait()
+        thrs = []
+        vals = []
+        for thr in self._thrs:
+            try:
+                thr.join()
+            except RuntimeError:
+                vals.append(thr)
+                continue
+            thrs.append(thr)
+        for val in vals:
+            try:
+                val.join()
+            except RuntimeError:
+                pass
+        for thr in thrs:
+            self._thrs.remove(thr)
+        self.ready()
+        return self
