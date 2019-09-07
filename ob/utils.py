@@ -236,8 +236,9 @@ def match(a, b):
     return False        
 
 def mods(h, ms):
-    m = []
+    modules = []
     for mn in ms.split(","):
+        m = None
         try:
             m = h.walk(mn)
         except ModuleNotFoundError:
@@ -251,7 +252,9 @@ def mods(h, ms):
                         m = h.walk("%s.%s" % (h.cfg.name, mn))
                     except ModuleNotFoundError:
                         logging.error("not found %s" % mn)
-    return m
+        if m:
+            modules.extend(m)
+    return modules
 
 def names(name, delta=None):
     """ show all object filenames on disk. """

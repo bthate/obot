@@ -34,6 +34,7 @@ def init():
             sys.stdout.flush()
             raise EINIT
     bot.start()
+    print(bot)
     return bot
 
 try:
@@ -224,11 +225,9 @@ class XMPP(Bot):
             return
         m.nick = m.origin.split("/")[-1]
         m.user = m.jid = stripped(m.origin)
-        m.channel = stripped(m.origin)
+        m.channel = m.origin
         if self.cfg.user == m.user:
             return
-        if m.user not in self.channels:
-            self.channels.append(m.user)
         k.put(m)
 
     def presenced(self, data):
@@ -253,17 +252,18 @@ class XMPP(Bot):
             self.client.send_presence(pres)
             pres = Event({'to': o.origin, 'type': 'subscribe'})
             self.client.send_presence(pres)
-            self.channels.append(o.user)
+            if o.origin not in self.channels:
+                self.channels.append(o.origin)
         elif o.mtype == "unsubscribe":
             if o.origin in self.channels:
-                self.channels.remove(o.user)
+                self.channels.remove(o.origin)
             return
         elif o.mtype == "available":
-            if o.user not in self.channels:
-                self.channels.append(o.user)
+            if o.origin not in self.channels:
+                self.channels.append(o.origin)
         elif o.mtype == "unavailable":
-            if o.user in self.channels:
-                self.channels.remove(o.user)
+            if o.origin in self.channels:
+                self.channels.remove(o.origin)
 
 def stripped(jid):
     """ strip everything after the / """
