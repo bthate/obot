@@ -16,6 +16,7 @@ from ob.obj import update
 from ob.utils import cdir, hd, level
 from ob.term import save, reset 
 from ob.trace import get_exception
+from ob.utils import touch
 
 def __dir__():
     return ("daemon", "execute", "parse_cli", "set_completer")
@@ -69,7 +70,9 @@ def enable_history():
     from ob.kernel import k
     global HISTFILE
     HISTFILE = os.path.abspath(os.path.join(k.cfg.workdir, "history"))
-    if os.path.exists(HISTFILE):
+    if not os.path.exists(HISTFILE):
+        touch(HISTFILE)
+    else:
         readline.read_history_file(HISTFILE)
     atexit.register(close_history)
 
@@ -83,6 +86,7 @@ def execute(main):
     except Exception:
         logging.error(get_exception())
     reset()
+    close_history()
 
 def get_completer():
     return readline.get_completer()

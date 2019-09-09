@@ -19,7 +19,8 @@ aliases = {
            }
 
 from ob.errors import ENOTXT
-from ob.times import to_day
+from ob.obj import format
+from ob.times import days, to_day
 
 class Token(ob.Default):
 
@@ -29,6 +30,8 @@ class Token(ob.Default):
         super().__init__()
         self.down = None
         self.index = None
+        self.ignore = ""
+        self.noignore = False
         self.option = ""
         self.up = None
 
@@ -49,7 +52,7 @@ class Token(ob.Default):
             return
         try:
             self.index = int(word)
-            self.arg = word
+            #self.arg = word
             return
         except ValueError:
             pass
@@ -68,11 +71,17 @@ class Token(ob.Default):
                 return
             except ValueError:
                 pass
+        if word.endswith("+"):
+            self.noignore = True
+        if word.endswith("-"):
+            word = word[:1]
+            self.ignore = word
         if "==" in word:
-            if word.endswith("-"):
-                self.ignore = word[:-1]
-                word = self.ignore
             self.selector, self.value = word.split("==")
+            if self.value.endswith("-"):
+                self.value = self.value[:-1]
+                if not self.noignore:
+                    self.ignore = self.selector
             self.dkey = self.selector
         elif "=" in word:
             self.setter, self.value = word.split("=")
@@ -99,9 +108,11 @@ class Command(ob.Default):
         self._txt = ""
         self.args = []
         self.delta = 0
+        self.direct = False
         self.dkeys = []
         self.index = None
         self.match = None
+        self.name = ""
         self.orig = ""
         self.origin = ""
         self.result = []
@@ -109,6 +120,7 @@ class Command(ob.Default):
         self.sep = "\n"
         self.setter = {}
         self.time = 0
+        self.type = "chat"
 
     def _aliased(self, txt):
         """ return aliased version of txt. """
@@ -188,7 +200,9 @@ class Command(ob.Default):
                 self.options += "," + token.value
             if token.down:
                 prev = token.down
-            if token.ignore:
+            if token.noignore:
+                self.notignore = token.noignore
+            if not token.noignore and token.ignore:
                 self.ignore = token.ignore
                 continue
             elif token.dkey:

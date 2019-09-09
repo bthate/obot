@@ -125,6 +125,27 @@ def email(event):
     nr = 0
     s = event.selector
     s.update({"From": event.args[0]})
-    for o in k.db.find("obot.mbox.Email", s):
-        event.display(o)
+    if len(event.args) >= 2:
+        nr = 0
+        for arg in event.args[1:]:
+            if arg.endswith("+"):
+                arg = arg[:1]
+                event.dkeys.append("text")
+            elif arg.endswith("-"):
+                arg = arg[:1]
+                event.ignore = "text"
+            else:
+                event.dkeys.append(arg)
+            s.update({"text": arg})
+            
+            if len(event.args) > 1:
+                if arg in event.dkeys:
+                    event.dkeys.remove(arg)
+            if arg in s:
+                del s[arg]
+    event.dkeys.extend(["From", "Subject"])
+    event.options = event.options + ",t"
+    nr = 0
+    for o in k.db.find("obot.mbox.Email", s, event.index, event.delta):
+        event.display(o, "%-3s" % str(nr))
         nr += 1

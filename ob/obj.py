@@ -2,23 +2,6 @@
 
 from ob.types import get_type
 
-def edit(obj, setter):
-    """ edit an objects with the setters key/value. """
-    if not setter:
-        setter = {}
-    count = 0
-    for key, value in setter.items():
-        count += 1
-        if "," in value:
-            value = value.split(",")
-        if value in ["True", "true"]:
-            obj[key] = True
-        elif value in ["False", "false"]:
-            obj[key] = False
-        else:
-            obj[key] = value
-    return count
-
 def eq(obj1, obj2):
     """ check for equality. """
     if isinstance(obj2, (Object, dict)):
@@ -32,23 +15,21 @@ def format(obj, keys=None, full=False):
     res = []
     txt = ""
     for key in keys:
+        if "ignore" in dir(obj) and key in obj.ignore:
+            continue
         val = obj.get(key, None)
-        if key == "text":
-            val = val.replace("\\n", "\n")
         if not val:
             continue
         val = str(val)
+        if key == "text":
+            val = val.replace("\\n", "\n")
         if full:
             res.append("%s=%s " % (key, val))
         else:
             res.append(val)
     for val in res:
-        if "sep" in obj:
-            txt += "*%s%s" % (val.strip(), obj.sep)
-        else:
-            txt += "*%s%s" % (val.strip(), " ")
+         txt += "%s%s" % (val.strip(), " ")
     return txt.strip()
-
 
 def get(obj, key, default=None):
     """ get attribute of obj. """
@@ -85,12 +66,15 @@ def search(obj, match: None):
     for key, value in match.items():
         val = get(obj, key, None)
         if val:
-            if value is None:
+            if not value:
                 res = True
                 continue
             if value in str(val):
                 res = True
                 continue
+            else:
+                res = False
+                break
         else:
             res = False
             break

@@ -21,7 +21,6 @@ from ob.utils import locked, hd
 from ob.errors import ECLASS, ENOFILE
 from ob.times import fntime
 from ob.types import get_cls, get_type
-from ob.obj import edit
 
 def __dir__():
     return ('ECLASS', 'ENOFILE', 'Cfg', 'Default', "Object", "Register", 'workdir', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')

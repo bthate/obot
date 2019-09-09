@@ -122,12 +122,12 @@ class Kernel(Handler):
         if self._started:
             return
         self._started = True
-        super().start(handler or self.handler, input, output)
         if self.cfg.prompting:
             self.cfg.prompting = False
             self.cfg.save()
         set_completer(k.cmds)
         enable_history()
+        super().start(handler or self.handler, input, output)
 
     def wait(self):
         """ sleep in a loop. """

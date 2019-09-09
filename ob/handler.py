@@ -34,28 +34,6 @@ class Event(Command):
         self.name = ""
         self.sep = "\n"
 
-    def display(self, o, txt=""):
-        """ display an object. """
-        print(o)
-        if "k" in self.options:
-            self.reply("|".join(o))
-            return
-        if "d" in self.options:
-            self.reply(str(o))
-            return
-        full = False
-        if "f" in self.options:
-            full = True
-        if self.dkeys:
-            txt += " " + format(o, self.dkeys, full)
-        else:
-            txt += " " + format(o, full=full)
-        if "t" in self.options:
-            txt += " " + days(o._path)
-        txt = txt.rstrip()
-        if txt:
-            self.reply(txt)
-
 class Handler(Loader, Launcher):
 
     """ Event Handler class. """
