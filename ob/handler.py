@@ -8,7 +8,7 @@ import pkgutil
 import queue
 import threading
 
-from ob import Object
+from ob import Object, Register
 from ob.command import Command
 from ob.errors import ENOTIMPLEMENTED
 from ob.loader import Loader
@@ -69,7 +69,7 @@ class Handler(Loader):
         self._type = get_type(self)
         self.cfg = ob.Cfg()
         self.classes = []
-        self.cmds = {}
+        self.cmds = Register()
         self.handlers = []
         self.modules = {}
         self.names = {}

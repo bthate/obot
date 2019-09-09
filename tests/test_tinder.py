@@ -49,7 +49,7 @@ param.load = k.table.keys()
 param.log = ["yo!",]
 param.rm = ["%s txt==yo" % x for x in k.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
-param.mbox = ["~/evidence/25-1-2013",]
+#param.mbox = ["~/Desktop/evidence/25-1-2013",]
 
 class Test_Tinder(unittest.TestCase):
 

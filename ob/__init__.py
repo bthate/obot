@@ -121,6 +121,13 @@ class Cfg(Default):
 
     """ config with empty string default. """
 
+class Register(Default):
+
+    """ register key/values on a Default. """
+
+    def register(self, k, v):
+        self[k] = v
+
 def default(obj):
     """ default an object to JSON. """
     if isinstance(obj, Object):
