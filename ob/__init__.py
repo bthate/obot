@@ -24,7 +24,7 @@ from ob.types import get_cls, get_type
 from ob.obj import edit
 
 def __dir__():
-    return ('Cfg', 'Default', 'ECLASS', 'ENOFILE', 'Object', 'workdir', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')
+    return ('ECLASS', 'ENOFILE', 'Cfg', 'Default', "Object", "Register", 'workdir', 'all', 'classes', 'default', 'get', 'hooked', 'last', 'launch', 'set', 'update')
 
 workdir = ""
 
@@ -42,7 +42,7 @@ class Persist:
             assert ENOFILE(path)
         with open(path, "r") as ofile:
             val = json.load(ofile, object_hook=hooked)
-            self.__dict__.update(val)
+            self.update(val)
         return self
 
     @locked

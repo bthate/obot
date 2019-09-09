@@ -436,7 +436,7 @@ def privmsged(handler, event):
     if event.chk != "PRIVMSG":
         return
     if event.origin != k.cfg.owner:
-        k.users.userhosts.set(event.nick, event.origin)
+        set(k.users.userhosts, event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
         try:
             dcc = DCC()

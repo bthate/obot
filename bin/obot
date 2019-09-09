@@ -11,7 +11,7 @@ def main():
     parse_cli("obot", __version__)
     if k.cfg.daemon:
         daemon()
-    k.walk("ob")
+    k.walk("ob.cmds")
     k.init(k.cfg.modules)
     k.start()
     k.wait()

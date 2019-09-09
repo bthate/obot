@@ -27,7 +27,7 @@ class Cfg(Cfg):
 
     """ kernel config. """
 
-class Kernel(Handler, Launcher):
+class Kernel(Handler):
 
     """ contains the basic data structures and exception trap code. """
 

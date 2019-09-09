@@ -123,6 +123,8 @@ def email(event):
         event.reply("email <match> attr1 attr2")
         return
     nr = 0
-    for o in k.db.find("obot.mbox.Email", {"From": event.args[0]}):
+    s = event.selector
+    s.update({"From": event.args[0]})
+    for o in k.db.find("obot.mbox.Email", s):
         event.display(o)
         nr += 1

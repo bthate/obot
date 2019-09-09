@@ -14,6 +14,7 @@ from ob.errors import ENOTIMPLEMENTED
 from ob.loader import Loader
 from ob.obj import format
 from ob.times import days
+from ob.tasks import Launcher
 from ob.trace import get_exception
 from ob.types import get_type
 from ob.utils import get_name
@@ -35,6 +36,7 @@ class Event(Command):
 
     def display(self, o, txt=""):
         """ display an object. """
+        print(o)
         if "k" in self.options:
             self.reply("|".join(o))
             return
@@ -54,7 +56,7 @@ class Event(Command):
         if txt:
             self.reply(txt)
 
-class Handler(Loader):
+class Handler(Loader, Launcher):
 
     """ Event Handler class. """
 
