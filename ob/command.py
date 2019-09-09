@@ -2,6 +2,7 @@
 
 import logging
 import ob
+import time
 import threading
 
 def __dir__():
@@ -20,7 +21,7 @@ aliases = {
 
 from ob.errors import ENOTXT
 from ob.obj import format
-from ob.times import days, to_day
+from ob.times import days, parse_date, to_day
 
 class Token(ob.Default):
 
@@ -74,14 +75,10 @@ class Token(ob.Default):
         if word.endswith("+"):
             self.noignore = True
         if word.endswith("-"):
-            word = word[:1]
+            word = word[:-1]
             self.ignore = word
         if "==" in word:
             self.selector, self.value = word.split("==")
-            if self.value.endswith("-"):
-                self.value = self.value[:-1]
-                if not self.noignore:
-                    self.ignore = self.selector
             self.dkey = self.selector
         elif "=" in word:
             self.setter, self.value = word.split("=")
@@ -133,9 +130,6 @@ class Command(ob.Default):
         txt2 = " ".join(spl)
         return txt2 or txt
 
-    def _tokens(self):
-        """ return a list of tokens. """
-
     def display(self, o, txt=""):
         """ display an object. """
         if "k" in self.options:
@@ -152,7 +146,10 @@ class Command(ob.Default):
         else:
             txt += " " + format(o, full=full)
         if "t" in self.options:
-            txt += " " + days(o._path)
+            try: 
+                txt += " " + days(o._path)
+            except Exception as ex:
+                pass
         txt = txt.rstrip()
         if txt:
             self.reply(txt)
@@ -184,6 +181,7 @@ class Command(ob.Default):
             token = Token()
             token.parse(nr, word)
             tokens.append(token)
+        nr = -1
         for token in tokens:
             nr += 1
             if token.chk:
@@ -201,20 +199,26 @@ class Command(ob.Default):
             if token.down:
                 prev = token.down
             if token.noignore:
-                self.notignore = token.noignore
-            if not token.noignore and token.ignore:
-                self.ignore = token.ignore
-                continue
-            elif token.dkey:
-                self.dkeys.append(token.dkey)
+                self.noignore = token.noignore
             if token.selector:
                 self.selector[token.selector] = token.value
             if token.setter:
                 self.setter[token.setter] = token.value
             if token.up:
-                self.delta = parse_date(token.up)
+                try:
+                    self.delta = parse_date(token.up)
+                except:
+                    self.delta = token.up
             elif token.down:
-                self.delta = parse_date(token.down)
+                try:
+                    self.delta = parse_date(token.down)
+                except:
+                    self.delta = token.down
+            if not self.noignore and token.ignore:
+                self.ignore = token.ignore
+                continue
+            if token.dkey:
+                self.dkeys.append(token.dkey)
             if token.arg:
                 self.args.append(token.arg)
         for opt in self.options.split(","):

@@ -144,7 +144,7 @@ def email(event):
             if arg in s:
                 del s[arg]
     event.dkeys.extend(["From", "Subject"])
-    event.options = event.options + ",t"
+    event.options = event.options + "t"
     nr = 0
     for o in k.db.find("obot.mbox.Email", s, event.index, event.delta):
         event.display(o, "%-3s" % str(nr))

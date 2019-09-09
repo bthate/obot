@@ -167,7 +167,7 @@ def names(name, delta=None):
         for fn in files:
             fnn = os.path.join(rootdir, fn).split(os.path.join(workdir, "store"))[-1]
             if delta:
-                if ime(fnn) < past:
+                if fntime(fnn) < past:
                     continue
             res.append(os.sep.join(fnn.split(os.sep)[1:]))
     return sorted(res, key=fntime)

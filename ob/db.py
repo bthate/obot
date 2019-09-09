@@ -137,6 +137,7 @@ def find(event):
                         event.selector[a] = None
                     if a not in event.dkeys:
                         event.dkeys.append(a)
+    print(event)
     nr = -1
     for o in k.db.find(event.match, event.selector, event.index, event.delta):
         nr += 1

@@ -22,8 +22,11 @@ class Todo(ob.Object):
 def log(event):
     if not event.rest:
         nr = 0
+        event.options += "t"
+        if not event.dkeys:
+            event.dkeys.append("txt")
         for o in k.db.find("obot.entry.Log", event.selector or {"txt": ""}):
-            event.display(o, str(nr))
+            event.display(o, "%-2s" % str(nr))
             nr += 1
         return
     obj = Log()
@@ -34,8 +37,11 @@ def log(event):
 def todo(event):
     if not event.rest:
         nr = 0
+        event.options += "t"
+        if "txt" not in event.dkeys:
+            event.dkeys.append("txt")
         for o in k.db.find("obot.entry.Todo", event.selector or {"txt": ""}):
-            event.display(o, str(nr))
+            event.display(o, "%-2s" % str(nr))
             nr += 1
         return
     obj = Todo()
