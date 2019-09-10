@@ -43,7 +43,7 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.display_list = ["title", "summary", "published", "link"]
+        self.display_list = ["title", "published", "link"]
         self.dosave = False
 
 class Feed(Object):
@@ -115,7 +115,6 @@ class Fetcher(Object):
             if self.cfg.dosave and "updated" in dir(feed):
                 date = file_time(to_time(feed.updated))
                 feed.save(stime=date)
-        self.seen.save()
         for o in objs:
             k.fleet.announce(self.display(o))
         return counter
@@ -129,6 +128,9 @@ class Fetcher(Object):
         """ run a poll on all registered feeds. """
         for o in k.db.all("obot.rss.Rss"):
             self._thrs.append(k.launch(self.fetch, o))
+        for thr in self._thrs:
+            thr.join()
+        self.seen.save()
         return self._thrs
 
     def start(self, repeat=True):
@@ -143,7 +145,6 @@ class Fetcher(Object):
     def stop(self):
         """ stop rss poller. """
         self.seen.save()
-
 
 def get_feed(url):
     """ return entries of a RSS feed. """
