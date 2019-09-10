@@ -72,6 +72,13 @@ class Kernel(Handler):
         if not modstr:
             return
         for mod in mods(self, modstr):
+            next = False
+            for ex in self.cfg.exclude.split(","):
+                if ex in mod.__name__:
+                    next = True
+                    break
+            if next:
+                continue
             logging.warn("init %s" % get_name(mod))
             if "init" not in dir(mod):
                 continue
@@ -123,7 +130,6 @@ class Kernel(Handler):
             return
         self._started = True
         if self.cfg.prompting:
-            self.cfg.prompting = False
             self.cfg.save()
         set_completer(k.cmds)
         enable_history()

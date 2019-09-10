@@ -31,6 +31,7 @@ opts = [
     ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('-x', '', 'string', '', 'exclude', 'skip modules'),
     ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
     ('', '--cached"', 'store_true', False, 'cached', 'use caching'),
     ('', '--debug', "string", "", 'debug', "enable debug mode"),
