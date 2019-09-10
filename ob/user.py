@@ -8,6 +8,7 @@ import time
 from ob import Object
 from ob.db import Db
 from ob.errors import ENOUSER
+from ob.obj import set
 
 def __dir__():
     return ("User", "Users", "meet")
@@ -55,7 +56,7 @@ class Users(Object):
             return u
         s = {"user": origin}
         for o in self.db.find("ob.user.User", s):
-            Users.cache.set(origin, o)
+            set(Users.cache, origin, o)
             return o
 
     def meet(self, origin, perms=None):

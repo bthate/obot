@@ -74,7 +74,8 @@ class Kernel(Handler):
         for mod in mods(self, modstr):
             next = False
             for ex in self.cfg.exclude.split(","):
-                if ex in mod.__name__:
+                print(ex, mod.__name__)
+                if ex and ex in mod.__name__:
                     next = True
                     break
             if next:
