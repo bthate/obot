@@ -17,7 +17,7 @@ from ob.dispatch import dispatch
 from ob.errors import EINIT
 from ob.handler import Event
 from ob.kernel import k
-from ob.obj import last
+from ob.obj import last, set
 from ob.trace import get_exception
 from ob.utils import locked
 

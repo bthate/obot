@@ -1,6 +1,6 @@
 """ save/load JSON files. """
 
-__version__ = 27
+__version__ = 28
 
 import datetime
 import importlib

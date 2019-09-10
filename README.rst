@@ -29,8 +29,6 @@ you can also use the install --user option of setup.py to do a local install.
 
  > python3 setup.py install obot --user
 
-
-
 shell
 =====
 
@@ -142,6 +140,15 @@ use the -p (prompt) option to provide connection arguments,  for IRC this is <se
 
 you can use the -b option to start the bot in the background and logfiles can be found in ~/.obot/logs.
 
+udp
+===
+
+using udp to relay text into a channel, start the bot with -m udp and use
+the obudp program to send text to the UDP to channel server.
+
+::
+
+ > tail -f ~/.obot/logs/ob.log | ./bin/obudp 
 
 users
 =====
@@ -164,8 +171,6 @@ you can also use the full userhost as a argument to meet.
 
  > meet user@server
  user user@server created
-
-
 
 programming
 ===========

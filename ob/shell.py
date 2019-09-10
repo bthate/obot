@@ -10,7 +10,7 @@ import sys
 import time
 
 cmds = []
-HISTFILE = ""
+HISTFILE = os.path.join(ob.workdir, "history")
 
 from ob.obj import update
 from ob.utils import cdir, hd, level
@@ -39,6 +39,8 @@ opts = [
 ]
 
 def close_history():
+    if not os.path.isfile(HISTFILE):
+        touch(HISTFILE)
     readline.write_history_file(HISTFILE)
 
 def complete(text, state):

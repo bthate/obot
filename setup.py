@@ -13,7 +13,7 @@ def readme():
 
 setup(
     name='obot',
-    version='8',
+    version='9',
     url='https://bitbucket.org/bthate/obot',
     author='Bart Thate',
     author_email='bthate@dds.nl',
@@ -23,7 +23,7 @@ setup(
     license='Public Domain',
     zip_safe=True,
     install_requires=["feedparser", "dnspython", "pyasn1_modules==0.1.5", "pyasn1==0.3.6", "sleekxmpp==1.3.1"],
-    scripts=["bin/obot", "bin/ob", "bin/obd", "bin/obs"],
+    scripts=["bin/obot", "bin/ob", "bin/obd", "bin/obs", "bin/obudp"],
     packages=["ob", "obot"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
