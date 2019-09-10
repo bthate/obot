@@ -32,6 +32,7 @@ opts = [
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
     ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
+    ('', '--cached"', 'store_true', False, 'cached', 'use caching'),
     ('', '--debug', "string", "", 'debug', "enable debug mode"),
     ('', '--logdir', "string", "", 'logdir', "directory to log to."),
     ('', '--owner', "string", "", 'owner', "owner's userhost or JID.")

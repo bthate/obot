@@ -94,6 +94,9 @@ class Db(ob.Object):
 cache = {}
 
 def cached(fn):
+    from ob.kernel import k
+    if not k.cfg.cached:
+        return hook(fn)
     global cache
     if fn not in cache:
         cache[fn] = hook(fn)
@@ -137,7 +140,6 @@ def find(event):
                         event.selector[a] = None
                     if a not in event.dkeys:
                         event.dkeys.append(a)
-    print(event)
     nr = -1
     for o in k.db.find(event.match, event.selector, event.index, event.delta):
         nr += 1

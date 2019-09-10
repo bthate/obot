@@ -45,7 +45,7 @@ class UDP(Object):
         self._starttime = time.time()
         self.cfg = Cfg()
 
-    def _output(self, txt, addr=None):
+    def output(self, txt, addr=None):
         """ output txt to channel. """
         try:
             (passwd, text) = txt.split(" ", 1)
@@ -53,10 +53,10 @@ class UDP(Object):
             return
         text = text.replace("\00", "")
         if passwd == self.cfg.password:
-            for b in fleet.bots:
+            for b in k.fleet.bots:
                 b.announce(text)
 
-    def _server(self, host="", port=""):
+    def server(self, host="", port=""):
         """ loop to read from udp socket. """
         if k.cfg.debug:
             return
@@ -84,4 +84,4 @@ class UDP(Object):
     def start(self):
         """ start udp server. """
         self.cfg = k.db.last("obot.udp.Cfg") or Cfg()
-        k.launch(self._server)
+        k.launch(self.server)

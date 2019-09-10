@@ -201,7 +201,7 @@ class XMPP(Bot):
         if ok:
             if self.cfg.channel:
                 self.join(self.cfg.channel, self.cfg.nick)
-        ob.launch(self.sleek)
+        k.launch(self.sleek)
         return self
 
     def handled(self, data):
