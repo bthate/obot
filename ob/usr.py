@@ -5,26 +5,26 @@ import logging
 import threading
 import time
 
-from ob import Object
+from ob.cls import Dict
 from ob.db import Db
-from ob.errors import ENOUSER
+from ob.err import ENOUSER
 from ob.obj import set
 
 def __dir__():
-    return ("User", "Users", "meet")
+    return ("User", "Users")
 
-class User(Object):
+class User(Dict):
 
     def __init__(self):
         super().__init__()
         self.user = ""
         self.perms = []
 
-class Users(Object):
+class Users(Dict):
 
-    cache = Object()
+    cache = Dict()
     db = Db()
-    userhosts = Object()
+    userhosts = Dict()
 
     def allowed(self, origin, perm):
         perm = perm.upper()
@@ -87,17 +87,3 @@ class Users(Object):
             user.perms.append(permission.upper())
             user.save()
         return user
-
-def meet(event):
-    if not event.args:
-        event.reply("meet origin [permissions]")
-        return
-    try:
-        origin, *perms = event.args[:]
-    except ValueError:
-        event.reply("|".join(sorted(k.users.userhosts)))
-        return
-    from ob.kernel import k
-    origin = k.users.userhosts.get(origin, origin)
-    u = k.users.meet(origin, perms)
-    event.reply("added %s" % u.user)

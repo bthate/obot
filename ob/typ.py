@@ -1,13 +1,6 @@
-""" OB types. """
+""" ob types. """
 
-import os
 import importlib
-import json
-
-def __dir__():
-    return ("get_cls", "get_type")
-
-from ob.errors import ENOFILE, EJSON
 
 def get_cls(name):
     modname, clsname = name.rsplit(".", 1)

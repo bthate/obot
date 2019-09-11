@@ -6,10 +6,9 @@ import ob
 import time
 
 from ob import __version__
-from ob.kernel import k
-from ob.shell import execute, parse_cli
-from ob.times import elapsed
-from ob.utils import hd
+from ob.krn import k
+from ob.shl import execute, parse_cli
+from ob.utl import elapsed, hd
 
 def edit(obj, setter):
     """ edit an objects with the setters key/value. """

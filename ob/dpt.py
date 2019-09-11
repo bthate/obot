@@ -4,7 +4,7 @@ import logging
 import ob
 import string
 
-from ob.utils import get_name
+from ob.utl import get_name
 
 def dispatch(handler, event):
     if not event or not event.txt:

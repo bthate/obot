@@ -3,20 +3,19 @@
 import atexit
 import logging
 import optparse
-import ob
+import ob.pst
 import os
 import readline
 import sys
 import time
 
 cmds = []
-HISTFILE = os.path.join(ob.workdir, "history")
 
+from ob.cls import Cfg
 from ob.obj import update
-from ob.utils import cdir, hd, level
-from ob.term import save, reset 
-from ob.trace import get_exception
-from ob.utils import touch
+from ob.utl import cdir, hd, level, get_exception, reset, save, touch
+
+HISTFILE = os.path.join(ob.pst.workdir, "history")
 
 def __dir__():
     return ("daemon", "execute", "parse_cli", "set_completer")
@@ -71,7 +70,7 @@ def daemon():
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 def enable_history():
-    from ob.kernel import k
+    from ob.krn import k
     global HISTFILE
     HISTFILE = os.path.abspath(os.path.join(k.cfg.workdir, "history"))
     if not os.path.exists(HISTFILE):
@@ -109,11 +108,11 @@ def make_opts(options, usage, version):
 
 def parse_cli(name="ob", version=None, wd=None, usage=None):
     import ob
-    import ob.kernel
+    import ob.krn
     ver = "%s %s" % (name.upper(), version)
     usage = usage or "%s [options] cmd"  % name
     opt, arguments = make_opts(opts, usage, ver)
-    cfg = ob.Cfg()
+    cfg = Cfg()
     cfg.update(vars(opt))
     cfg.args = arguments
     cfg.debug = False
@@ -124,10 +123,10 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
-    ob.workdir = cfg.workdir
+    ob.pst.workdir = cfg.workdir
     if cfg.daemon:
-        ob.last(ob.kernel.k.cfg)
-    ob.kernel.k.cfg.update(cfg)
+        ob.last(ob.krn.k.cfg)
+    ob.krn.k.cfg.update(cfg)
     level(cfg.level or "error")
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)
@@ -142,7 +141,7 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    from ob.kernel import k
+    from ob.krn import k
     path = os.path.join(k.cfg.workdir, "pidfile")
     f = open(path, 'w')
     f.write(str(os.getpid()))

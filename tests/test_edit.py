@@ -6,11 +6,10 @@ import oper
 import os
 import unittest
 
-from ob import Object
-from ob.command import Command
-from ob.obj import edit
+from ob.cls import Dict
+from ob.cmd import Command
 
-class Log(Object):
+class Log(Dict):
 
     """ check class attribute edit as well. """
 
@@ -18,6 +17,23 @@ class Log(Object):
         self.txt = "bla"
 
 l = Log()
+
+def edit(obj, setter):
+    """ edit an objects with the setters key/value. """
+    if not setter:
+        setter = {}
+    count = 0
+    for key, value in setter.items():
+        count += 1
+        if "," in value:
+            value = value.split(",")
+        if value in ["True", "true"]:
+            obj[key] = True
+        elif value in ["False", "false"]:
+            obj[key] = False
+        else:
+            obj[key] = value
+    return count
 
 class Test_Edit(unittest.TestCase):
 

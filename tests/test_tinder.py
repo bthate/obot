@@ -1,5 +1,4 @@
 import logging
-import ob
 import os
 import random
 import sys
@@ -8,9 +7,10 @@ import unittest
 
 import obot
 
-from ob.kernel import k
-from ob.handler import Event
-from ob.utils import consume, randomname
+from ob.cls import Dict
+from ob.krn import k
+from ob.hdl import Event
+from ob.utl import consume, randomname
 
 def consume(elems):
     fixed = []
@@ -23,7 +23,7 @@ def consume(elems):
         except ValueError:
             continue
 
-class Param(ob.Object):
+class Param(Dict):
 
     pass
 

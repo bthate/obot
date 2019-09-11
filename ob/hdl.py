@@ -8,16 +8,14 @@ import pkgutil
 import queue
 import threading
 
-from ob import Object, Register
-from ob.command import Command
-from ob.errors import ENOTIMPLEMENTED
-from ob.loader import Loader
+from ob.cls import Cfg, Dict, Register
+from ob.cmd import Command
+from ob.err import ENOTIMPLEMENTED
+from ob.ldr import Loader
 from ob.obj import format
-from ob.times import days
-from ob.tasks import Launcher
-from ob.trace import get_exception
-from ob.types import get_type
-from ob.utils import get_name
+from ob.thr import Launcher
+from ob.utl import days, get_exception, get_name
+from ob.cls import get_type
 
 def __dir__():
     return ("Event", "Handler")
@@ -47,7 +45,7 @@ class Handler(Loader, Launcher):
         self._stopped = False
         self._threaded = False
         self._type = get_type(self)
-        self.cfg = ob.Cfg()
+        self.cfg = Cfg()
         self.classes = []
         self.cmds = Register()
         self.handlers = []
@@ -129,7 +127,7 @@ class Handler(Loader, Launcher):
                 self.cmds[key] = o
                 self.modules[key] = o.__module__
         for key, o in inspect.getmembers(mod, inspect.isclass):
-            if issubclass(o, ob.Object):
+            if issubclass(o, Dict):
                 t = get_type(o)
                 if t not in self.classes:
                     self.classes.append(t)

@@ -3,15 +3,14 @@ import random
 import unittest
 
 from obot import Bot
-from ob.kernel import k
-from ob.handler import Event
-from ob.types import get_cls
-from ob.trace import get_exception
+from ob.krn import k
+from ob.hdl import Event
+from ob.typ import get_cls
+from ob.utl import get_exception
 
 k.cfg.prompt = False
 k.walk("obot")
 k.walk("ob")
-k.walk("oper")
 k.users.oper("test@shell")
 
 class Test_Fuzzer(unittest.TestCase):

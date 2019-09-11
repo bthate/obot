@@ -20,13 +20,12 @@ import random
 import re
 import urllib
 
-from ob import Cfg, Object
+from ob.clk import Repeater
+from ob.cls import Cfg, Dict
 from ob.obj import last
-from ob.clock import Repeater
-from ob.times import to_time
-from ob.utils import get_url, strip_html, unescape
+from ob.krn import k
+from ob.utl import get_url, strip_html, to_time, unescape
 
-from ob.kernel import k
 
 def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"fetch", "init", "rss")
@@ -46,11 +45,11 @@ class Cfg(Cfg):
         self.display_list = ["title", "published", "link"]
         self.dosave = False
 
-class Feed(Object):
+class Feed(Dict):
 
     """ feed entry. """
 
-class Rss(Object):
+class Rss(Dict):
 
     """ rss entry to store feed url. """
 
@@ -58,7 +57,7 @@ class Rss(Object):
         super().__init__()
         self.rss = ""
 
-class Seen(Object):
+class Seen(Dict):
 
     """ stores seen feed urls. """
 
@@ -66,7 +65,7 @@ class Seen(Object):
         super().__init__()
         self.urls = []
 
-class Fetcher(Object):
+class Fetcher(Dict):
 
     """ RSS feed fetcher. """
 
@@ -79,9 +78,9 @@ class Fetcher(Object):
     def display(self, o):
         """ return displayable string of a feed item. """
         result = ""
-        if "display_list" in dir(o):
+        try:
             dl = o.display_list
-        else:
+        except AttributeError:
             dl = self.cfg.display_list
         for key in dl:
             data = o.get(key, None)
@@ -150,7 +149,7 @@ def get_feed(url):
     """ return entries of a RSS feed. """
     result = ""
     if k.cfg.debug:
-        return [Object(), Object()]
+        return [Dict(), Dict()]
     try:
         result = get_url(url).data
     except urllib.error.HTTPError as ex:

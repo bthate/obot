@@ -10,12 +10,13 @@ import sys
 import threading
 import _thread
 
-from ob import Cfg, Object
-from ob.dispatch import dispatch
-from ob.errors import EINIT
-from ob.handler import Event
-from ob.kernel import k
+from ob.cls import Cfg, Dict
+from ob.dpt import dispatch
+from ob.err import EINIT
+from ob.hdl import Event
+from ob.krn import k
 from ob.obj import last
+
 from obot import Bot
 
 def __dir__():
@@ -88,7 +89,7 @@ class XMPP(Bot):
         self.client = None
         self.jid = None
         self.rooms = []
-        self.state = Object()
+        self.state = Dict()
         self.register(dispatch)
 
     def _bind(self, data):
@@ -115,7 +116,7 @@ class XMPP(Bot):
                                                       plugin_whitelist=[],
                                                       escape_quotes=False,
                                                       sasl_mech=None)
-        self.client._error = Object()
+        self.client._error = Dict()
         self.client.register_plugin(u'xep_0045')
         self.client.add_event_handler('errored', self.handled)
         self.client.add_event_handler('failed_auth', self.handled)

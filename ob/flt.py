@@ -2,13 +2,13 @@
 
 import logging
 
-from ob import Object
-from ob.utils import get_name
+from ob.cls import Dict
+from ob.utl import get_name
 
 def __dir__():
     return ("Fleet",)
 
-class Fleet(Object):
+class Fleet(Dict):
 
     def __init__(self):
         super().__init__()

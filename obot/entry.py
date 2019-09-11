@@ -1,19 +1,18 @@
 """ log and todo commands. """
 
-import ob
-
-from ob.kernel import k
+from ob.cls import Dict
+from ob.krn import k
 
 def __dir__():
     return ("Log", "Todo", "log", "todo")
 
-class Log(ob.Object):
+class Log(Dict):
 
     def __init__(self):
         super().__init__()
         self.txt = ""
 
-class Todo(ob.Object):
+class Todo(Dict):
 
     def __init__(self):
         super().__init__()

@@ -4,46 +4,46 @@ import os
 import time
 import unittest
 
-from ob import Object
+from ob.cls import Dict
 
-class Test_Object(unittest.TestCase):
+class Test_Dict(unittest.TestCase):
 
     def test_checkattribute(self):
-        o = Object()
+        o = Dict()
         with self.failUnlessRaises(AttributeError):
             o.blabla
 
     def test_construct(self):
-        o = Object()
-        self.assertEqual(type(o), Object)
+        o = Dict()
+        self.assertEqual(type(o), Dict)
 
     def test_cleanpath(self):
-        o = Object()
+        o = Dict()
         self.assertEqual(str(o), '{}')
 
     def test_cleanload(self):
-        o = Object()
+        o = Dict()
         o.test = "blamek"
         p = o.save()
-        oo = Object().load(p)
+        oo = Dict().load(p)
         self.assertEqual(o.test, oo.test)
 
     def test_depth(self):
-        o = Object()
-        o.state = Object()
+        o = Dict()
+        o.state = Dict()
         o.state.starttime = time.time()
         self.assertTrue(isinstance(o.state.starttime, float)) 
 
     def test_settingattribute(self):
-        o = Object()
+        o = Dict()
         o.bla = "mekker"
         self.assertEqual(o.bla, "mekker")
 
     def test_typed(self):
-        o = Object()
-        self.assertEqual(o.__class__.__name__, "Object")
+        o = Dict()
+        self.assertEqual(o.__class__.__name__, "Dict")
         
     def test_underscore(self):
-        o = Object()
+        o = Dict()
         o._bla = "mekker"
         self.assertEqual(o._bla, "mekker")

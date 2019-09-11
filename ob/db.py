@@ -5,14 +5,15 @@ import ob
 import os
 import time
 
+from ob.cls import Dict
 from ob.obj import search
-from ob.times import days, fntime
-from ob.utils import last
+from ob.typ import get_cls
+from ob.utl import days, fntime, last
 
 def __dir__():
-    return ("Db", "hook", "find")
+    return ("Db", "cached", "cache", "hook", "find")
 
-class Db(ob.Object):
+class Db(Dict):
 
     """ database object providing all, deleted, find, last methods. """
 
@@ -21,7 +22,7 @@ class Db(ob.Object):
         if not selector:
             selector = {}
         nr = -1
-        for fn in ob.names(otype, delta):
+        for fn in names(otype, delta):
             nr += 1
             o = cached(fn)
             if index is not None and nr != index:
@@ -35,7 +36,7 @@ class Db(ob.Object):
         if not selector:
             selector = {}
         nr = -1
-        for fn in ob.names(otype):
+        for fn in names(otype):
             nr += 1
             o = cached(fn)
             if "_deleted" not in dir(o):
@@ -51,7 +52,7 @@ class Db(ob.Object):
         if not selector:
             selector = {}
         nr = -1
-        for fn in ob.names(otype, delta):
+        for fn in names(otype, delta):
             o = cached(fn)
             if not o:
                 continue
@@ -62,7 +63,7 @@ class Db(ob.Object):
                 yield o
 
     def last_fn(self, type, index=None, delta=0):
-        fns = ob.names(type, delta)
+        fns = names(type, delta)
         if fns:
             fn = fns[-1]
             return (fn, cached(fn))
@@ -74,7 +75,7 @@ class Db(ob.Object):
             selector = {}
         res = []
         nr = -1
-        for fn in ob.names(otype, delta):
+        for fn in names(otype, delta):
             o = cached(fn)
             if not o:
                 continue
@@ -94,7 +95,8 @@ class Db(ob.Object):
 cache = {}
 
 def cached(fn):
-    from ob.kernel import k
+    """ return a cached value in k.cfg.cached is set. """
+    from ob.krn import k
     if not k.cfg.cached:
         return hook(fn)
     global cache
@@ -107,40 +109,29 @@ def hook(fn):
     t = fn.split(os.sep)[0]
     if not t:
         raise ob.errors.ENOFILE(fn)
-    o = ob.types.get_cls(t)()
+    o = get_cls(t)()
     try:
         o.load(fn)
     except json.decoder.JSONDecodeError:
         raise ob.errors.EJSON(fn)
     return o
 
-def find(event):
-    """ find an object matching to a key==value selector. """
-    from ob.kernel import k
-    if "k" in event.options:
-        o = k.db.last(event.match)
-        if o:
-            event.reply("|".join(sorted({x for x in o.keys() if not x.startswith("_")})))
-            return
-    if not event.args:
-        fns = os.listdir(os.path.join(ob.workdir, "store"))
-        fns = sorted({x.split(".")[-1].lower() for x in fns})
-        if fns:
-            event.reply("|".join(fns))
-        return
-    if len(event.args) == 1 and not event.selector:
-        fn, o = k.db.last_fn(event.match)
-        if fn:
-            res = sorted({x.split(".")[-1].lower() for x in o})
-            if len(res) > 1:
-                event.reply("|".join(res))
-            else:
-                for a in res:
-                    if a not in event.selector:
-                        event.selector[a] = None
-                    if a not in event.dkeys:
-                        event.dkeys.append(a)
-    nr = -1
-    for o in k.db.find(event.match, event.selector, event.index, event.delta):
-        nr += 1
-        event.display(o, str(nr))
+def names(name, delta=None):
+    """ show all object filenames on disk. """
+    if not name:
+        return []
+    if not delta:
+        delta = 0
+    assert ob.pst.workdir
+    p = os.path.join(ob.pst.workdir, "store", name) + os.sep
+    res = []
+    now = time.time()
+    past = now + delta
+    for rootdir, dirs, files in os.walk(p, topdown=True):
+        for fn in files:
+            fnn = os.path.join(rootdir, fn).split(os.path.join(ob.pst.workdir, "store"))[-1]
+            if delta:
+                if fntime(fnn) < past:
+                    continue
+            res.append(os.sep.join(fnn.split(os.sep)[1:]))
+    return sorted(res, key=fntime)

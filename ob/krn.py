@@ -8,17 +8,16 @@ import threading
 import time
 import _thread
 
-from ob import Cfg, Object
+from ob.cls import Cfg, Dict
 from ob.db import Db
-from ob.dispatch import dispatch
-from ob.errors import EINIT 
-from ob.fleet import Fleet
-from ob.handler import Event, Handler
-from ob.shell import enable_history, set_completer
-from ob.tasks import Launcher
-from ob.trace import get_exception
-from ob.user import Users
-from ob.utils import get_name, mods
+from ob.dpt import dispatch
+from ob.err import EINIT 
+from ob.flt import Fleet
+from ob.hdl import Event, Handler
+from ob.shl import enable_history, set_completer
+from ob.thr import Launcher
+from ob.usr import Users
+from ob.utl import get_exception, get_name, mods
 
 def __dir__():
     return ("cfg", "Kernel", "k")
@@ -41,7 +40,7 @@ class Kernel(Handler):
         self.db = Db()
         self.fleet = Fleet()
         self.register(dispatch)
-        self.state = Object()
+        self.state = Dict()
         self.state.started = False
         self.state.starttime = time.time()
         self.users = Users()
@@ -56,7 +55,7 @@ class Kernel(Handler):
         """ execute a string as a command. """
         if not txt:
             return
-        self.load_mod("ob.dispatch")
+        self.load_mod("ob.dpt")
         self.cfg.prompt = False
         self.cfg.verbose = True
         k.fleet.add(self)

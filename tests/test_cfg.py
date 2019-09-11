@@ -1,7 +1,8 @@
 """ configuration tests """
 
 import unittest
-import ob
+
+from ob.cls import Cfg
 
 class O(object):
 
@@ -17,12 +18,12 @@ class Test_Cfg(unittest.TestCase):
             res = o.bla()
 
     def test_last1(self):
-        cfg = ob.Cfg()
+        cfg = Cfg()
         cfg.last = "bla"
         self.assertEqual(cfg.last, "bla")
 
     def test_last3(self):
-        cfg = ob.Cfg()
+        cfg = Cfg()
         cfg.last = "bla"
         with self.assertRaises(TypeError) as x:
             l = cfg.last()

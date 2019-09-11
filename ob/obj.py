@@ -1,10 +1,23 @@
 """ save/load JSON files. """
 
-from ob.types import get_type
+from ob.cls import Dict, get_type
+
+def default(obj):
+    """ default an object to JSON. """
+    if isinstance(obj, Dict):
+        return vars(obj)
+    if isinstance(obj, dict):
+        return obj.items()
+    if isinstance(obj, list):
+        return iter(obj)
+    otype = type(obj)
+    if otype in [str, True, False, int, float]:
+        return obj
+    return repr(obj)
 
 def eq(obj1, obj2):
     """ check for equality. """
-    if isinstance(obj2, (Object, dict)):
+    if isinstance(obj2, (Dict, dict)):
         return obj1.__dict__ == obj2.__dict__
     return False
 
@@ -48,7 +61,7 @@ def keys(obj):
 
 def last(obj, skip=True):
     """ return the last version of this type. """
-    from ob.kernel import k
+    from ob.krn import k
     val = k.db.last(str(get_type(obj)))
     if val:
         update(obj, val)
@@ -109,7 +122,7 @@ def setobj(obj, setter):
 def sliced(obj, keys=None):
     """ return a new object with the sliced result. """
     import ob
-    val = ob.Object()
+    val = Dict()
     if not keys:
         keys = obj.keys()
     for key in keys:
@@ -138,4 +151,3 @@ def update(obj1, obj2, keys=None, skip=False):
 def values(obj):
     """ return values of obj. """
     return obj.__dict__.values()
-

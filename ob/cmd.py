@@ -19,11 +19,12 @@ aliases = {
            "v": "show version"
            }
 
-from ob.errors import ENOTXT
+from ob.cls import Default
+from ob.err import ENOTXT
 from ob.obj import format
-from ob.times import days, parse_date, to_day
+from ob.utl import days, parse_date, to_day
 
-class Token(ob.Default):
+class Token(Default):
 
     """ represent a single word in a sentence. """
 
@@ -58,7 +59,7 @@ class Token(ob.Default):
         except ValueError:
             pass
         if nr == 1:
-            from ob.kernel import k
+            from ob.krn import k
             self.match = k.names.get(word, word)
             self.arg = word
             return
@@ -91,7 +92,7 @@ class Token(ob.Default):
             self.selector = word
             self.value = None
 
-class Command(ob.Default):
+class Command(Default):
 
     """ A line of txt parsed into a command. """
 
@@ -238,7 +239,7 @@ class Command(ob.Default):
         self.result.append(txt)
 
     def show(self):
-        from ob.kernel import k
+        from ob.krn import k
         for line in self.result:
             if self.orig == repr(k):
                 print(line)

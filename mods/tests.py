@@ -1,7 +1,6 @@
 """ test commands. """
 
 import logging
-import ob
 import obot
 import os
 import random
@@ -12,13 +11,14 @@ import unittest
 
 import ob.trace
 
+from ob.cls import Dict
 from ob.kernel import k
 from ob.handler import Event, Handler
 from ob.utils import cdir, consume, match, randomname
 
 outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ"
 
-class Param(ob.Object):
+class Param(Dict):
 
     pass
 

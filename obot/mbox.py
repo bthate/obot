@@ -4,8 +4,8 @@ import mailbox
 import ob
 import os
 
-from ob import Object
-from ob.kernel import k
+from ob.cls import Dict
+from ob.krn import k
 
 bdmonths = ['Bo', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
             'Sep', 'Oct', 'Nov', 'Dec']
@@ -24,7 +24,7 @@ monthint = {
     'Dec': 12
 }
 
-class Email(Object):
+class Email(Dict):
 
     """ email data. """
 

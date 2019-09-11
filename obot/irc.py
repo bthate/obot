@@ -12,14 +12,13 @@ import textwrap
 import time
 import threading
 
-from ob import Object 
-from ob.dispatch import dispatch
-from ob.errors import EINIT
-from ob.handler import Event
-from ob.kernel import k
+from ob.cls import Cfg, Dict 
+from ob.dpt import dispatch
+from ob.err import EINIT
+from ob.hdl import Event
+from ob.krn import k
 from ob.obj import last, set
-from ob.trace import get_exception
-from ob.utils import locked
+from ob.utl import get_exception, locked
 
 from obot import Bot
 
@@ -44,7 +43,7 @@ def init():
     bot.start()
     return bot
 
-class Cfg(ob.Cfg):
+class Cfg(Cfg):
 
     """ IRC configuration file. """
 
@@ -117,7 +116,7 @@ class IRC(Bot):
         self.cc = "!"
         self.cfg = Cfg()
         self.channels = []
-        self.state = Object()
+        self.state = Dict()
         self.state.error = ""
         self.state.last = 0
         self.state.lastline = ""

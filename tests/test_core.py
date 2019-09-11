@@ -2,9 +2,9 @@ import logging
 import os
 import unittest
 
-from ob import workdir
-from ob import Object
-from ob.kernel import  k
+from ob.pst import workdir
+from ob.cls import Dict
+from ob.krn import  k
 
 class ENOTCOMPAT(Exception):
     pass
@@ -12,13 +12,13 @@ class ENOTCOMPAT(Exception):
 class Test_Core(unittest.TestCase):
 
     def test_load2(self):
-        o = Object()
+        o = Dict()
         o.bla = "mekker"
         p = o.save()
-        oo = Object().load(p)
+        oo = Dict().load(p)
         self.assertEqual(oo.bla, "mekker")
 
     def test_save(self):
-        o = Object()
+        o = Dict()
         p = o.save()
         self.assertTrue(os.path.exists(os.path.join(workdir, "store", p)))

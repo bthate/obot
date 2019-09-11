@@ -1,44 +1,17 @@
 """ import all sub modules. """
 
 import ob
-import ob.utils
-import ob.user
-import ob.fleet
+import ob.utl
+import ob.usr
+import ob.flt
 import ob.db
-import ob.loader
-import ob.handler
-import ob.kernel
-import ob.command
+import ob.ldr
+import ob.hdl
+import ob.krn
+import ob.cmd
 import ob.cmds
-import ob.errors
-import ob.shell
-import ob.tasks
-import ob.term
-import ob.trace
-import ob.types
-import ob.clock
-
-def init():
-    from ob.kernel import k
-    for mn in __dir__():
-        k.walk("ob.%s" % mn)
-
-def __dir__():
-    return ("clock",
-            "cmds",
-            "command",
-            "db",
-            "errors",
-            "fleet",
-            "handler",
-            "kernel",
-            "loader",
-            "shell",
-            "show",
-            "tasks",
-            "term",
-            "times",
-            "trace",
-            "types",
-            "user",
-            "utils")
+import ob.err
+import ob.shl
+import ob.thr
+import ob.clk
+import ob.utl
