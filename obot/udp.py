@@ -6,8 +6,8 @@ import ob
 import socket
 import time
 
+from ob import k
 from ob.cls import Cfg, Dict
-from ob.krn import k
 
 def __dir__():
     return ("UDP", "Cfg", "init") 

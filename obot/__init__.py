@@ -6,8 +6,8 @@ import queue
 import sys
 import threading
 
+from ob import k
 from ob.cls import Cfg
-from ob.krn import k
 from ob.hdl import Event, Handler
 from ob.shl import enable_history, set_completer
 

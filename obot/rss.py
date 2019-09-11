@@ -20,10 +20,9 @@ import random
 import re
 import urllib
 
+from ob import k, last
 from ob.clk import Repeater
 from ob.cls import Cfg, Dict
-from ob.obj import last
-from ob.krn import k
 from ob.utl import get_url, strip_html, to_time, unescape
 
 

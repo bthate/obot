@@ -10,12 +10,11 @@ import sys
 import threading
 import _thread
 
+from ob import k, last
 from ob.cls import Cfg, Dict
 from ob.dpt import dispatch
 from ob.err import EINIT
 from ob.hdl import Event
-from ob.krn import k
-from ob.obj import last
 
 from obot import Bot
 

@@ -1,10 +1,9 @@
 """ save/load JSON files. """
 
-workdir = ""
-
 import datetime
 import json
 import logging
+import ob
 import os
 
 from ob.utl import cdir, locked
@@ -17,9 +16,9 @@ class Persist:
     def load(self, path):
         """ load this object from disk. """
         assert path
-        assert workdir
+        assert ob.workdir
         logging.debug("load %s" % path)
-        path = os.path.join(workdir, "store", path)
+        path = os.path.join(ob.workdir, "store", path)
         if not os.path.exists(path):
             assert ENOFILE(path)
         with open(path, "r") as ofile:
@@ -33,7 +32,7 @@ class Persist:
         
             save this object to disk.
         """
-        assert workdir
+        assert ob.workdir
         from ob.cls import get_type
         otype = get_type(self)
         if strict:
@@ -50,7 +49,7 @@ class Persist:
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)
             path = os.path.join(otype, stime)
         logging.debug("save %s" % path)
-        opath = os.path.join(workdir, "store", path)
+        opath = os.path.join(ob.workdir, "store", path)
         cdir(opath)
         logging.debug("save %s" % path)
         self._type = get_type(self)
@@ -91,14 +90,14 @@ def names(name, delta=None):
         return []
     if not delta:
         delta = 0
-    assert workdir
-    p = os.path.join(workdir, "store", name) + os.sep
+    assert ob.workdir
+    p = os.path.join(ob.workdir, "store", name) + os.sep
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(workdir, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(ob.workdir, "store"))[-1]
             if delta:
                 if fntime(fnn) < past:
                     continue

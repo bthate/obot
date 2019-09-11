@@ -59,17 +59,9 @@ def keys(obj):
     except:
         return obj.keys()
 
-def last(obj, skip=True):
-    """ return the last version of this type. """
-    from ob.krn import k
-    val = k.db.last(str(get_type(obj)))
-    if val:
-        update(obj, val)
-
 def ne(obj1, obj2):
     """ do a not equal test. """
     return obj1.__dict__ != obj2.__dict__
-
 
 def search(obj, match: None):
     """ do a strict key,value match. """

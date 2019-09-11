@@ -7,7 +7,6 @@ import json
 import html.parser
 import logging
 import logging.handlers
-import ob
 import os
 import random
 import re
@@ -225,7 +224,6 @@ def locked(func):
 
 def level(loglevel="", logdir="", logfile="ob.log", nostream=False):
     """ initiate logging. """
-    from ob.krn import k
     if not loglevel:
         loglevel = "error"
     logdir = k.cfg.logdir or logdir or os.path.join(hd(".obot"), "logs")
@@ -364,7 +362,7 @@ def setup(fd):
     return old
 
 def get_exception(txt="", sep=""):
-    from ob.krn import k
+    from ob import k
     exctype, excvalue, tb = sys.exc_info()
     trace = traceback.extract_tb(tb)
     result = ""

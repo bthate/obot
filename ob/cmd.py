@@ -59,8 +59,7 @@ class Token(Default):
         except ValueError:
             pass
         if nr == 1:
-            from ob.krn import k
-            self.match = k.names.get(word, word)
+            self.match = ob.k.names.get(word, word)
             self.arg = word
             return
         if "http" in word:
@@ -239,9 +238,8 @@ class Command(Default):
         self.result.append(txt)
 
     def show(self):
-        from ob.krn import k
         for line in self.result:
-            if self.orig == repr(k):
+            if self.orig == repr(ob.k):
                 print(line)
                 continue
             k.say(self.orig, self.channel, line, self.type)

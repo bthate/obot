@@ -2,7 +2,6 @@
 
 __version__ = 1
 
-import ob
 import logging
 import os
 import socket
@@ -12,12 +11,12 @@ import textwrap
 import time
 import threading
 
+from ob import k, last
 from ob.cls import Cfg, Dict 
 from ob.dpt import dispatch
 from ob.err import EINIT
 from ob.hdl import Event
-from ob.krn import k
-from ob.obj import last, set
+from ob.obj import set
 from ob.utl import get_exception, locked
 
 from obot import Bot

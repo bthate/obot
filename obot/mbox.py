@@ -1,11 +1,11 @@
 """ email to object scanner. """
 
 import mailbox
-import ob
 import os
 
+from ob import k
 from ob.cls import Dict
-from ob.krn import k
+from ob.obj import format
 
 bdmonths = ['Bo', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
             'Sep', 'Oct', 'Nov', 'Dec']
@@ -115,7 +115,7 @@ def cor(event):
     event.selector["From"] = event.args[0]
     nr = 0
     for email in k.db.all("obot.mbox.Email", event.selector):
-        event.reply("%s %s" % (nr, ob.format(email, event.selector.keys())))
+        event.reply("%s %s" % (nr, format(email, event.selector.keys())))
         nr += 1
 
 def email(event):

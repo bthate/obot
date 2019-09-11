@@ -1,7 +1,6 @@
 """ object query. """
 
 import json
-import ob
 import os
 import time
 
@@ -11,7 +10,7 @@ from ob.typ import get_cls
 from ob.utl import days, fntime, last
 
 def __dir__():
-    return ("Db", "cached", "cache", "hook", "find")
+    return ("Db", "hook")
 
 class Db(Dict):
 
@@ -24,7 +23,7 @@ class Db(Dict):
         nr = -1
         for fn in names(otype, delta):
             nr += 1
-            o = cached(fn)
+            o = hook(fn)
             if index is not None and nr != index:
                 continue
             if selector and not search(o, selector):
@@ -38,7 +37,7 @@ class Db(Dict):
         nr = -1
         for fn in names(otype):
             nr += 1
-            o = cached(fn)
+            o = hook(fn)
             if "_deleted" not in dir(o):
                 continue
             if not o._deleted:
@@ -53,7 +52,7 @@ class Db(Dict):
             selector = {}
         nr = -1
         for fn in names(otype, delta):
-            o = cached(fn)
+            o = hook(fn)
             if not o:
                 continue
             if search(o, selector):
@@ -66,7 +65,7 @@ class Db(Dict):
         fns = names(type, delta)
         if fns:
             fn = fns[-1]
-            return (fn, cached(fn))
+            return (fn, hook(fn))
         return (None, None)
 
     def last(self, otype, selector=None, index=None, delta=0):
@@ -76,7 +75,7 @@ class Db(Dict):
         res = []
         nr = -1
         for fn in names(otype, delta):
-            o = cached(fn)
+            o = hook(fn)
             if not o:
                 continue
             if selector and search(o, selector):
@@ -91,18 +90,6 @@ class Db(Dict):
             if s:
                 return s[-1][-1]
         return None
-
-cache = {}
-
-def cached(fn):
-    """ return a cached value in k.cfg.cached is set. """
-    from ob.krn import k
-    if not k.cfg.cached:
-        return hook(fn)
-    global cache
-    if fn not in cache:
-        cache[fn] = hook(fn)
-    return cache[fn]
 
 def hook(fn):
     """ read json file from fn and create corresponding object. """

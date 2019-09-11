@@ -20,7 +20,7 @@ from ob.usr import Users
 from ob.utl import get_exception, get_name, mods
 
 def __dir__():
-    return ("cfg", "Kernel", "k")
+    return ("Cfg", "Kernel",)
 
 class Cfg(Cfg):
 
@@ -58,7 +58,7 @@ class Kernel(Handler):
         self.load_mod("ob.dpt")
         self.cfg.prompt = False
         self.cfg.verbose = True
-        k.fleet.add(self)
+        self.fleet.add(self)
         e = Event()
         e.txt = txt
         e.options = self.cfg.options
@@ -105,7 +105,7 @@ class Kernel(Handler):
 
     def poll(self):
         e = Event()
-        e.options = k.cfg.options
+        e.options = self.cfg.options
         e.origin = "root@shell"
         self.prompt(e)
         return e
@@ -131,7 +131,7 @@ class Kernel(Handler):
         self._started = True
         if self.cfg.prompting:
             self.cfg.save()
-        set_completer(k.cmds)
+        set_completer(self.cmds)
         enable_history()
         super().start(handler or self.handler, input, output)
 
@@ -140,5 +140,3 @@ class Kernel(Handler):
         while not self._stopped:
             time.sleep(1.0)
 
-#:
-k = Kernel()

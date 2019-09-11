@@ -3,7 +3,7 @@
 import atexit
 import logging
 import optparse
-import ob.pst
+import ob
 import os
 import readline
 import sys
@@ -13,9 +13,9 @@ cmds = []
 
 from ob.cls import Cfg
 from ob.obj import update
-from ob.utl import cdir, hd, level, get_exception, reset, save, touch
+from ob.utl import cdir, hd, get_exception, reset, save, touch
 
-HISTFILE = os.path.join(ob.pst.workdir, "history")
+HISTFILE = os.path.join(ob.workdir, "history")
 
 def __dir__():
     return ("daemon", "execute", "parse_cli", "set_completer")
@@ -70,9 +70,8 @@ def daemon():
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 def enable_history():
-    from ob.krn import k
     global HISTFILE
-    HISTFILE = os.path.abspath(os.path.join(k.cfg.workdir, "history"))
+    HISTFILE = os.path.abspath(os.path.join(ob.workdir, "history"))
     if not os.path.exists(HISTFILE):
         touch(HISTFILE)
     else:
@@ -109,6 +108,7 @@ def make_opts(options, usage, version):
 def parse_cli(name="ob", version=None, wd=None, usage=None):
     import ob
     import ob.krn
+    import ob.log
     ver = "%s %s" % (name.upper(), version)
     usage = usage or "%s [options] cmd"  % name
     opt, arguments = make_opts(opts, usage, ver)
@@ -123,11 +123,11 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
-    ob.pst.workdir = cfg.workdir
+    ob.workdir = cfg.workdir
     if cfg.daemon:
         ob.last(ob.krn.k.cfg)
-    ob.krn.k.cfg.update(cfg)
-    level(cfg.level or "error")
+    ob.k.cfg.update(cfg)
+    ob.log.level(cfg.level or "error")
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)
     logging.warning(txt)
@@ -141,8 +141,7 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    from ob.krn import k
-    path = os.path.join(k.cfg.workdir, "pidfile")
+    path = os.path.join(ob.workdir, "pidfile")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

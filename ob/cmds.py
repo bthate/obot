@@ -5,8 +5,8 @@ import obot
 import time
 import threading
 
+from ob import k
 from ob.cls import Dict
-from ob.krn import k
 from ob.shl import set_completer
 from ob.utl import elapsed, get_name, mods
 
@@ -29,7 +29,7 @@ def find(event):
             event.reply("|".join(sorted({x for x in o.keys() if not x.startswith("_")})))
             return
     if not event.args:
-        fns = os.listdir(os.path.join(ob.pst.workdir, "store"))
+        fns = os.listdir(os.path.join(ob.workdir, "store"))
         fns = sorted({x.split(".")[-1].lower() for x in fns})
         if fns:
             event.reply("|".join(fns))

@@ -1,11 +1,10 @@
 """ timer, repeater. """
 
-import ob
 import threading
 import time
 
+from ob import k
 from ob.cls import Cfg, Dict
-from ob.krn import k
 from ob.utl import get_name
 
 def __dir__():
@@ -34,7 +33,7 @@ class Timers(Dict):
                 del self.timers[r]
 
     def start(self):
-        for e in k.db.all("ob.clock.Timers"):
+        for e in k.db.all("ob.clk.Timers"):
             if "done" in e and e.done:
                 continue
             if "time" not in e:

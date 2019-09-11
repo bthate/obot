@@ -1,7 +1,7 @@
 """ log and todo commands. """
 
+from ob import k
 from ob.cls import Dict
-from ob.krn import k
 
 def __dir__():
     return ("Log", "Todo", "log", "todo")
