@@ -10,15 +10,16 @@ import time
 import unittest
 
 import ob
+
+from ob import k
 from ob.cls import get_cls
-from ob.krn import k
+from ob.log import level
 from ob.shl import execute, parse_cli
-from ob.utl import elapsed, level
+from ob.utl import elapsed
 
 def initialize():
     k.walk("obot")
     k.walk("ob")
-    k.walk("oper")
     for c in k.classes:
         try:
             o = get_cls(c)()
@@ -33,7 +34,7 @@ def main():
         shutil.rmtree("testdata")
     except:
         pass
-    ob.pst.workdir = "testdata"
+    ob.workdir = "testdata"
     level("debug")
     initialize()
     k.cfg.debug = True

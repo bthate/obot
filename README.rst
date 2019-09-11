@@ -222,26 +222,21 @@ ob
     :template: module.rst
 
     ob
-    ob.all
-    ob.clock
+    ob.clk
+    ob.cmd
     ob.cmds
-    ob.command
     ob.db
-    ob.dispatch
-    ob.errors
-    ob.fleet
-    ob.handler
-    ob.kernel
-    ob.loader
-    ob.shell
-    ob.show
-    ob.tasks
-    ob.term
-    ob.times
-    ob.trace
-    ob.types
-    ob.user
-    ob.utils
+    ob.dpt
+    ob.err
+    ob.flt
+    ob.hdl
+    ob.krn
+    ob.ldr
+    ob.shl
+    ob.thr
+    ob.typ
+    ob.usr
+    ob.utl
 
 obot
 ====
@@ -254,10 +249,8 @@ obot
     obot.irc
     obot.mbox
     obot.rss
-    obot.stats
     obot.udp
     obot.xmpp
-    obot.wisdom
 
 contact
 =======

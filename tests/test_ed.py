@@ -2,12 +2,11 @@
 
 import json
 import logging
-import oper
 import os
 import unittest
 
+from ob import k
 from ob.cmd import Command
-from ob.krn import k
 
 class Test_Ed(unittest.TestCase):
 

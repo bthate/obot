@@ -3,7 +3,7 @@ import random
 import unittest
 
 from obot import Bot
-from ob.krn import k
+from ob import k
 from ob.hdl import Event
 from ob.typ import get_cls
 from ob.utl import get_exception

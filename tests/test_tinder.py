@@ -7,28 +7,17 @@ import unittest
 
 import obot
 
+from ob import k
 from ob.cls import Dict
-from ob.krn import k
 from ob.hdl import Event
 from ob.utl import consume, randomname
-
-def consume(elems):
-    fixed = []
-    for e in elems:
-        e.wait()
-        fixed.append(e)
-    for f in fixed:
-        try:
-            elems.remove(f)
-        except ValueError:
-            continue
 
 class Param(Dict):
 
     pass
 
 k.cfg.prompt = False
-k.walk("oper")
+k.walk("ob")
 k.walk("obot")
 k.start()
 

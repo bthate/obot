@@ -2,10 +2,10 @@
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-from ob.shell import daemon, execute,parse_cli
+from ob.shl import daemon, execute,parse_cli
 from obot import __version__
 
-from ob.kernel import k
+from ob import k
 
 def main():
     parse_cli("obot", __version__)

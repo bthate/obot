@@ -27,18 +27,14 @@ class Persist:
         return self
 
     @locked
-    def save(self, path="", stime=None, timed=False, strict=False):
-        """ save(path="",stime=None, timed=False, strict=False)
+    def save(self, path="", stime=None, timed=False):
+        """ save(path="", stime=None, timed=False, strict=False)
         
             save this object to disk.
         """
         assert ob.workdir
-        from ob.cls import get_type
+        from ob.typ import get_type
         otype = get_type(self)
-        if strict:
-            import ob.types
-            if otype not in ob.types.classes:
-                raise ECLASS(otype)
         if not path:
             try:
                 path = self._path

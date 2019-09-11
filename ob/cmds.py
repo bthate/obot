@@ -11,7 +11,7 @@ from ob.shl import set_completer
 from ob.utl import elapsed, get_name, mods
 
 def __dir__():
-    return ("cmds","load", "unload", "show", "find")
+    return ("cmds","load", "find", "meet", "show","unload")
 
 def cmds(event):
     """ show commands. """

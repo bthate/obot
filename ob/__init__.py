@@ -5,6 +5,7 @@ __version__ = 29
 workdir = ""
 
 from ob.obj import update
+from ob.typ import get_type
 from ob.krn import Kernel
 
 def last(obj, skip=True):

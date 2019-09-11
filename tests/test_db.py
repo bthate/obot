@@ -2,7 +2,7 @@
 
 import unittest
 
-from ob.krn import k
+from ob import k
 from ob.pst import names
 
 class Test_Store(unittest.TestCase):

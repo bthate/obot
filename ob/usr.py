@@ -47,7 +47,7 @@ class Users(Dict):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        for o in self.db.all("ob.user.User", s):
+        for o in self.db.all("ob.usr.User", s):
             return o
 
     def get_user(self, origin):
@@ -55,7 +55,7 @@ class Users(Dict):
         if u:
             return u
         s = {"user": origin}
-        for o in self.db.find("ob.user.User", s):
+        for o in self.db.find("ob.usr.User", s):
             set(Users.cache, origin, o)
             return o
 

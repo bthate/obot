@@ -2,9 +2,8 @@ import logging
 import os
 import unittest
 
-from ob.pst import workdir
+from ob import workdir
 from ob.cls import Dict
-from ob.krn import  k
 
 class ENOTCOMPAT(Exception):
     pass

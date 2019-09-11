@@ -2,7 +2,6 @@
 
 import json
 import logging
-import oper
 import os
 import unittest
 

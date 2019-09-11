@@ -242,7 +242,7 @@ class Command(Default):
             if self.orig == repr(ob.k):
                 print(line)
                 continue
-            k.say(self.orig, self.channel, line, self.type)
+            ob.k.say(self.orig, self.channel, line, self.type)
 
     def wait(self):
         """ wait for event to finish. """
