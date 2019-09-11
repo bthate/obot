@@ -1,6 +1,6 @@
 """ object bot """
 
-__version__ = 9
+__version__ = 10
 
 import queue
 import sys
