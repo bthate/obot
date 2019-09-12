@@ -81,31 +81,32 @@ possbile modules to load are:
 
 ::
 
- clk - timer, repeater.
+ clk  - timer, repeater.
  cmds - show list of commands.
- cmd - parse string into command.
- db - object query.
- err - basic OB exceptions.
- flt - list of bots.
- hdl - event callback dispatcher.
- krn - runtime objects and boot code.
- ldr - module loader.
- pst - persistant json files.
- shl - shell functions.
- thr - OB threads (tasks).
- typ - OB types.
- usr - user management.
- utl - file related utility.
+ cmd  - parse string into command.
+ db   - object query.
+ err  - basic OB exceptions.
+ flt  - list of bots.
+ hdl  - event callback dispatcher.
+ krn  - runtime objects and boot code.
+ ldr  - module loader.
+ log  - logging module.
+ pst  - persistant json files.
+ shl  - shell functions.
+ thr  - OB threads (tasks).
+ typ  - OB types.
+ usr  - user management.
+ utl  - file related utility.
 
 ::
 
- obot - object bot
+ obot  - object bot
  entry - log and todo commands.
- irc - IRC bot.
- mbox - email to object scanner.
- rss - rss feed fetcher.
- udp - udp to channel relay
- xmpp - XMPP bot for obot.
+ irc   - IRC bot.
+ mbox  - email to object scanner.
+ rss   - rss feed fetcher.
+ udp   - udp to channel relay
+ xmpp  - XMPP bot for obot.
 
 rss
 ===
@@ -229,6 +230,7 @@ ob
     ob.hdl
     ob.krn
     ob.ldr
+    ob.log
     ob.shl
     ob.thr
     ob.typ

@@ -65,15 +65,6 @@ year_formats = [
 allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 resume = {}
 
-class DumpHandler(logging.StreamHandler):
-
-    """ handles nothing. """
-
-    propagate = False
-
-    def emit(self, record):
-        pass
-
 def cdir(path):
     """ create directory. """
     if os.path.exists(path):
