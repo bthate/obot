@@ -12,7 +12,7 @@ from ob.utl import get_exception, get_name
 def __dir__():
     return ("Task", "Launcher", "ps")
 
-class Task(threading.Thread):
+class Thr(threading.Thread):
 
     def __init__(self, func, *args, name="noname", daemon=True):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
@@ -52,7 +52,7 @@ class Launcher:
             name = kwargs.get("name", args[0].name or args[0].txt)
         except (AttributeError, IndexError):
             name = get_name(func)
-        t = Task(func, *args, name=name)
+        t = Thr(func, *args, name=name)
         try:
             t.start()
         except RuntimeError:
