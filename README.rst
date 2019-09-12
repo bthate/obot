@@ -81,33 +81,30 @@ possbile modules to load are:
 
 ::
 
- ob - save/load JSON files.
- bot - bot base class.
- clock - timer, repeater.
+ clk - timer, repeater.
  cmds - show list of commands.
- command - parse string into command.
+ cmd - parse string into command.
  db - object query.
- entry - log and todo commands.
- errors - basic OB exceptions.
- fleet - list of bots.
- handler - event callback dispatcher.
- kernel - runtime objects and boot code.
- loader - module loader.
- shell - shell functions.
- show - show runtime data.
- tasks - OB threads (tasks).
- term - terminal functions.
- times - file related utility.
- trace - traceback functions.
- types - OB types.
- user - user management.
- utils - file related utility.
+ err - basic OB exceptions.
+ flt - list of bots.
+ hdl - event callback dispatcher.
+ krn - runtime objects and boot code.
+ ldr - module loader.
+ pst - persistant json files.
+ shl - shell functions.
+ thr - OB threads (tasks).
+ typ - OB types.
+ usr - user management.
+ utl - file related utility.
+
+::
+
  obot - object bot
+ entry - log and todo commands.
  irc - IRC bot.
  mbox - email to object scanner.
  rss - rss feed fetcher.
  udp - udp to channel relay
- wisdom - wijsheid, wijs !
  xmpp - XMPP bot for obot.
 
 rss
