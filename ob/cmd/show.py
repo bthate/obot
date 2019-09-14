@@ -12,15 +12,7 @@ from ob.tms import elapsed
 from ob.utl import get_name, mods
 
 def __dir__():
-    return ("cmds","load", "find", "meet", "show","unload")
-
-def cmds(event):
-    """ show commands. """
-    bot = k.fleet.get_bot(event.orig)
-    if bot and bot.cmds:
-        event.reply("|".join(sorted(bot.cmds)))
-    else:
-        event.reply("|".join(sorted(k.cmds)))
+    return ("show",)
 
 def show(event):
     """ display runtime information. """

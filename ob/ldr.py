@@ -10,7 +10,8 @@ import time
 
 from ob.pst import Persist
 from ob.shl import set_completer
-from ob.utl import get_exception, get_name, mods
+from ob.trc import get_exception
+from ob.utl import get_name, mods
 
 def __dir__():
     return ("Loader",)

@@ -17,7 +17,8 @@ from ob.hdl import Event, Handler
 from ob.shl import enable_history, set_completer
 from ob.thr import Launcher
 from ob.usr import Users
-from ob.utl import get_exception, get_name, mods
+from ob.trc import get_exception
+from ob.utl import get_name, mods
 
 def __dir__():
     return ("Cfg", "Kernel",)

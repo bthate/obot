@@ -12,7 +12,9 @@ import time
 cmds = []
 
 from ob.cls import Cfg
-from ob.utl import cdir, hd, get_exception, reset, save, touch
+from ob.utl import cdir, hd, touch
+from ob.trc import get_exception 
+from ob.trm import reset, save
 
 HISTFILE = os.path.join(ob.workdir, "history")
 

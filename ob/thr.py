@@ -7,7 +7,8 @@ import threading
 import time
 import types
 
-from ob.utl import get_exception, get_name
+from ob.trc import get_exception
+from ob.utl import get_name
 
 def __dir__():
     return ("Task", "Launcher", "ps")

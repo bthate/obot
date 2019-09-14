@@ -9,12 +9,14 @@ import queue
 import threading
 
 from ob.cls import Cfg, Register
-from ob.cmd import Command
+from ob.cmnd import Command
 from ob.err import ENOTIMPLEMENTED
 from ob.ldr import Loader
 from ob.pst import Persist
 from ob.thr import Launcher
-from ob.utl import days, get_exception, get_name
+from ob.tms import days
+from ob.trc import get_exception
+from ob.utl import get_name
 from ob.cls import get_type
 
 def __dir__():

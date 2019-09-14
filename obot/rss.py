@@ -24,8 +24,8 @@ from ob import Object, k, last
 from ob.clk import Repeater
 from ob.cls import Cfg
 from ob.pst import Persist
-from ob.utl import get_url, strip_html, to_time, unescape
-
+from ob.tms import to_time
+from ob.utl import get_url, strip_html, unescape
 
 def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"fetch", "init", "rss")

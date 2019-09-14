@@ -15,11 +15,11 @@ from ob import k
 from ob.cls import get_cls
 from ob.log import level
 from ob.shl import execute, parse_cli
-from ob.utl import elapsed
+from ob.tms import elapsed
 
 def initialize():
     k.walk("obot")
-    k.walk("ob")
+    k.walk("ob.cmd")
     for c in k.classes:
         try:
             o = get_cls(c)()

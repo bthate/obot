@@ -7,7 +7,7 @@ import time
 
 from ob.pst import Persist
 from ob.typ import get_cls
-from ob.utl import days, fntime, last
+from ob.tms import days, fntime
 
 def __dir__():
     return ("Db", "hook")

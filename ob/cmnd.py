@@ -19,9 +19,10 @@ aliases = {
            "v": "show version"
            }
 
+from ob import format
 from ob.cls import Default
 from ob.err import ENOTXT
-from ob.utl import days, parse_date, to_day
+from ob.tms import days, parse_date, to_day
 
 class Token(Default):
 
@@ -58,7 +59,8 @@ class Token(Default):
         except ValueError:
             pass
         if nr == 1:
-            self.match = ob.k.names.get(word, word)
+            from ob import k
+            self.match = k.names.get(word, word)
             self.arg = word
             return
         if "http" in word:
@@ -141,9 +143,9 @@ class Command(Default):
         if "f" in self.options:
             full = True
         if self.dkeys:
-            txt += " " + ob.format(o, self.dkeys, full)
+            txt += " " + format(o, self.dkeys, full)
         else:
-            txt += " " + ob.format(o, full=full)
+            txt += " " + format(o, full=full)
         if "t" in self.options:
             try: 
                 txt += " " + days(o._path)
@@ -237,11 +239,12 @@ class Command(Default):
         self.result.append(txt)
 
     def show(self):
+        from ob import k
         for line in self.result:
-            if self.orig == repr(ob.k):
+            if self.orig == repr(k):
                 print(line)
                 continue
-            ob.k.say(self.orig, self.channel, line, self.type)
+            k.say(self.orig, self.channel, line, self.type)
 
     def wait(self):
         """ wait for event to finish. """

@@ -17,12 +17,13 @@ from ob.dpt import dispatch
 from ob.err import EINIT
 from ob.hdl import Event
 from ob.pst import Persist
-from ob.utl import get_exception, locked
+from ob.trc import get_exception
+from ob.utl import locked
 
 from obot import Bot
 
 def __dir__():
-    return ('Bot', 'Cfg', 'DCC', 'DEvent', 'IEvent', 'IRC', 'init', "cb_log", "errored", "noticed", "privmsged")
+    return ('Bot', 'Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "cb_log", "errored", "noticed", "privmsged")
 
 def init():
     """ initialise irc bot. """

@@ -6,7 +6,7 @@ import os
 import unittest
 
 from ob import k
-from ob.cmd import Command
+from ob.cmnd import Command
 
 class Test_Ed(unittest.TestCase):
 

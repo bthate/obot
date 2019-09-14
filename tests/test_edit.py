@@ -6,7 +6,7 @@ import ob
 import os
 import unittest
 
-from ob.cmd import Command
+from ob.cmnd import Command
 from ob.pst import Persist
 
 class Log(Persist):
