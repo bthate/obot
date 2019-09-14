@@ -7,7 +7,8 @@ import time
 
 from ob import k, __version__
 from ob.shl import execute, parse_cli
-from ob.utl import elapsed, hd
+from ob.tms import elapsed
+from ob.utl import hd
 
 def edit(obj, setter):
     """ edit an objects with the setters key/value. """
