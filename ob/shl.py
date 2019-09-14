@@ -12,7 +12,6 @@ import time
 cmds = []
 
 from ob.cls import Cfg
-from ob.obj import update
 from ob.utl import cdir, hd, get_exception, reset, save, touch
 
 HISTFILE = os.path.join(ob.workdir, "history")
@@ -113,7 +112,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     usage = usage or "%s [options] cmd"  % name
     opt, arguments = make_opts(opts, usage, ver)
     cfg = Cfg()
-    cfg.update(vars(opt))
+    ob.update(cfg, vars(opt))
     cfg.args = arguments
     cfg.debug = False
     cfg.name = name
@@ -126,7 +125,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     ob.workdir = cfg.workdir
     if cfg.daemon:
         ob.last(ob.krn.k.cfg)
-    ob.k.cfg.update(cfg)
+    ob.update(ob.k.cfg, cfg)
     ob.log.level(cfg.level or "error")
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)

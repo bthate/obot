@@ -5,15 +5,14 @@ import ob
 import os
 import time
 
-from ob.cls import Dict
-from ob.obj import search
+from ob.pst import Persist
 from ob.typ import get_cls
 from ob.utl import days, fntime, last
 
 def __dir__():
     return ("Db", "hook")
 
-class Db(Dict):
+class Db(Persist):
 
     """ database object providing all, deleted, find, last methods. """
 
@@ -27,7 +26,7 @@ class Db(Dict):
             o = hook(fn)
             if index is not None and nr != index:
                 continue
-            if selector and not search(o, selector):
+            if selector and not ob.search(o, selector):
                 continue
             yield o
 
@@ -43,7 +42,7 @@ class Db(Dict):
                 continue
             if not o._deleted:
                 continue
-            if selector and not search(o, selector):
+            if selector and not ob.search(o, selector):
                 continue
             yield o
 
@@ -56,7 +55,7 @@ class Db(Dict):
             o = hook(fn)
             if not o:
                 continue
-            if search(o, selector):
+            if ob.search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue
@@ -79,7 +78,7 @@ class Db(Dict):
             o = hook(fn)
             if not o:
                 continue
-            if selector and search(o, selector):
+            if selector and ob.search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue

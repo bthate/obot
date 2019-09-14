@@ -1,18 +1,18 @@
 """ log and todo commands. """
 
 from ob import k
-from ob.cls import Dict
+from ob.pst import Persist
 
 def __dir__():
     return ("Log", "Todo", "log", "todo")
 
-class Log(Dict):
+class Log(Persist):
 
     def __init__(self):
         super().__init__()
         self.txt = ""
 
-class Todo(Dict):
+class Todo(Persist):
 
     def __init__(self):
         super().__init__()

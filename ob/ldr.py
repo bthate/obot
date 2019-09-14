@@ -8,14 +8,14 @@ import os
 import threading
 import time
 
-from ob.cls import Dict
+from ob.pst import Persist
 from ob.shl import set_completer
 from ob.utl import get_exception, get_name, mods
 
 def __dir__():
     return ("Loader",)
 
-class Loader(Dict):
+class Loader(Persist):
 
     """ load modules into Loader.table. """
 

@@ -20,9 +20,10 @@ import random
 import re
 import urllib
 
-from ob import k, last
+from ob import Object, k, last
 from ob.clk import Repeater
-from ob.cls import Cfg, Dict
+from ob.cls import Cfg
+from ob.pst import Persist
 from ob.utl import get_url, strip_html, to_time, unescape
 
 
@@ -44,11 +45,11 @@ class Cfg(Cfg):
         self.display_list = ["title", "published", "link"]
         self.dosave = False
 
-class Feed(Dict):
+class Feed(Persist):
 
     """ feed entry. """
 
-class Rss(Dict):
+class Rss(Persist):
 
     """ rss entry to store feed url. """
 
@@ -56,7 +57,7 @@ class Rss(Dict):
         super().__init__()
         self.rss = ""
 
-class Seen(Dict):
+class Seen(Persist):
 
     """ stores seen feed urls. """
 
@@ -64,7 +65,7 @@ class Seen(Dict):
         super().__init__()
         self.urls = []
 
-class Fetcher(Dict):
+class Fetcher(Persist):
 
     """ RSS feed fetcher. """
 
@@ -148,7 +149,7 @@ def get_feed(url):
     """ return entries of a RSS feed. """
     result = ""
     if k.cfg.debug:
-        return [Dict(), Dict()]
+        return [Object(), Object()]
     try:
         result = get_url(url).data
     except urllib.error.HTTPError as ex:

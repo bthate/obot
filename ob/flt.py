@@ -2,13 +2,13 @@
 
 import logging
 
-from ob.cls import Dict
+from ob.pst import Persist
 from ob.utl import get_name
 
 def __dir__():
     return ("Fleet",)
 
-class Fleet(Dict):
+class Fleet(Persist):
 
     def __init__(self):
         super().__init__()

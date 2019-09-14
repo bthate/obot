@@ -8,11 +8,11 @@ import pkgutil
 import queue
 import threading
 
-from ob.cls import Cfg, Dict, Register
+from ob.cls import Cfg, Register
 from ob.cmd import Command
 from ob.err import ENOTIMPLEMENTED
 from ob.ldr import Loader
-from ob.obj import format
+from ob.pst import Persist
 from ob.thr import Launcher
 from ob.utl import days, get_exception, get_name
 from ob.cls import get_type
@@ -54,12 +54,12 @@ class Handler(Loader, Launcher):
 
     def get_cmd(self, cmd):
         """ return matching function. """
-        func = self.cmds.get(cmd, None)
+        func = ob.get(self.cmds, cmd, None)
         if not func:
             mn = self.names.get(func, None)
             if mn:
                 self.load_mod(mn)
-        return self.cmds.get(cmd, None)
+        return ob.get(self.cmds, cmd, None)
 
     def handle(self, e):
         """ return the event to be handled. """
@@ -124,10 +124,10 @@ class Handler(Loader, Launcher):
         """ scan a module for commands/callbacks. """
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if o.__code__.co_argcount == 1 and "event" in o.__code__.co_varnames:
-                self.cmds[key] = o
+                ob.set(self.cmds, key, o)
                 self.modules[key] = o.__module__
         for key, o in inspect.getmembers(mod, inspect.isclass):
-            if issubclass(o, Dict):
+            if issubclass(o, Persist):
                 t = get_type(o)
                 if t not in self.classes:
                     self.classes.append(t)

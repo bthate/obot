@@ -11,12 +11,12 @@ import textwrap
 import time
 import threading
 
-from ob import k, last
-from ob.cls import Cfg, Dict 
+from ob import Object, k, last
+from ob.cls import Cfg 
 from ob.dpt import dispatch
 from ob.err import EINIT
 from ob.hdl import Event
-from ob.obj import set
+from ob.pst import Persist
 from ob.utl import get_exception, locked
 
 from obot import Bot
@@ -115,7 +115,7 @@ class IRC(Bot):
         self.cc = "!"
         self.cfg = Cfg()
         self.channels = []
-        self.state = Dict()
+        self.state = Object()
         self.state.error = ""
         self.state.last = 0
         self.state.lastline = ""
@@ -434,7 +434,7 @@ def privmsged(handler, event):
     if event.chk != "PRIVMSG":
         return
     if event.origin != k.cfg.owner:
-        set(k.users.userhosts, event.nick, event.origin)
+        ob.set(k.users.userhosts, event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
         try:
             dcc = DCC()

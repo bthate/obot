@@ -3,7 +3,6 @@
 import unittest
 
 from ob import k
-from ob.pst import names
 
 class Test_Store(unittest.TestCase):
 

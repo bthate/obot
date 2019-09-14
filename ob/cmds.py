@@ -6,8 +6,7 @@ import os
 import time
 import threading
 
-from ob import k
-from ob.cls import Dict
+from ob import Object, k
 from ob.shl import set_completer
 from ob.utl import elapsed, get_name, mods
 
@@ -77,7 +76,7 @@ def meet(event):
     except ValueError:
         event.reply("|".join(sorted(k.users.userhosts)))
         return
-    origin = k.users.userhosts.get(origin, origin)
+    origin = ob.get(k.users.userhosts, origin, origin)
     u = k.users.meet(origin, perms)
     event.reply("added %s" % u.user)
 
@@ -116,8 +115,8 @@ def show(event):
             if str(thr).startswith("<_"):
                 continue
             d = vars(thr)
-            o = Dict()
-            o.update(d)
+            o = Object()
+            ob.update(o, d)
             if getattr(o, "sleep", None):
                 up = o.sleep - int(time.time() - o.state.latest)
             else:

@@ -2,10 +2,199 @@
 
 __version__ = 29
 
+import json
+
 workdir = ""
 
-from ob.obj import update
-from ob.typ import get_type
+from ob.typ import get_cls, get_type
+
+class Object:
+
+    def __iter__(self):
+        return iter(self.__dict__)
+
+    def __str__(self):
+        """ return json string. """
+        return json.dumps(self, default=default, indent=4, sort_keys=True)
+
+def default(obj):
+    """ default an object to JSON. """
+    if isinstance(obj, Object):
+        return vars(obj)
+    if isinstance(obj, dict):
+        return obj.items()
+    if isinstance(obj, list):
+        return iter(obj)
+    otype = type(obj)
+    if otype in [str, True, False, int, float]:
+        return obj
+    return repr(obj)
+
+def eq(obj1, obj2):
+    """ check for equality. """
+    if isinstance(obj2, (Dict, dict)):
+        return obj1.__dict__ == obj2.__dict__
+    return False
+
+def format(obj, keys=None, full=False):
+    """ return a string that can be displayed. """
+    if keys is None:
+        keys = vars(obj).keys()
+    res = []
+    txt = ""
+    for key in keys:
+        if "ignore" in dir(obj) and key in obj.ignore:
+            continue
+        val = get(obj, key, None)
+        if not val:
+            continue
+        val = str(val)
+        if key == "text":
+            val = val.replace("\\n", "\n")
+        if full:
+            res.append("%s=%s " % (key, val))
+        else:
+            res.append(val)
+    for val in res:
+         txt += "%s%s" % (val.strip(), " ")
+    return txt.strip()
+
+def get(obj, key, default=None):
+    """ get attribute of obj. """
+    try:
+        return obj[key]
+    except TypeError:
+        return getattr(obj, key, default)
+
+def hooked(d):
+    """ construct obj from _type. """
+    if "_type" in d:
+        t = d["_type"]
+        o = get_cls(t)()
+    else:
+        from ob import Object
+        o = Object()
+    update(o, d)
+    return o
+
+def items(obj):
+    """ return items of obj. """
+    return obj.__dict__.items()
+
+def keys(obj):
+    """ return keys of object. """
+    return obj.__dict__.keys()
+
+def names(name, delta=None):
+    """ show all object filenames on disk. """
+    if not name:
+        return []
+    if not delta:
+        delta = 0
+    assert ob.workdir
+    p = os.path.join(ob.workdir, "store", name) + os.sep
+    res = []
+    now = time.time()
+    past = now + delta
+    for rootdir, dirs, files in os.walk(p, topdown=True):
+        for fn in files:
+            fnn = os.path.join(rootdir, fn).split(os.path.join(ob.workdir, "store"))[-1]
+            if delta:
+                if fntime(fnn) < past:
+                    continue
+            res.append(os.sep.join(fnn.split(os.sep)[1:]))
+    return sorted(res, key=fntime)
+
+def ne(obj1, obj2):
+    """ do a not equal test. """
+    return obj1.__dict__ != obj2.__dict__
+
+def search(obj, match: None):
+    """ do a strict key,value match. """
+    if not match:
+        match = {}
+    res = False
+    for key, value in match.items():
+        val = get(obj, key, None)
+        if val:
+            if not value:
+                res = True
+                continue
+            if value in str(val):
+                res = True
+                continue
+            else:
+                res = False
+                break
+        else:
+            res = False
+            break
+    return res
+
+def set(obj, key, val):
+    """ set attribute on obj. """
+    setattr(obj, key, val)
+
+def setter(obj, d):
+    """ edit an objects with the setters key/value. """
+    if not d:
+        d = {}
+    count = 0
+    for key, value in d.items():
+        if "," in value:
+            value = value.split(",")
+        otype = type(value)
+        if value in ["True", "true"]:
+            setattr(obj, key, True)
+        elif value in ["False", "false"]:
+            setattr(obj, key, False)
+        elif otype == list:
+            setattr(obj, key, value)
+        elif otype == str:
+            setattr(obj, key, value)
+        else:
+            setattr(obj, key, value)
+        count += 1
+    return count
+
+def sliced(obj, keys=None):
+    """ return a new object with the sliced result. """
+    import ob
+    t = type(obj)
+    val = t()
+    if not keys:
+        keys = obj.keys()
+    for key in keys:
+        try:
+            val[key] = obj[key]
+        except KeyError:
+            pass
+    return val
+
+def typed(obj):
+    """ return a types copy of obj. """
+    return update(type(obj)(), obj)
+
+def update(obj1, obj2, keys=None, skip=False):
+    """ update this object from the data of another. """
+    if not obj2:
+        return obj1
+    for key in obj2:
+        val = get(obj2, key)
+        if keys and key not in keys:
+            continue
+        if skip and not val:
+            continue
+        setattr(obj1, key, val)
+
+def update2(obj1, obj2):
+    obj1.__dict__.update(obj2)
+
+def values(obj):
+    """ return values of obj. """
+    return obj.__dict__.values()
+
+
 from ob.krn import Kernel
 
 def last(obj, skip=True):

@@ -1,4 +1,5 @@
 import logging
+import ob
 import os
 import random
 import sys
@@ -7,12 +8,11 @@ import unittest
 
 import obot
 
-from ob import k
-from ob.cls import Dict
+from ob import Object, k
 from ob.hdl import Event
 from ob.utl import consume, randomname
 
-class Param(Dict):
+class Param(Object):
 
     pass
 
@@ -20,7 +20,6 @@ k.cfg.prompt = False
 k.walk("ob")
 k.walk("obot")
 k.start()
-
 e = Event()
 if k.cfg.args:
     e.parse(" ".join(k.cfg.args))
@@ -54,15 +53,17 @@ class Test_Tinder(unittest.TestCase):
             tests(k)
         
 def tests(b):
+    events = []
     keys = list(b.cmds)
     random.shuffle(keys)
     for cmd in keys:
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
             continue
-        do_cmd(b, cmd)
+        events.extend(do_cmd(b, cmd))
+    consume(events)
 
 def do_cmd(b, cmd):
-    exs = param.get(cmd, [randomname(), randomname()])
+    exs = ob.get(param, cmd, [randomname(), randomname()])
     e = list(exs)
     random.shuffle(e)
     events = []
@@ -72,4 +73,4 @@ def do_cmd(b, cmd):
         e.txt = cmd + " " + ex
         b.put(e)
         events.append(e)
-    consume(events)
+    return events

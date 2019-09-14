@@ -3,20 +3,21 @@
 import threading
 import time
 
-from ob import k
-from ob.cls import Cfg, Dict
+from ob import Object, k
+from ob.cls import Cfg
+from ob.pst import Persist
 from ob.utl import get_name
 
 def __dir__():
     return ("Repeater", "Timer", "Timers")
 
-class Timers(Dict):
+class Timers(Persist):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._stopped = False
         self.cfg = Cfg()
-        self.timers = Dict()
+        self.timers = Object()
 
     def loop(self):
         while not self._stopped:
@@ -45,7 +46,7 @@ class Timers(Dict):
     def stop(self):
         self._stopped = True
 
-class Timer(Dict):
+class Timer(Persist):
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
@@ -54,7 +55,7 @@ class Timer(Dict):
         self.sleep = sleep
         self.args = args
         self.kwargs = kwargs
-        self.state = Dict()
+        self.state = Object()
         self.timer = None
 
     def start(self):

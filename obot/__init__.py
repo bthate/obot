@@ -2,6 +2,7 @@
 
 __version__ = 11
 
+import ob
 import queue
 import sys
 import threading
@@ -21,8 +22,14 @@ class Bot(Handler):
     def __init__(self):
         super().__init__()
         self.cfg = Cfg()
-        self.cfg.update({"prompt": True, "verbose": True})
+        ob.update(self.cfg, {"prompt": True, "verbose": True})
         self.channels = []
+
+    def announce(self, txt):
+        """ announce txt on all registered channels. """
+        if self.cfg.verbose:
+            for channel in self.channels:
+                self.say(channel, txt)
 
     def raw(self, txt):
         """ write directly to display. """
@@ -30,12 +37,6 @@ class Bot(Handler):
             return
         sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()
-
-    def announce(self, txt):
-        """ announce txt on all registered channels. """
-        if self.cfg.verbose:
-            for channel in self.channels:
-                self.say(channel, txt)
 
     def say(self, channel, txt, mtype=None):
         """ say some txt on a channel. """

@@ -8,6 +8,10 @@ class ECLASS(Exception):
 
     """ missing class. """
 
+class EEMPTY(Exception):
+
+    """ read object is empty. """
+
 class EJSON(Exception):
 
     """ ill formated JSON. """

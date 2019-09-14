@@ -2,13 +2,14 @@
 
 import json
 import logging
+import ob
 import os
 import unittest
 
-from ob.cls import Dict
 from ob.cmd import Command
+from ob.pst import Persist
 
-class Log(Dict):
+class Log(Persist):
 
     """ check class attribute edit as well. """
 
@@ -27,11 +28,11 @@ def edit(obj, setter):
         if "," in value:
             value = value.split(",")
         if value in ["True", "true"]:
-            obj[key] = True
+            ob.set(obj, key, True)
         elif value in ["False", "false"]:
-            obj[key] = False
+            ob.set(obj, key, False)
         else:
-            obj[key] = value
+            ob.set(obj, key, value)
     return count
 
 class Test_Edit(unittest.TestCase):

@@ -8,7 +8,7 @@ import threading
 import time
 import _thread
 
-from ob.cls import Cfg, Dict
+from ob.cls import Cfg
 from ob.db import Db
 from ob.dpt import dispatch
 from ob.err import EINIT 
@@ -40,7 +40,7 @@ class Kernel(Handler):
         self.db = Db()
         self.fleet = Fleet()
         self.register(dispatch)
-        self.state = Dict()
+        self.state = ob.Object()
         self.state.started = False
         self.state.starttime = time.time()
         self.users = Users()
@@ -73,7 +73,6 @@ class Kernel(Handler):
         for mod in mods(self, modstr):
             next = False
             for ex in self.cfg.exclude.split(","):
-                print(ex, mod.__name__)
                 if ex and ex in mod.__name__:
                     next = True
                     break

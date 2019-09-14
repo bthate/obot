@@ -5,26 +5,25 @@ import logging
 import threading
 import time
 
-from ob.cls import Dict
 from ob.db import Db
 from ob.err import ENOUSER
-from ob.obj import set
+from ob.pst import Persist
 
 def __dir__():
     return ("User", "Users")
 
-class User(Dict):
+class User(Persist):
 
     def __init__(self):
         super().__init__()
         self.user = ""
         self.perms = []
 
-class Users(Dict):
+class Users(Persist):
 
-    cache = Dict()
+    cache = Persist()
     db = Db()
-    userhosts = Dict()
+    userhosts = Persist()
 
     def allowed(self, origin, perm):
         perm = perm.upper()
@@ -51,12 +50,12 @@ class Users(Dict):
             return o
 
     def get_user(self, origin):
-        u = Users.cache.get(origin, None)
+        u = ob.get(Users.cache, origin, None)
         if u:
             return u
         s = {"user": origin}
         for o in self.db.find("ob.usr.User", s):
-            set(Users.cache, origin, o)
+            ob.set(Users.cache, origin, o)
             return o
 
     def meet(self, origin, perms=None):
@@ -76,7 +75,7 @@ class Users(Dict):
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]
-        setattr(Users.cache, origin, user)
+        ob.set(Users.cache, origin, user)
         return user
 
     def perm(self, origin, permission):

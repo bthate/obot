@@ -21,7 +21,6 @@ aliases = {
 
 from ob.cls import Default
 from ob.err import ENOTXT
-from ob.obj import format
 from ob.utl import days, parse_date, to_day
 
 class Token(Default):
@@ -142,9 +141,9 @@ class Command(Default):
         if "f" in self.options:
             full = True
         if self.dkeys:
-            txt += " " + format(o, self.dkeys, full)
+            txt += " " + ob.format(o, self.dkeys, full)
         else:
-            txt += " " + format(o, full=full)
+            txt += " " + ob.format(o, full=full)
         if "t" in self.options:
             try: 
                 txt += " " + days(o._path)

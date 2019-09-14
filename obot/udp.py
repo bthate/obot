@@ -6,8 +6,9 @@ import ob
 import socket
 import time
 
-from ob import k
-from ob.cls import Cfg, Dict
+from ob import Object, k
+from ob.cls import Cfg
+from ob.pst import Persist
 
 def __dir__():
     return ("UDP", "Cfg", "init") 
@@ -31,7 +32,7 @@ class Cfg(Cfg):
         self.server = self.host
         self.owner = ""
 
-class UDP(Dict):
+class UDP(Persist):
 
     """ UDP to channel server. """
 
