@@ -17,16 +17,16 @@ run = Object()
 
 ## init
 
-def start():
-    for name in wanted.keys():
-        obj = wanted.get(name, None)
+def init():
+    for name in ob.keys(wanted):
+        obj = ob.get(wanted, name, None)
         if obj:
             e = Event()
             e.txt = ""
-            for key in obj.keys():
-                if k.cfg.args and key not in k.cfg.args:
+            for key in ob.keys(obj):
+                if k.cfg.options and key not in k.cfg.options:
                     continue
-                val = obj.get(key, None)
+                val = ob.get(obj, key, None)
                 if val:
                     sec = seconds(val)
                     repeater = Repeater(sec, stat, e, name="stats.%s" % key)
