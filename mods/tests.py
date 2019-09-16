@@ -9,16 +9,15 @@ import sys
 import time
 import unittest
 
-import ob.trace
+import ob.trc
 
-from ob.cls import Dict
-from ob.kernel import k
-from ob.handler import Event, Handler
-from ob.utils import cdir, consume, match, randomname
+from ob import Object, k
+from ob.hdl import Event, Handler
+from ob.utl import cdir, consume, match, randomname
 
 outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ"
 
-class Param(Dict):
+class Param(Object):
 
     pass
 
@@ -58,7 +57,7 @@ def init():
         pass
 
 def exceptions(event):
-    for ex in ob.trace.exceptions:
+    for ex in ob.trc.exceptions:
         event.reply(ex)
 
 def reconnect(event):
@@ -79,13 +78,13 @@ def tinder(event):
         for cn in k.cmds:
             if match(cn, skip):
                 continue
-            for ex in param.get(cn, [randomname(),]):
+            for ex in ob.get(param, cn, [randomname(),]):
                 e = Event()
                 e.origin = "test@shell"
                 e.txt = cn + " " + ex
-                e.parse()
+                e.parse(e.txt)
                 logging.debug(e.txt)
-                func = k.cmds[cn]
+                func = ob.get(k.cmds, cn)
                 e._thrs.append(k.launch(func, e))
                 events.append(e)
     for e in events:

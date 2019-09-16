@@ -26,6 +26,8 @@ import _thread
 allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 resume = {}
 
+from ob.trc import get_exception
+
 def cdir(path):
     """ create directory. """
     if os.path.exists(path):
@@ -188,17 +190,31 @@ def mods(h, ms):
         m = None
         try:
             m = h.walk(mn)
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as ex:
+            if mn not in str(ex):
+                logging.error(get_exception())
+                return modules
             try:
                 m = h.walk("ob.%s" % mn)
-            except ModuleNotFoundError:
+            except ModuleNotFoundError as ex:
+                if mn not in str(ex):
+                    logging.error(get_exception())
+                    return modules
                 try:
                     m = h.walk("obot.%s" % mn)
-                except ModuleNotFoundError:
+                except ModuleNotFoundError as ex:
+                    if mn not in str(ex):
+                        logging.error(get_exception())
+                        return modules
                     try:
                         m = h.walk("%s.%s" % (h.cfg.name, mn))
                     except ModuleNotFoundError:
-                        logging.error("not found %s" % mn)
+                        try:
+                            m = h.walk("ob.cmd.%s" % mn)
+                        except ModuleNotFoundError as ex:
+                            if mn not in str(ex):
+                                 logging.error(get_exception())
+                            return modules
         if m:
             modules.extend(m)
     return modules

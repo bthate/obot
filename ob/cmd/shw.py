@@ -79,4 +79,3 @@ def show(event):
                 res.append(txt.upper())
         if res:
             event.reply(" | ".join(res))
-
