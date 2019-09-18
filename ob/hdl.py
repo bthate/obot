@@ -150,7 +150,11 @@ class Handler(Loader, Launcher):
     def stop(self):
         self._stopped = True
         self._queue.put(None)
-        
+
+    def sync(self, other):
+        self.handlers = other.handlers
+        ob.update(self.cmds, other.cmds)
+
     def walk(self, pkgname):
         """ scan package for module to load. """
         mod = self.load_mod(pkgname)

@@ -83,7 +83,7 @@ class Fetcher(Persist):
         except AttributeError:
             dl = self.cfg.display_list
         for key in dl:
-            data = o.get(key, None)
+            data = ob.get(o, key, None)
             if data:
                 data = data.replace("\n", " ")
                 data = strip_html(data.rstrip())
@@ -102,8 +102,8 @@ class Fetcher(Persist):
             if not o:
                 continue
             feed = Feed()
-            feed.update(o)
-            feed.update(obj)
+            ob.update(feed, o)
+            ob.update(feed, obj)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             if url in self.seen.urls:

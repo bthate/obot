@@ -13,6 +13,10 @@ class Object:
     def __iter__(self):
         return iter(self.__dict__)
 
+    def __len__(self):
+        """ return number of keys. """
+        return len(self.__dict__)
+
     def __str__(self):
         """ return json string. """
         return json.dumps(self, default=default, indent=4, sort_keys=True)

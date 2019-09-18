@@ -11,7 +11,7 @@ import textwrap
 import time
 import threading
 
-from ob import Object, k, last
+from ob import Object, k, last, set
 from ob.cls import Cfg 
 from ob.dpt import dispatch
 from ob.err import EINIT
@@ -402,6 +402,7 @@ class DCC(Bot):
         self._connected.wait()
         e = DEvent()
         e.txt = self._fsock.readline()
+        e.txt = e.txt.rstrip()
         e._sock = self._sock
         e._fsock = self._fsock
         e.channel = self.origin
@@ -435,11 +436,11 @@ def privmsged(handler, event):
     if event.chk != "PRIVMSG":
         return
     if event.origin != k.cfg.owner:
-        ob.set(k.users.userhosts, event.nick, event.origin)
+        set(k.users.userhosts, event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
         try:
             dcc = DCC()
-            dcc.walk("ob")
+            dcc.sync(k)
             dcc.encoding = "utf-8"
             k.launch(dcc.connect, event)
             return
