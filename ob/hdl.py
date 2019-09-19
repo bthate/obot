@@ -57,7 +57,7 @@ class Handler(Loader, Launcher):
     def get_cmd(self, cmd):
         """ return matching function. """
         func = ob.get(self.cmds, cmd, None)
-        if not func:
+        if not func and self.cfg.autoload:
             mn = self.names.get(func, None)
             if mn:
                 self.load_mod(mn)

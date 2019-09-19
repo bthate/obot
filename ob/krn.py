@@ -99,6 +99,7 @@ class Kernel(Handler):
 
     def prompt(self, e):
         """ return a event by prompting for some text. """
+        print(self)
         e.txt = input("> ")
         e.txt = e.txt.rstrip()
         return e
@@ -124,7 +125,7 @@ class Kernel(Handler):
         else:
             self.fleet.echo(orig, channel, txt, type)
 
-    def start(self, handler=None, input=True, output=True):
+    def start(self, handler=True, input=True, output=True):
         """ start the kernel. """
         if self._started:
             return
@@ -133,10 +134,9 @@ class Kernel(Handler):
             self.cfg.save()
         set_completer(self.cmds)
         enable_history()
-        super().start(handler or self.handler, input, output)
+        super().start(handler, input, output)
 
     def wait(self):
         """ sleep in a loop. """
         while not self._stopped:
             time.sleep(1.0)
-

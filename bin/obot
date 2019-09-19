@@ -12,7 +12,7 @@ def main():
     if k.cfg.daemon:
         daemon()
     k.start()
-    k.load_mod("ob.cmd")
+    k.load_mod("ob.cmd.cmds")
     k.init(k.cfg.modules)
     k.wait()
 

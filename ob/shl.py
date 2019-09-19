@@ -32,6 +32,7 @@ opts = [
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
     ('-x', '', 'string', '', 'exclude', 'skip modules'),
+    ('', '--autoload', 'store_true', False, 'autoload', 'use on demand module loading.'),
     ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
     ('', '--cached"', 'store_true', False, 'cached', 'use caching'),
     ('', '--debug', "string", "", 'debug', "enable debug mode"),
