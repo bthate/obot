@@ -55,6 +55,8 @@ class Db(Persist):
             o = hook(fn)
             if not o:
                 continue
+            if "_deleted" in o and o._deleted:
+                continue
             if ob.search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
