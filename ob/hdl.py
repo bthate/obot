@@ -29,6 +29,7 @@ class Event(Command):
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()
+        self.cc = ""
         self.direct = False
         self.type = "chat"
         self.name = ""

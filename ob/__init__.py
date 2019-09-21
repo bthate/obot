@@ -2,7 +2,10 @@
 
 __version__ = 29
 
+import datetime
 import json
+import os
+import uuid
 
 workdir = ""
 
@@ -11,6 +14,14 @@ from ob.trc import get_from
 
 class Object:
 
+    __slots__ = ("__type__", "__id__", "__path__", "__dict__")
+
+    def __init__(self):
+        super().__init__()
+        self.__type__ = get_type(self)
+        self.__id__ = id(self)
+        self.__path__ = os.path.join(self.__type__, str(self.__id__), str(datetime.datetime.now()).replace(" ", os.sep))
+        
     def __iter__(self):
         return iter(self.__dict__)
 

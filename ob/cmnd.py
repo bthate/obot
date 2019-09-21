@@ -19,22 +19,27 @@ aliases = {
            "v": "show version"
            }
 
-from ob import format
-from ob.cls import Default
+from ob import Object, format
 from ob.err import ENOTXT
 from ob.tms import days, parse_date, to_day
 
-class Token(Default):
+class Token(Object):
 
     """ represent a single word in a sentence. """
 
     def __init__(self):
         super().__init__()
+        self.arg = ""
+        self.chk = ""
+        self.dkey = ""
         self.down = None
         self.index = None
         self.ignore = ""
+        self.match = ""
         self.noignore = False
         self.option = ""
+        self.selector = ""
+        self.setter = ""
         self.up = None
 
     def parse(self, nr, word):
@@ -92,7 +97,7 @@ class Token(Default):
             self.selector = word
             self.value = None
 
-class Command(Default):
+class Command(Object):
 
     """ A line of txt parsed into a command. """
 
@@ -111,6 +116,7 @@ class Command(Default):
         self.index = None
         self.match = None
         self.name = ""
+        self.noignore = ""
         self.orig = ""
         self.origin = ""
         self.result = []

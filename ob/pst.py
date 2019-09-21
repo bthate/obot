@@ -5,8 +5,9 @@ import json
 import logging
 import ob
 import os
+import uuid
 
-from ob.err import EEMPTY
+from ob.err import EEMPTY, ENOFILE
 from ob.utl import cdir, locked
 from ob.typ import get_cls
 
@@ -20,6 +21,8 @@ class Persist(ob.Object):
         assert ob.workdir
         logging.debug("load %s" % path)
         lpath = os.path.join(ob.workdir, "store", path)
+        if not lpath:
+            cdir(lpath)
         if not os.path.exists(lpath):
             assert ENOFILE(path)
         with open(lpath, "r") as ofile:
@@ -27,7 +30,7 @@ class Persist(ob.Object):
             if not val:
                 raise EEMPTY(path)
             ob.update(self, val)
-        self._path = path
+        self.__path__ = path
         return self
 
     @locked
@@ -41,18 +44,16 @@ class Persist(ob.Object):
         otype = get_type(self)
         if not path:
             try:
-                path = self._path
+                path = self.__path__
             except AttributeError:
                 pass
         if not path:
             if not stime:
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)
-            path = os.path.join(otype, stime)
+            path = os.path.join(otype, str(self.__id__), stime)
         logging.debug("save %s" % path)
         opath = os.path.join(ob.workdir, "store", path)
         cdir(opath)
-        self._type = get_type(self)
-        self._path = path
         with open(opath, "w") as file:
             json.dump(self, file, default=ob.default, indent=4, sort_keys=True)
         return path
