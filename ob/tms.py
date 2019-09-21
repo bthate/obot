@@ -48,7 +48,7 @@ allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 
 def fntime(daystr):
     """ convert filename into a timestamp. """
-    daystr = daystr.replace("_", ":")
+    datestr = datestr.replace(os.sep, " ")
     datestr = " ".join(daystr.split(os.sep)[-2:])
     try:
         datestr, rest = datestr.rsplit(".", 1)

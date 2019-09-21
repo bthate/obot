@@ -110,6 +110,7 @@ class Command(Object):
         self._thrs = []
         self._txt = ""
         self.args = []
+        self.cc = ""
         self.delta = 0
         self.direct = False
         self.dkeys = []
@@ -117,6 +118,7 @@ class Command(Object):
         self.match = None
         self.name = ""
         self.noignore = ""
+        self.options = ""
         self.orig = ""
         self.origin = ""
         self.result = []
@@ -154,7 +156,7 @@ class Command(Object):
             txt += " " + format(o, full=full)
         if "t" in self.options:
             try: 
-                txt += " " + days(o._path)
+                txt += " " + days(o.__path__)
             except Exception as ex:
                 pass
         txt = txt.rstrip()

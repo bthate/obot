@@ -76,22 +76,6 @@ def consume(elems):
         except ValueError:
             continue
 
-def fntime(daystr):
-    """ convert filename into a timestamp. """
-    daystr = daystr.replace("_", ":")
-    datestr = " ".join(daystr.split(os.sep)[-2:])
-    try:
-        datestr, rest = datestr.rsplit(".", 1)
-    except ValueError:
-        rest = ""
-    try:
-        t = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
-        if rest:
-            t += float("." + rest)
-    except ValueError:
-        t = 0
-    return t
-
 def fromfile(f):
     """ read from filedescriptor. """
     try:

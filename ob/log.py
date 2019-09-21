@@ -4,7 +4,7 @@ import logging
 import os
 
 from ob import k
-from ob.utl import  hd
+from ob.utl import cdir, hd
 
 class DumpHandler(logging.StreamHandler):
 
