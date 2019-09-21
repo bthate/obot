@@ -9,11 +9,12 @@ from ob import k
 
 def main():
     parse_cli("obot", __version__)
+    print(k.cfg)
     if k.cfg.daemon:
         daemon()
-    k.start()
     k.load_mod("ob.cmd.cmds")
     k.init(k.cfg.modules)
+    k.start()
     k.wait()
 
 execute(main)

@@ -116,6 +116,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     opt, arguments = make_opts(opts, usage, ver)
     cfg = Cfg()
     ob.update(cfg, vars(opt))
+    print(cfg)
     cfg.args = arguments
     cfg.debug = False
     cfg.name = name
@@ -127,7 +128,7 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
         cdir(sp)
     ob.workdir = cfg.workdir
     if cfg.daemon:
-        ob.last(ob.krn.k.cfg)
+        ob.last(ob.k.cfg)
     ob.update(ob.k.cfg, cfg)
     ob.log.level(cfg.level or "error")
     st = time.ctime(time.time())

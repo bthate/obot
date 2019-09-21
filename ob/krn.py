@@ -71,7 +71,9 @@ class Kernel(Handler):
         """ initialize a comma seperated list of modules. """
         if not modstr:
             return
+        print(modstr)
         for mod in mods(self, modstr):
+            print(mod)
             next = False
             for ex in self.cfg.exclude.split(","):
                 if ex and ex in mod.__name__:

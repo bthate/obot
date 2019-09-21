@@ -67,7 +67,12 @@ def format(obj, keys=None, full=False):
 
 def get(obj, key, default=None):
     """ get attribute of obj. """
-    return getattr(obj, key, default)
+    try:
+        return obj.__dict__[key]
+    except AttributeError:
+        return obj[key]
+    except (AttributeError, KeyError):
+        return getattr(obj, key, default)
 
 def hooked(d):
     """ construct obj from _type. """
