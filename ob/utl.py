@@ -120,12 +120,12 @@ def hook(fn):
     """ read json file from fn and create corresponding object. """
     t = fn.split(os.sep)[0]
     if not t:
-        raise ob.errors.ENOFILE(fn)
+        raise ob.err.ENOFILE(fn)
     o = ob.types.get_cls(t)()
     try:
         o.load(fn)
     except json.decoder.JSONDecodeError:
-        raise ob.errors.EJSON(fn)
+        raise ob.err.EJSON(fn)
     return o
 
 def kill(thrname):

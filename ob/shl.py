@@ -16,7 +16,8 @@ from ob.utl import cdir, hd, touch
 from ob.trc import get_exception 
 from ob.trm import reset, save
 
-HISTFILE = os.path.join(ob.workdir, "history")
+HISTFILE = ""
+os.path.join(ob.workdir, "history")
 
 def __dir__():
     return ("daemon", "execute", "parse_cli", "set_completer")
@@ -41,6 +42,9 @@ opts = [
 ]
 
 def close_history():
+    global HISTFILE
+    if not HISTFILE:
+        HISTFILE = os.path.join(ob.workdir, "history")
     if not os.path.isfile(HISTFILE):
         touch(HISTFILE)
     readline.write_history_file(HISTFILE)

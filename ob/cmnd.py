@@ -108,7 +108,6 @@ class Command(Object):
         self._func = None
         self._ready = threading.Event()
         self._thrs = []
-        self._txt = ""
         self.args = []
         self.cc = ""
         self.delta = 0
@@ -127,6 +126,7 @@ class Command(Object):
         self.setter = {}
         self.time = 0
         self.type = "chat"
+        self.txt = ""
 
     def _aliased(self, txt):
         """ return aliased version of txt. """
@@ -166,23 +166,23 @@ class Command(Object):
     def parse(self, txt="", options=""):
         """ parse txt into a command. """
         if not txt:
-            txt = self._txt 
+            txt = self.txt 
         if not txt:
             raise ENOTXT
-        self._txt = txt
+        self.txt = txt
         txt = txt.replace("\u0001", "")
         txt = txt.replace("\001", "")
         if txt and self.cc == txt[0]:
             txt = txt[1:]
-        self._txt = self._aliased(txt)
-        if not self._txt:
-            self._txt = txt
+        self.txt = self._aliased(txt)
+        if not self.txt:
+            self.txt = txt
         nr = -1
         self.args = []
         self.dkeys = []
         self.options = options or self.options or ""
         prev = ""
-        words = self._txt.split()
+        words = self.txt.split()
         tokens = []
         nr = -1
         for word in words:
