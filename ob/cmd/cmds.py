@@ -1,4 +1,4 @@
-""" show list of commands. """
+""" list of commands. """
 
 import ob
 import os

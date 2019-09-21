@@ -1,4 +1,4 @@
-""" show list of commands. """
+""" operator commands. """
 
 import ob
 import obot

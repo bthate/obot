@@ -29,6 +29,48 @@ you can also use the install --user option of setup.py to do a local install.
 
  > python3 setup.py install obot --user
 
+ob
+==
+
+.. autosummary::
+    :toctree: code
+    :template: module.rst
+
+    ob
+    ob.clk
+    ob.cmd
+    ob.cmd.cmds
+    ob.cmd.opr
+    ob.cmd.show
+    ob.cmnd
+    ob.db
+    ob.dpt
+    ob.err
+    ob.flt
+    ob.hdl
+    ob.krn
+    ob.ldr
+    ob.log
+    ob.shl
+    ob.thr
+    ob.typ
+    ob.usr
+    ob.utl
+
+obot
+====
+
+.. autosummary::
+    :toctree: code
+    :template: module.rst
+
+    obot
+    obot.irc
+    obot.mbox
+    obot.rss
+    obot.udp
+    obot.xmpp
+
 shell
 =====
 
@@ -212,44 +254,6 @@ event.
 
 have func coding ;]
 
-ob
-==
-
-.. autosummary::
-    :toctree: code
-    :template: module.rst
-
-    ob
-    ob.clk
-    ob.cmd
-    ob.cmds
-    ob.db
-    ob.dpt
-    ob.err
-    ob.flt
-    ob.hdl
-    ob.krn
-    ob.ldr
-    ob.log
-    ob.shl
-    ob.thr
-    ob.typ
-    ob.usr
-    ob.utl
-
-obot
-====
-
-.. autosummary::
-    :toctree: code
-    :template: module.rst
-
-    obot
-    obot.irc
-    obot.mbox
-    obot.rss
-    obot.udp
-    obot.xmpp
 
 contact
 =======

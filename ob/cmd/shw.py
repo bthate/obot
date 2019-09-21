@@ -1,4 +1,4 @@
-""" show list of commands. """
+""" show runtime status. """
 
 import ob
 import obot
