@@ -116,7 +116,6 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     opt, arguments = make_opts(opts, usage, ver)
     cfg = Cfg()
     ob.update(cfg, vars(opt))
-    print(cfg)
     cfg.args = arguments
     cfg.debug = False
     cfg.name = name
