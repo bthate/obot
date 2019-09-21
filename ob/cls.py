@@ -9,6 +9,7 @@ from types import MethodType, FunctionType
 from ob import default, get, set, update
 from ob.pst import Persist
 from ob.err import ENOFILE, EJSON
+from ob.trc import get_from
 
 def __dir__():
     return ("Default", "Cfg", "Register", "get_cls", "get_type")
@@ -31,7 +32,7 @@ class Cfg(Default):
 
     """ config with empty string default. """
 
-class Register(Default):
+class Register(Persist):
 
     """ register key/values on a Default. """
 

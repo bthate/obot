@@ -99,7 +99,6 @@ class Kernel(Handler):
 
     def prompt(self, e):
         """ return a event by prompting for some text. """
-        print(self)
         e.txt = input("> ")
         e.txt = e.txt.rstrip()
         return e

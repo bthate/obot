@@ -7,6 +7,7 @@ import json
 workdir = ""
 
 from ob.typ import get_cls, get_type
+from ob.trc import get_from
 
 class Object:
 
@@ -20,6 +21,7 @@ class Object:
     def __str__(self):
         """ return json string. """
         return json.dumps(self, default=default, indent=4, sort_keys=True)
+
 
 def default(obj):
     """ default an object to JSON. """
@@ -65,10 +67,7 @@ def format(obj, keys=None, full=False):
 
 def get(obj, key, default=None):
     """ get attribute of obj. """
-    try:
-        return obj[key]
-    except TypeError:
-        return getattr(obj, key, default)
+    return getattr(obj, key, default)
 
 def hooked(d):
     """ construct obj from _type. """

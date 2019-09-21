@@ -124,6 +124,7 @@ class Handler(Loader, Launcher):
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """
+        logging.warning("scan %s" % get_name(mod))
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if o.__code__.co_argcount == 1 and "event" in o.__code__.co_varnames:
                 ob.set(self.cmds, key, o)

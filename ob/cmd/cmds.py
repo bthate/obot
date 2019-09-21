@@ -5,6 +5,7 @@ import os
 import time
 import threading
 
+from ob import k
 from ob.shl import set_completer
 from ob.tms import elapsed
 from ob.utl import get_name, mods
@@ -14,7 +15,6 @@ def __dir__():
 
 def cmds(event):
     """ show commands. """
-    from ob import Object, k
     bot = k.fleet.get_bot(event.orig)
     if bot and bot.cmds:
         event.reply("|".join(sorted(bot.cmds)))
