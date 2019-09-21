@@ -72,7 +72,6 @@ class Kernel(Handler):
         if not modstr:
             return
         for mod in mods(self, modstr):
-            print(mod)
             next = False
             for ex in self.cfg.exclude.split(","):
                 if ex and ex in mod.__name__:
