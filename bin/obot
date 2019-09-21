@@ -9,7 +9,6 @@ from ob import k
 
 def main():
     parse_cli("obot", __version__)
-    print(k.cfg)
     if k.cfg.daemon:
         daemon()
     k.load_mod("ob.cmd.cmds")

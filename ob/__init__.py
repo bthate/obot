@@ -19,9 +19,7 @@ class Object:
         return len(self.__dict__)
 
     def __str__(self):
-        """ return json string. """
-        return json.dumps(self, default=default, indent=4, sort_keys=True)
-
+        return str(self.__dict__)
 
 def default(obj):
     """ default an object to JSON. """
@@ -153,13 +151,13 @@ def setter(obj, d):
             value = value.split(",")
         otype = type(value)
         if value in ["True", "true"]:
-            setattr(obj, key, True)
+            set(obj, key, True)
         elif value in ["False", "false"]:
-            setattr(obj, key, False)
+            set(obj, key, False)
         elif otype == list:
-            setattr(obj, key, value)
+            set(obj, key, value)
         elif otype == str:
-            setattr(obj, key, value)
+            set(obj, key, value)
         else:
             setattr(obj, key, value)
         count += 1
@@ -193,7 +191,7 @@ def update(obj1, obj2, keys=None, skip=False):
             continue
         if skip and not val:
             continue
-        setattr(obj1, key, val)
+        set(obj1, key, val)
 
 def update2(obj1, obj2):
     obj1.__dict__.update(obj2)

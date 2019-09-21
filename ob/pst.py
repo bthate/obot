@@ -14,13 +14,6 @@ class Persist(ob.Object):
 
     """ JSON object persistence. """
 
-    def __iter__(self):
-        return iter(self.__dict__)
-
-    def __str__(self):
-        """ return json string. """
-        return json.dumps(self, default=ob.default, indent=4, sort_keys=True)
-
     def load(self, path):
         """ load this object from disk. """
         assert path
