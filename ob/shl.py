@@ -17,7 +17,6 @@ from ob.trc import get_exception
 from ob.trm import reset, save
 
 HISTFILE = ""
-os.path.join(ob.workdir, "history")
 
 def __dir__():
     return ("daemon", "execute", "parse_cli", "set_completer")
@@ -147,7 +146,7 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    path = os.path.join(ob.workdir, "pidfile")
+    path = os.path.join(ob.workdir, "obot.pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

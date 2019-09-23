@@ -1,0 +1,8 @@
+[Unit]
+Description=pure python3 channel bot
+
+[Service]
+ExecStart=/usr/local/bin/obot
+
+[Install]
+WantedBy=multi-user.target

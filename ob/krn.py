@@ -14,7 +14,7 @@ from ob.dpt import dispatch
 from ob.err import EINIT 
 from ob.flt import Fleet
 from ob.hdl import Event, Handler
-from ob.shl import enable_history, set_completer
+from ob.shl import enable_history, set_completer, writepid
 from ob.thr import Launcher
 from ob.usr import Users
 from ob.trc import get_exception
@@ -135,6 +135,7 @@ class Kernel(Handler):
             self.cfg.save()
         set_completer(self.cmds)
         enable_history()
+        writepid()
         super().start(handler, input, output)
 
     def wait(self):
