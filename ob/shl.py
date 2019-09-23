@@ -29,6 +29,7 @@ opts = [
     ('-o', '', "string", "", 'options', "options to use."),
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
     ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
+    ('-s', '', 'store_true', False, 'shell', 'enable shell.'),
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
     ('-x', '', 'string', '', 'exclude', 'skip modules'),

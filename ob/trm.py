@@ -11,10 +11,12 @@ def reset():
         termios.tcsetattr(resume["fd"], termios.TCSADRAIN, resume["old"])
 
 def save():
-    resume["fd"] = sys.stdin.fileno()
-    resume["old"] = setup(sys.stdin.fileno())
-    atexit.register(reset)
+    try:
+        resume["fd"] = sys.stdin.fileno()
+        resume["old"] = setup(sys.stdin.fileno())
+        atexit.register(reset)
+    except termios.error:
+        pass    
 
 def setup(fd):
-    old = termios.tcgetattr(fd)
-    return old
+    return termios.tcgetattr(fd)

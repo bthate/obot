@@ -80,7 +80,7 @@ def main():
     k.cmds.register("rm", rm)
     k.cmds.register("undel", undel)
     k.init(k.cfg.modules)
-    k.start()
+    k.start(input=True)
     k.wait()
         
 execute(main)

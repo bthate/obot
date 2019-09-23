@@ -13,7 +13,7 @@ def main():
         daemon()
     k.load_mod("ob.cmd.cmds")
     k.init(k.cfg.modules)
-    k.start()
+    k.start(input=True)
     k.wait()
 
 execute(main)
