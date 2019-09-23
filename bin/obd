@@ -2,16 +2,14 @@
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-from ob import __version__
-from ob.bot import Console
-from ob.kernel import k
-from ob.shell import daemon, execute, parse_cli
-from ob.utils import level, hd
+from ob import k, __version__
+from ob.shl import daemon, execute, parse_cli
+from ob.log import level
+from ob.utl import  hd
 
 def main():
     parse_cli("obd", __version__, wd=hd(".obot"))
     level("debug", k.cfg.logdir or os.path.join(hd(".obot"), "logs"))
-    print(k.cfg)
     daemon()
     k.start()
     k.init(k.cfg.modules)

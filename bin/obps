@@ -1,0 +1,23 @@
+#!/usr/bin/env python3.7
+
+import ob
+import os
+
+def main():
+    ob.shl.parse_cli("obps", ob.__version__, ob.utl.hd(".obot"), "obps")
+    try:
+        path = os.path.abspath(os.path.join(ob.workdir, "obot.pid"))
+        pid = open(path, "r").read()
+    except FileNotFoundError:
+        os._exit(1)
+
+    try:
+        pidnr = int(pid)
+    except ValueError:
+        print("no pidnr found at %s" % path)
+        os._exit(0)
+    for line in os.popen("ps p %s" % pidnr).readlines():
+        print(line)
+
+ob.shl.execute(main)
+os._exit(0)
