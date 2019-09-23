@@ -1,0 +1,2 @@
+#!/bin/sh
+obot -m irc,rss,shw,opr -l debug -b 
