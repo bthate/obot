@@ -137,6 +137,8 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)
     logging.warning(txt)
+    txt = "logging at %s" % ob.log.logfiled
+    logging.warning(txt)
     return cfg
 
 def set_completer(commands):

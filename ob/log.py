@@ -6,6 +6,8 @@ import os
 from ob import k
 from ob.utl import cdir, hd
 
+logfiled = ""
+
 class DumpHandler(logging.StreamHandler):
 
     """ handles nothing. """
@@ -15,12 +17,13 @@ class DumpHandler(logging.StreamHandler):
     def emit(self, record):
         pass
 
-def level(loglevel="", logdir="", logfile="ob.log", nostream=False):
+def level(loglevel="", logdir="", logfile="obot.log", nostream=False):
     """ initiate logging. """
+    global logfiled
     if not loglevel:
         loglevel = "error"
     logdir = k.cfg.logdir or logdir or os.path.join(hd(".obot"), "logs")
-    logfile = os.path.join(logdir, logfile)
+    logfile = logfiled = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
         cdir(logfile)
     datefmt = '%H:%M:%S'

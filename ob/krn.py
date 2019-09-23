@@ -126,7 +126,7 @@ class Kernel(Handler):
         else:
             self.fleet.echo(orig, channel, txt, type)
 
-    def start(self, handler=True, input=False, output=False):
+    def start(self, handler=True, input=True, output=True):
         """ start the kernel. """
         if self._started:
             return
@@ -137,7 +137,6 @@ class Kernel(Handler):
             input = True
         set_completer(self.cmds)
         enable_history()
-        writepid()
         super().start(handler, input, output)
 
     def wait(self):

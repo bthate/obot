@@ -8,9 +8,10 @@ from ob.log import level
 from ob.utl import  hd
 
 def main():
-    parse_cli("obd", __version__, wd=hd(".obot"))
+    parse_cli("obd", __version__)
     level("debug", k.cfg.logdir or os.path.join(hd(".obot"), "logs"))
     daemon()
+    k.cfg.shell = True
     k.start()
     k.init(k.cfg.modules)
     k.wait()

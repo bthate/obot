@@ -3,14 +3,18 @@
 import ob
 import os
 
+
 def main():
     ob.shl.parse_cli("obps", ob.__version__, ob.utl.hd(".obot"), "obps")
+    if ob.k.cfg.args:
+        wd = ob.k.cfg.args[0]
+    else:
+        wd = ob.workdir
+    path = os.path.abspath(os.path.join(wd, "obot.pid"))
     try:
-        path = os.path.abspath(os.path.join(ob.workdir, "obot.pid"))
         pid = open(path, "r").read()
     except FileNotFoundError:
         os._exit(1)
-
     try:
         pidnr = int(pid)
     except ValueError:
