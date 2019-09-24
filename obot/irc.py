@@ -295,7 +295,7 @@ class IRC(Bot):
             self.joinall()
         elif cmd == "PING":
             self.state.pongcheck = True
-            self.command("PONG", e.txt)
+            self.command("PONG", e.txt, direct=True)
         elif cmd == "PONG":
             self.state.pongcheck = False
         elif cmd == "433":
@@ -319,7 +319,6 @@ class IRC(Bot):
         self.raw("NICK %s" % nick, True)
         self.raw("USER %s %s %s :%s" % (self.cfg.username or "ob", server, server, self.cfg.realname or "ob"), True)
 
-    @locked
     def raw(self, txt, direct=False):
         """ raw(txt, direct=False)
 
@@ -340,6 +339,7 @@ class IRC(Bot):
         self.state.nrsend += 1
         self._sock.send(txt)
 
+    @locked
     def say(self, channel, txt, mtype="chat"):
         """ wrap text before output to server. """
         wrapper = TextWrap()
