@@ -48,22 +48,6 @@ allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 
 def fntime(daystr):
     """ convert filename into a timestamp. """
-    datestr = datestr.replace(os.sep, " ")
-    datestr = " ".join(daystr.split(os.sep)[-2:])
-    try:
-        datestr, rest = datestr.rsplit(".", 1)
-    except ValueError:
-        rest = ""
-    try:
-        t = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
-        if rest:
-            t += float("." + rest)
-    except ValueError:
-        t = 0
-    return t
-
-def fntime(daystr):
-    """ convert filename into a timestamp. """
     daystr = daystr.replace("_", ":")
     datestr = " ".join(daystr.split(os.sep)[-2:])
     try:

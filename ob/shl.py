@@ -24,15 +24,17 @@ def __dir__():
 opts = [
     ('-b', '', 'store_true', False, 'daemon', 'enable daemon mode.'),
     ('-d', '', 'string', "", 'workdir', 'set working directory.'),
+    ('-k', '', 'store_true', False, 'kernel', 'use saved kernel config'),
     ('-l', '', 'string', '', 'level', 'loglevel.'),
     ('-m', '', 'string', '', 'modules', 'modules to load.'),
     ('-o', '', "string", "", 'options', "options to use."),
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
     ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
-    ('-s', '', 'store_true', False, 'shell', 'enable shell.'),
+    ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
     ('-x', '', 'string', '', 'exclude', 'skip modules'),
+    ('-z', '', 'store_true', False, 'shell', 'enable shell.'),
     ('', '--autoload', 'store_true', False, 'autoload', 'use on demand module loading.'),
     ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
     ('', '--cached"', 'store_true', False, 'cached', 'use caching'),
@@ -65,7 +67,6 @@ def daemon():
     if pid != 0:
         reset()
         os._exit(0)
-    writepid()
     os.setsid()
     os.umask(0)
     si = open("/dev/null", 'r')

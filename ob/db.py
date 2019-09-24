@@ -124,5 +124,5 @@ def names(name, delta=None):
             if delta:
                 if fntime(fnn) < past:
                     continue
-            res.append(os.sep.join(fnn.split(os.sep)[1:]))
+            res.append(fnn[1:])
     return sorted(res, key=fntime)

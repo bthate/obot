@@ -18,6 +18,7 @@ from ob.shl import enable_history, set_completer, writepid
 from ob.thr import Launcher
 from ob.usr import Users
 from ob.trc import get_exception
+from ob.typ import get_type
 from ob.utl import get_name, mods
 
 def __dir__():
@@ -126,17 +127,26 @@ class Kernel(Handler):
         else:
             self.fleet.echo(orig, channel, txt, type)
 
-    def start(self, handler=True, input=True, output=True):
+    def start(self, handler=True, input=False, output=False):
         """ start the kernel. """
         if self._started:
             return
         self._started = True
-        if self.cfg.prompting:
-            self.cfg.save()
+        dosave = False
+        if self.cfg.prompting or self.cfg.dosave:
+            dosave = True
         if self.cfg.shell:
             input = True
+        if dosave:
+            self.save()
+        if self.cfg.kernel:
+            k = self.db.last(str(get_type(self)))
+            if k:
+                ob.update(self.cfg, k.cfg)
+        logging.debug(self.cfg)
         set_completer(self.cmds)
         enable_history()
+        writepid()
         super().start(handler, input, output)
 
     def wait(self):

@@ -5,6 +5,7 @@ __version__ = 30
 import datetime
 import json
 import os
+import types
 import uuid
 
 workdir = ""
@@ -21,7 +22,7 @@ class Object:
         self.__type__ = get_type(self)
         self.__id__ = id(self)
         self.__path__ = os.path.join(self.__type__, str(self.__id__), str(datetime.datetime.now()).replace(" ", os.sep))
-        
+
     def __iter__(self):
         return iter(self.__dict__)
 
@@ -30,7 +31,8 @@ class Object:
         return len(self.__dict__)
 
     def __str__(self):
-        return str(self.__dict__)
+        """ return json string. """
+        return json.dumps(self, default=default, indent=4, sort_keys=True)
 
 def default(obj):
     """ default an object to JSON. """

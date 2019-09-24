@@ -42,7 +42,7 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.display_list = ["title", "published", "link"]
+        self.display_list = ["title", "summary", "published", "link"]
         self.dosave = False
 
 class Feed(Persist):
