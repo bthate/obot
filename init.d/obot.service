@@ -2,7 +2,7 @@
 Description=pure python3 channel bot
 
 [Service]
-ExecStart=/usr/local/bin/obot -m irc -d /var/lib/obot --logdir /var/log/obot -l debug
+ExecStart=/usr/local/bin/obot -k -d /var/lib/obot --logdir /var/log/obot -l debug --owner root@shell
 
 [Install]
 WantedBy=multi-user.target
