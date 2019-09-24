@@ -295,7 +295,7 @@ class IRC(Bot):
             self.joinall()
         elif cmd == "PING":
             self.state.pongcheck = True
-            self.command("PONG", e.txt, direct=True)
+            self.command("PONG", e.txt)
         elif cmd == "PONG":
             self.state.pongcheck = False
         elif cmd == "433":
@@ -332,9 +332,6 @@ class IRC(Bot):
             txt += "\r\n"
         txt = txt[:512]
         txt = bytes(txt, "utf-8")
-        if not direct:
-            if (time.time() - self.state.last) < 3.0:
-                time.sleep(1.0 * (self.state.nrsend % 10))
         self.state.last = time.time()
         self.state.nrsend += 1
         self._sock.send(txt)
@@ -345,6 +342,8 @@ class IRC(Bot):
         wrapper = TextWrap()
         for line in txt.split("\n"):
             for t in wrapper.wrap(line):
+                if (time.time() - self.state.last) < 3.0:
+                    time.sleep(1.0 * (self.state.nrsend % 10))
                 self.command("PRIVMSG", channel, t)
 
     def start(self):
@@ -352,7 +351,7 @@ class IRC(Bot):
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
         self.connect()
-        super().start()
+        super().start(True, True, True)
         
 class DCC(Bot):
 
