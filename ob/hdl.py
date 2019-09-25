@@ -9,8 +9,8 @@ import queue
 import threading
 
 from ob.cls import Cfg, Register
-from ob.cmnd import Command
 from ob.err import ENOTIMPLEMENTED
+from ob.evt import Event
 from ob.ldr import Loader
 from ob.pst import Persist
 from ob.thr import Launcher
@@ -21,19 +21,6 @@ from ob.cls import get_type
 
 def __dir__():
     return ("Event", "Handler")
-
-class Event(Command):
-
-    """ Basic event class. """
-
-    def __init__(self):
-        super().__init__()
-        self._ready = threading.Event()
-        self.cc = ""
-        self.direct = False
-        self.type = "chat"
-        self.name = ""
-        self.sep = "\n"
 
 class Handler(Loader, Launcher):
 

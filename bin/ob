@@ -20,11 +20,11 @@ def edit(obj, setter):
         if "," in value:
             value = value.split(",")
         if value in ["True", "true"]:
-            obj[key] = True
+            ob.set(obj, key, True)
         elif value in ["False", "false"]:
-            obj[key] = False
+            ob.set(obj, key, False)
         else:
-            obj[key] = value
+            ob.set(obj, key, value)
     return count
 
 def ed(event):

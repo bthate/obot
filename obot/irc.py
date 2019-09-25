@@ -228,6 +228,24 @@ class IRC(Bot):
         o.chk = o.command
         return o
 
+    def _raw(self, txt, direct=False):
+        """ _raw(txt)
+
+            send txt (nonlocked) on the socket.
+
+        """
+        txt = txt.rstrip()
+        logging.debug(txt)
+        if self._stopped:
+            return
+        if not txt.endswith("\r\n"):
+            txt += "\r\n"
+        txt = txt[:512]
+        txt = bytes(txt, "utf-8")
+        self.state.last = time.time()
+        self.state.nrsend += 1
+        self._sock.send(txt)
+
     def _some(self, use_ssl=False, encoding="utf-8"):
         """ poll (blocking) for some input on socket. """
         if use_ssl:
@@ -319,6 +337,7 @@ class IRC(Bot):
         self.raw("NICK %s" % nick, True)
         self.raw("USER %s %s %s :%s" % (self.cfg.username or "ob", server, server, self.cfg.realname or "ob"), True)
 
+    @locked
     def raw(self, txt, direct=False):
         """ raw(txt, direct=False)
 
@@ -334,16 +353,15 @@ class IRC(Bot):
         txt = bytes(txt, "utf-8")
         self.state.last = time.time()
         self.state.nrsend += 1
+        if (time.time() - self.state.last) < 3.0:
+            time.sleep(1.0 * (self.state.nrsend % 10))
         self._sock.send(txt)
 
-    @locked
     def say(self, channel, txt, mtype="chat"):
         """ wrap text before output to server. """
         wrapper = TextWrap()
         for line in txt.split("\n"):
             for t in wrapper.wrap(line):
-                if (time.time() - self.state.last) < 3.0:
-                    time.sleep(1.0 * (self.state.nrsend % 10))
                 self.command("PRIVMSG", channel, t)
 
     def start(self):

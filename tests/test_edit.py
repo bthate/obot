@@ -6,7 +6,7 @@ import ob
 import os
 import unittest
 
-from ob.cmnd import Command
+from ob.evt import Event
 from ob.pst import Persist
 
 class Log(Persist):
@@ -41,37 +41,37 @@ class Test_Edit(unittest.TestCase):
         l.txt = "bla"
         
     def test_edit1(self):
-        c = Command()
-        c.parse("ed log txt==bla txt=mekker")
-        edit(l, c.setter)
+        e = Event()
+        e.parse("ed log txt==bla txt=mekker")
+        edit(l, e.setter)
         self.assertEqual(l.txt, "mekker")
 
     def test_edit2(self):
-        c = Command()
-        c.parse("ed")
-        edit(l, c.setter)
+        e = Event()
+        e.parse("ed")
+        edit(l, e.setter)
         self.assertTrue(True, True)
 
     def test_edit3(self):
-        c = Command()
-        c.parse("ed log txt=#bla")
-        edit(l, c.setter)
+        e = Event()
+        e.parse("ed log txt=#bla")
+        edit(l, e.setter)
         self.assertEqual(l.txt, "#bla")
 
     def test_edit4(self):
-        c = Command()
-        c.parse("ed log txt==#bla txt=mekker2")
-        edit(l, c.setter)
+        e = Event()
+        e.parse("ed log txt==#bla txt=mekker2")
+        edit(l, e.setter)
         self.assertEqual(l.txt, "mekker2")
 
     def test_edit5(self):
-        c = Command()
-        c.parse("ed log txt==mekker txt=bla1,bla2")
-        edit(l, c.setter)
+        e = Event()
+        e.parse("ed log txt==mekker txt=bla1,bla2")
+        edit(l, e.setter)
         self.assertEqual(l.txt, ["bla1", "bla2"])
 
     def test_edit(self):
-        c = Command()
-        c.parse("ed log txt==bla txt=#mekker")
-        edit(l, c.setter)
+        e = Event()
+        e.parse("ed log txt==bla txt=#mekker")
+        edit(l, e.setter)
         self.assertEqual(l.txt, "#mekker")

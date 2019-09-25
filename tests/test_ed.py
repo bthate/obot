@@ -6,7 +6,7 @@ import os
 import unittest
 
 from ob import k
-from ob.cmnd import Command
+from ob.evt import Event
 
 class Test_Ed(unittest.TestCase):
 
@@ -14,8 +14,8 @@ class Test_Ed(unittest.TestCase):
         k.start()
         
     def test_ed1(self):
-        c = Command()
-        c.parse("ed log txt==bla txt=mekker")
-        k.put(c)
-        c.wait()
-        self.assertEqual(c.result, [])
+        e = Event()
+        e.parse("ed log txt==bla txt=mekker")
+        k.put(e)
+        e.wait()
+        self.assertEqual(e.result, [])
