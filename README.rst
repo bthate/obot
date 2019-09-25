@@ -43,7 +43,7 @@ ob
     ob.cmd.opr
     ob.cmd.show
     ob.cmnd
-    ob.db
+    ob.dbs
     ob.dpt
     ob.err
     ob.flt

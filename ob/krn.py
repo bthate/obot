@@ -9,7 +9,7 @@ import time
 import _thread
 
 from ob.cls import Cfg
-from ob.db import Db
+from ob.dbs import Db
 from ob.dpt import dispatch
 from ob.err import EINIT 
 from ob.flt import Fleet

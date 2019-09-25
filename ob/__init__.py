@@ -2,7 +2,8 @@
 
 OB is a event handler library, uses a timestamped JSON file backend to 
 provide persistence, makes it possible to program your own module enabling
-your own commands, is in the Public Domain and contains no copyright or LICENSE.
+your event handlers, is in the Public Domain and contains no copyright 
+or LICENSE.
 
 """
 

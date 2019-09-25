@@ -5,7 +5,7 @@ import logging
 import threading
 import time
 
-from ob.db import Db
+from ob.dbs import Db
 from ob.err import ENOUSER
 from ob.pst import Persist
 
