@@ -7,6 +7,7 @@ import threading
 
 from ob import Object, format
 from ob.err import ENOTXT
+from ob.pst import Persist
 from ob.tms import days, parse_date, to_day
 
 def __dir__():
@@ -128,7 +129,7 @@ class Command(Object):
         self.type = "chat"
         self.txt = ""
 
-class Event(Command):
+class Event(Command, Persist):
 
     """ Basic event class. """
 

@@ -8,6 +8,9 @@ from ob.utl import cdir, hd
 
 logfiled = ""
 
+def init():
+    k.register(log_handler)
+
 class DumpHandler(logging.StreamHandler):
 
     """ handles nothing. """
@@ -64,3 +67,6 @@ def level(loglevel="", logdir="", logfile="obot.log", nostream=False):
     filehandler.setLevel(loglevel)
     logger.addHandler(filehandler)
     return logger
+
+def log_handler(handler, event):
+    event.save()

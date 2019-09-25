@@ -1,6 +1,12 @@
-""" save/load JSON files. """
+"""
 
-__version__ = 30
+OB is a event handler library, uses a timestamped JSON file backend to 
+provide persistence, makes it possible to program your own module enabling
+your own commands, is in the Public Domain and contains no copyright or LICENSE.
+
+"""
+
+__version__ = 31
 
 import datetime
 import json
