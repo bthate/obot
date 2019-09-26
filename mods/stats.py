@@ -96,12 +96,12 @@ def stat(event, **kwargs):
         if name in soort:
             txt += " door een %s" % ob.get(soort, name)
         else:
-            txt += " door een %s" % random.choice(list(soort.values()))
+            txt += " door een %s" % random.choice(list(ob.values(soort)))
         txt += " bijv. in %s" % random.choice(gemeenten)
         if name in tags:
             txt += " %s" % ob.get(tags, name)
         else:
-            txt += " %s" % random.choice(list(tags.values()))
+            txt += " %s" % random.choice(list(ob.values(tags)))
         if name in urls:
             txt += " - %s" % ob.get(urls, name)
         k.fleet.announce(txt)

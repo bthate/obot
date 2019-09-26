@@ -194,7 +194,7 @@ def mods(h, ms):
                         m = h.walk("%s.%s" % (h.cfg.name, mn))
                     except ModuleNotFoundError:
                         try:
-                            m = h.walk("ob.cmd.%s" % mn)
+                            m = h.walk("obot.cmd.%s" % mn)
                         except ModuleNotFoundError as ex:
                             if mn not in str(ex):
                                  logging.error(get_exception())

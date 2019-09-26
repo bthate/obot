@@ -121,6 +121,7 @@ class Command(Object):
         self.options = ""
         self.orig = ""
         self.origin = ""
+        self.rest = ""
         self.result = []
         self.selector = {}
         self.sep = "\n"

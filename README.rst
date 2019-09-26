@@ -38,14 +38,10 @@ ob
 
     ob
     ob.clk
-    ob.cmd
-    ob.cmd.cmds
-    ob.cmd.opr
-    ob.cmd.show
-    ob.cmnd
     ob.dbs
     ob.dpt
     ob.err
+    ob.evt
     ob.flt
     ob.hdl
     ob.krn
@@ -65,6 +61,10 @@ obot
     :template: module.rst
 
     obot
+    obot.cmd
+    obot.cmd.cmds
+    obot.cmd.opr
+    obot.cmd.show
     obot.irc
     obot.mbox
     obot.rss
