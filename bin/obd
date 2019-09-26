@@ -11,7 +11,7 @@ def main():
     parse_cli("obd", __version__)
     level("debug", k.cfg.logdir or os.path.join(hd(".obot"), "logs"))
     daemon()
-    k.cfg.shell = True
+    k.cfg.noshell = False
     k.start()
     k.init(k.cfg.modules)
     k.wait()

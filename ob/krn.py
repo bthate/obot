@@ -135,7 +135,7 @@ class Kernel(Handler):
         dosave = False
         if self.cfg.prompting or self.cfg.dosave:
             dosave = True
-        if self.cfg.shell:
+        if not self.cfg.noshell:
             input = True
         if dosave:
             self.save()
@@ -147,7 +147,7 @@ class Kernel(Handler):
         set_completer(self.cmds)
         enable_history()
         writepid()
-        super().start(handler, input, output)
+        super().start(handler, not self.cfg.noshell, output)
 
     def wait(self):
         """ sleep in a loop. """

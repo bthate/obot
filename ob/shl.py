@@ -34,7 +34,7 @@ opts = [
     ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
     ('-x', '', 'string', '', 'exclude', 'skip modules'),
-    ('-z', '', 'store_true', False, 'shell', 'enable shell.'),
+    ('-z', '', 'store_true', False, 'noshell', 'disable shell.'),
     ('', '--autoload', 'store_true', False, 'autoload', 'use on demand module loading.'),
     ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
     ('', '--cached"', 'store_true', False, 'cached', 'use caching'),
