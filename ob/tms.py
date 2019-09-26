@@ -123,11 +123,17 @@ def now():
     return str(datetime.datetime.now()).split()[0]
 
 def parse_date(daystr):
+    if daystr.startswith("-"):
+        neg = True
+        daystr = daystr[1:]
+    else:
+        neg = False
     val = 0
     total = 0
+    print(daystr)
     for c in daystr:
         if c not in ["s", "m", "h", "d", "w", "y"]:
-            val += c
+            val = int(c)
             continue
         if c == "y":
             total += val * 3600*24*365
@@ -142,7 +148,11 @@ def parse_date(daystr):
         else:
             total += val
         val = 0
-    return total
+    print(total)
+    if neg:
+        return 0 - total
+    else:
+        return total 
 
 def rtime():
     res = str(datetime.datetime.now()).replace(" ", os.sep)

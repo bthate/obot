@@ -2,6 +2,7 @@
 """ email to object scanner. """
 
 import mailbox
+import ob
 import os
 
 from ob import k
@@ -89,7 +90,7 @@ def mbox(event):
         pass
     for m in thing:
         o = Email()
-        o.update(m)
+        ob.update2(o, m)
         try:
             sdate = os.sep.join(to_date(o.Date).split())
         except AttributeError:

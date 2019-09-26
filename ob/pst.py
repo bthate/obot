@@ -47,7 +47,7 @@ class Persist(ob.Object):
                 path = self.__path__
             except AttributeError:
                 pass
-        if not path:
+        if not path or stime:
             if not stime:
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)
             path = os.path.join(otype, str(self.__id__), stime)

@@ -53,7 +53,7 @@ class Token(Object):
             return
         if word.startswith("-"):
             try:
-                self.down = int(word[1:])
+                self.down = word
             except ValueError:
                 pass
             self.option += word[1:]
@@ -126,6 +126,8 @@ class Command(Object):
         self.selector = {}
         self.sep = "\n"
         self.setter = {}
+        self.start = None
+        self.stop = None
         self.time = 0
         self.type = "chat"
         self.txt = ""
@@ -229,15 +231,9 @@ class Event(Command, Persist):
             if token.setter:
                 self.setter[token.setter] = token.value
             if token.up:
-                try:
-                    self.delta = parse_date(token.up)
-                except:
-                    self.delta = token.up
+                self.delta = parse_date(token.up)
             elif token.down:
-                try:
-                    self.delta = parse_date(token.down)
-                except:
-                    self.delta = token.down
+                self.delta = parse_date(token.down)
             if not self.noignore and token.ignore:
                 self.ignore = token.ignore
                 continue
@@ -252,6 +248,8 @@ class Event(Command, Persist):
             except ValueError:
                 pass
             continue
+        self.start = time.time() + self.delta
+        self.stop = time.time()
         self.rest = " ".join(self.args)
         self.time = to_day(self.rest)
 

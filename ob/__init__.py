@@ -17,15 +17,17 @@ workdir = ""
 
 from ob.typ import get_cls, get_type
 from ob.trc import get_from
+from ob.utl import locked
 
 class Object:
 
     __slots__ = ("__type__", "__id__", "__path__", "__dict__")
 
+    @locked
     def __init__(self):
         super().__init__()
         self.__type__ = get_type(self)
-        self.__id__ = id(self)
+        self.__id__ = uuid.uuid4()
         self.__path__ = os.path.join(self.__type__, str(self.__id__), str(datetime.datetime.now()).replace(" ", os.sep))
 
     def __iter__(self):
@@ -84,11 +86,12 @@ def format(obj, keys=None, full=False):
 def get(obj, key, default=None):
     """ get attribute of obj. """
     try:
-        return obj.__dict__[key]
-    except AttributeError:
         return obj[key]
-    except (AttributeError, KeyError):
-        return getattr(obj, key, default)
+    except (TypeError, KeyError):
+        try:
+            return obj.__dict__[key]
+        except (AttributeError, KeyError):
+            return getattr(obj, key, default)
 
 def hooked(d):
     """ construct obj from _type. """
@@ -103,8 +106,11 @@ def hooked(d):
 
 def items(obj):
     """ return items of obj. """
-    return obj.__dict__.items()
-
+    try:
+       return obj.__dict__.items()
+    except AttributeError:
+       return obj.items()
+ 
 def keys(obj):
     """ return keys of object. """
     return obj.__dict__.keys()
@@ -138,7 +144,7 @@ def search(obj, match: None):
     if not match:
         match = {}
     res = False
-    for key, value in match.items():
+    for key, value in items(match):
         val = get(obj, key, None)
         if val:
             if not value:

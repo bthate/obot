@@ -16,6 +16,7 @@ def __dir__():
 
 def find(event):
     """ find an object matching to a key==value selector. """
+    print(event)
     if "k" in event.options:
         o = k.db.last(event.match)
         if o:
