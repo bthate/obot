@@ -20,7 +20,7 @@ from ob.tms import elapsed
 
 def initialize():
     k.walk("obot")
-    k.walk("ob.cmd")
+    k.walk("obot.cmd")
     for c in k.classes:
         try:
             o = get_cls(c)()

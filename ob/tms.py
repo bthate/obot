@@ -130,10 +130,12 @@ def parse_date(daystr):
         neg = False
     val = 0
     total = 0
-    print(daystr)
     for c in daystr:
         if c not in ["s", "m", "h", "d", "w", "y"]:
-            val = int(c)
+            try:
+                val = int(c)
+            except ValueError:
+                pass
             continue
         if c == "y":
             total += val * 3600*24*365
@@ -148,7 +150,6 @@ def parse_date(daystr):
         else:
             total += val
         val = 0
-    print(total)
     if neg:
         return 0 - total
     else:
