@@ -235,7 +235,7 @@ class IRC(Bot):
 
         """
         txt = txt.rstrip()
-        logging.debug(txt)
+        logging.info(txt)
         if self._stopped:
             return
         if not txt.endswith("\r\n"):
@@ -255,7 +255,7 @@ class IRC(Bot):
         txt = str(inbytes, encoding)
         if txt == "":
             raise ConnectionResetError
-        logging.debug(txt.rstrip())
+        logging.info(txt.rstrip())
         self.state.lastline += txt
         splitted = self.state.lastline.split("\r\n")
         for s in splitted[:-1]:
@@ -344,7 +344,7 @@ class IRC(Bot):
             send txt on the socket.
         """
         txt = txt.rstrip()
-        logging.debug(txt)
+        logging.info(txt)
         if self._stopped:
             return
         if not txt.endswith("\r\n"):

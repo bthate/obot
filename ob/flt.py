@@ -1,6 +1,7 @@
 """ list of bots. """
 
 import logging
+import ob
 
 from ob.pst import Persist
 from ob.utl import get_name
@@ -27,7 +28,7 @@ class Fleet(Persist):
         for b in self.bots:
             b.announce(str(txt))
         else:
-            k.raw(txt)
+            ob.k.raw(txt)
 
     def echo(self, bid, channel, txt, mtype="chat"):
         b = self.get_bot(bid)

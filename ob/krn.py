@@ -72,8 +72,9 @@ class Kernel(Handler):
         """ initialize a comma seperated list of modules. """
         if not modstr:
             return
-        if modstr == "all":
-            modstr = "ob,ob.cmd,obot"
+        if "all" in modstr:
+            modstr += ",ob,obot.cmd,obot"
+            modstr = modstr.replace("all", "")
         for mod in mods(self, modstr):
             next = False
             for ex in self.cfg.exclude.split(","):

@@ -34,7 +34,8 @@ def init():
 
 ## defines
 
-startdate = "2018-10-05 00:00:00"
+#startdate = "2018-10-05 00:00:00"
+startdate = "2012-09-13 00:00:00"
 starttime = to_day(startdate)
 source = "https://bitbucket.org/bthate/obot"
 
@@ -299,8 +300,6 @@ show.pogingen = cijfers.pogingen
 wanted = Object()
 wanted.suicide = suicide
 wanted.pogingen = pogingen
-wanted.rechter = rechter
-wanted.oordeel = oordeel
 wanted.alarm = alarm
 wanted.e33 = e33
 

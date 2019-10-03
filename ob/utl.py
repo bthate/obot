@@ -171,6 +171,8 @@ def mods(h, ms):
     """ walk packages and load modules into the handler. """
     modules = []
     for mn in ms.split(","):
+        if not mn:
+            continue
         m = None
         try:
             m = h.walk(mn)
