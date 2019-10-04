@@ -96,7 +96,7 @@ def tinder2(event):
     for cn in k.cmds:
         if match(cn, skip):
             continue
-        exs = param.get(cn, [randomname(), randomname()])
+        exs = ob.get(param, cn, [randomname(), randomname()])
         for ex in exs:
             e = Event()
             e.origin = "test@shell"

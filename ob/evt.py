@@ -41,6 +41,7 @@ class Token(Object):
         self.option = ""
         self.selector = ""
         self.setter = ""
+        self.value = ""
         self.up = None
 
     def parse(self, nr, word):
@@ -57,6 +58,7 @@ class Token(Object):
             except ValueError:
                 pass
             self.option += word[1:]
+            self.value = self.option
             return
         try:
             self.index = int(word)
