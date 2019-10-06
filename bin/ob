@@ -66,7 +66,7 @@ def undel(event):
         return
     st = time.time()
     nr = -1
-    for o in k.db.all(event.match, event.selector, event.index, event.delta):
+    for o in k.db.deleted(event.match, event.selector):
         nr += 1
         o._deleted = False
         o.save()
