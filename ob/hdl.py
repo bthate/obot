@@ -92,7 +92,7 @@ class Handler(Loader, Launcher):
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
             if txt:
-                self.say(channel, txt, type)
+                self._say(channel, txt, type)
 
     def poll(self):
         """ poll for an event. """
