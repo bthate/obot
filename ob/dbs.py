@@ -24,6 +24,8 @@ class Db(Persist):
         for fn in names(otype, delta):
             nr += 1
             o = hook(fn)
+            if "_deleted" in o and o._deleted:
+                continue
             if index is not None and nr != index:
                 continue
             if selector and not ob.search(o, selector):
@@ -38,9 +40,7 @@ class Db(Persist):
         for fn in names(otype):
             nr += 1
             o = hook(fn)
-            if "_deleted" not in dir(o):
-                continue
-            if not o._deleted:
+            if "_deleted" not in o:
                 continue
             if selector and not ob.search(o, selector):
                 continue

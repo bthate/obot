@@ -188,8 +188,13 @@ def rss(event):
     """ use to add a rss feed or get a overview of registered rss feeds. """
     if not event.rest or "http" not in event.rest:
         nr = 0
-        for o in k.db.find("obot.rss.Rss", {"rss": ""}):
-            event.reply("%s %s" % (nr, o.rss))
+        res = list(k.db.find("obot.rss.Rss", {"rss": ""}))
+        if res:
+            for o in res:
+                event.reply("%s %s" % (nr, o.rss))
+                nr += 1
+        else:
+            event.reply("rss <url>")
         return
     o = Rss()
     o.rss = event.rest
