@@ -12,7 +12,7 @@ def main():
     if k.cfg.daemon:
         daemon()
     k.start(True, not k.cfg.noshell)
-    k.load_mod("obot.cmd.cmds")
+    k.walk("obot.cmd")
     k.init(k.cfg.modules)
     k.wait()
 
