@@ -45,7 +45,7 @@ def init():
     
     param.load = {x.split(".")[-1] for x in k.modules.values() if not match(x, skip)}
     param.log = ["yo!",]
-    param.mbox = ["~/evidence/25-1-2013",]
+    #param.mbox = ["~/evidence/25-1-2013",]
     param.rm = ["%s txt==yo" % x for x in k.names]
     param.show = ["cfg", "cmds", "fleet", "kernel", "ls", "pid", "tasks", "version"]
     param.unload = {x.split(".")[-1] for x in k.modules.values() if not match(x, skip)}
@@ -87,24 +87,28 @@ def tinder(event):
                 func = ob.get(k.cmds, cn)
                 e._thrs.append(k.launch(func, e))
                 events.append(e)
-    for e in events:
-        e.ready()
+    #for e in events:
+    #    e.ready()
+    print(k.cmds)
     consume(events)
 
 def tinder2(event):
+    try:
+        nr = int(event.args[0])
+    except (IndexError, ValueError):
+        nr = 10
     events = []
-    for cn in k.cmds:
-        if match(cn, skip):
-            continue
-        exs = ob.get(param, cn, [randomname(), randomname()])
-        for ex in exs:
-            e = Event()
-            e.origin = "test@shell"
-            e.txt = cn + " " + ex
-            k.put(e)
-        events.append(e)
-    for e in events:
-        e.ready()
+    for x in range(nr):
+        for cn in k.cmds:
+            if match(cn, skip):
+                continue
+            exs = ob.get(param, cn, [randomname(), randomname()])
+            for ex in exs:
+                e = Event()
+                e.origin = "test@shell"
+                e.txt = cn + " " + ex
+                k.put(e)
+            events.append(e)
     consume(events)
     
 def unicode(event):
