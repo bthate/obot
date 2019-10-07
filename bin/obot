@@ -12,6 +12,8 @@ def main():
     if k.cfg.daemon:
         daemon()
     k.load_mod("obot.cmd.cmds")
+    k.load_mod("obot.cmd.shw")
+    k.load_mod("obot.cmd.usr")
     k.init(k.cfg.modules)
     k.start(True, not k.cfg.noshell)
     k.wait()

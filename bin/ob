@@ -76,9 +76,9 @@ def main():
     parse_cli("ob", __version__, hd(".obot"), "ob options cmd [arg1 arg2}")
     k.register(dispatch)
     k.walk("obot.cmd")
-    k.cmds.register("ed", ed)
-    k.cmds.register("rm", rm)
-    k.cmds.register("undel", undel)
+    k.cmds["ed"] = ed
+    k.cmds["rm"] = rm
+    k.cmds["undel"] =  undel
     k.init(k.cfg.modules)        
     k.cmd(" ".join(k.cfg.args))
 

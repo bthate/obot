@@ -127,6 +127,8 @@ class IRC(Bot):
         self.register(errored)
         self.register(noticed)
         self.register(privmsged)
+        self.sleep = True
+        self.threaded = False
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
 

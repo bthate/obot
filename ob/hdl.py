@@ -38,10 +38,11 @@ class Handler(Loader, Launcher):
         self._type = get_type(self)
         self.cfg = Cfg()
         self.classes = []
-        self.cmds = Register()
+        self.cmds = {}
         self.handlers = []
         self.modules = {}
         self.names = {}
+        self.sleep = False
         self.state = ob.Object()
         self.state.last = time.time()
         self.state.nrsend = 0
@@ -49,12 +50,12 @@ class Handler(Loader, Launcher):
 
     def get_cmd(self, cmd):
         """ return matching function. """
-        func = ob.get(self.cmds, cmd, None)
+        func = self.cmds.get(cmd, None)
         if not func and self.cfg.autoload:
             mn = self.names.get(func, None)
             if mn:
                 self.load_mod(mn)
-        return ob.get(self.cmds, cmd, None)
+        return self.cmds.get(cmd, None)
 
     def handle(self, e):
         """ return the event to be handled. """
@@ -125,7 +126,7 @@ class Handler(Loader, Launcher):
         """ scan a module for commands/callbacks. """
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if o.__code__.co_argcount == 1 and "event" in o.__code__.co_varnames:
-                ob.set(self.cmds, key, o)
+                self.cmds[key] = o
                 self.modules[key] = o.__module__
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Persist):
@@ -152,7 +153,7 @@ class Handler(Loader, Launcher):
 
     def sync(self, other):
         self.handlers = other.handlers
-        ob.update(self.cmds, other.cmds)
+        self.cmds.update(other.cmds)
 
     def walk(self, pkgname):
         """ scan package for module to load. """
