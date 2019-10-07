@@ -37,7 +37,7 @@ def init():
             bot.cfg.nick = nick
             bot.cfg.save()
         except ValueError:
-            sys.stdout.write("%s -m irc <server> <channel> <nick>" % k.cfg.name)
+            sys.stdout.write("%s -m irc <server> <channel> <nick>\n" % k.cfg.name)
             sys.stdout.flush()
             raise EINIT
     bot.start()
@@ -326,7 +326,6 @@ class IRC(Bot):
         self.raw("NICK %s" % nick, True)
         self.raw("USER %s %s %s :%s" % (self.cfg.username or "ob", server, server, self.cfg.realname or "ob"), True)
 
-    @locked
     def raw(self, txt, direct=False):
         """ raw(txt, direct=False)
 
@@ -343,11 +342,11 @@ class IRC(Bot):
         self._sock.send(txt)
         self.state.last = time.time()
         self.state.nrsend += 1
-        if (time.time() - self.state.last) < 3.0:
-            time.sleep(1.0 * (self.state.nrsend % 10))
 
     def say(self, channel, txt, mtype="chat"):
         """ wrap text before output to server. """
+        if (time.time() - self.state.last) < 3.0:
+            time.sleep(1.0 * (self.state.nrsend % 10))
         self._outqueue.put((channel, txt, mtype))
 
     def start(self):

@@ -128,7 +128,7 @@ class Kernel(Handler):
         else:
             self.fleet.echo(orig, channel, txt, type)
 
-    def start(self, handler=True, input=False, output=False):
+    def start(self, handler=True, input=True, output=True):
         """ start the kernel. """
         if self._started:
             return
@@ -144,7 +144,6 @@ class Kernel(Handler):
             k = self.db.last(str(get_type(self)))
             if k:
                 ob.update(self.cfg, k.cfg)
-        logging.debug(self.cfg)
         set_completer(self.cmds)
         enable_history()
         writepid()

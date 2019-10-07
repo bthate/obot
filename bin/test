@@ -19,6 +19,7 @@ from ob.trc import exceptions
 from ob.tms import elapsed
 
 def initialize():
+    k.walk("ob")
     k.walk("obot")
     k.walk("obot.cmd")
     for c in k.classes:
@@ -38,6 +39,7 @@ def main():
     ob.workdir = "testdata"
     level("debug")
     initialize()
+    k.cfg.exclude = "mdl,rss"
     k.cfg.debug = True
     level(k.cfg.level)
     test_path = os.getcwd() + os.sep + "tests"

@@ -142,6 +142,7 @@ class Event(Command, Persist):
         super().__init__()
         self._ready = threading.Event()
         self.cc = ""
+        self.channel = ""
         self.direct = False
         self.type = "chat"
         self.name = ""
@@ -264,9 +265,6 @@ class Event(Command, Persist):
     def show(self):
         from ob import k
         for line in self.result:
-            if self.orig == repr(k):
-                print(line)
-                continue
             k.say(self.orig, self.channel, line, self.type)
 
     def wait(self):

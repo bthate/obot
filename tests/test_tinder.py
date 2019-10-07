@@ -19,6 +19,7 @@ class Param(Object):
 k.cfg.prompt = False
 k.walk("ob")
 k.walk("obot")
+k.walk("obot.cmd")
 k.start()
 e = Event()
 if k.cfg.args:
@@ -32,12 +33,12 @@ k.users.oper("test@shell")
 param = Param()
 param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
 param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
-param.find = ["%s txt==yo" % x for x in k.names]
+param.find = ["%s txt==yo" % x for x in k.names] + ["email txt==gif", ]
 param.load = k.table.keys()
 param.log = ["yo!",]
 param.rm = ["%s txt==yo" % x for x in k.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
-#param.mbox = ["~/Desktop/evidence/25-1-2013",]
+#param.mbox = ["~/evidence/25-1-2013",]
 
 class Test_Tinder(unittest.TestCase):
 

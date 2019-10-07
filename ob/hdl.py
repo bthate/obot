@@ -6,6 +6,7 @@ import ob
 import os
 import pkgutil
 import queue
+import time
 import threading
 
 from ob.cls import Cfg, Register
@@ -41,6 +42,10 @@ class Handler(Loader, Launcher):
         self.handlers = []
         self.modules = {}
         self.names = {}
+        self.state = ob.Object()
+        self.state.last = time.time()
+        self.state.nrsend = 0
+        self.threaded = True
 
     def get_cmd(self, cmd):
         """ return matching function. """
@@ -69,6 +74,9 @@ class Handler(Loader, Launcher):
             e = self._queue.get()
             if not e:
                 break
+            if self.threaded:
+                self.launch(self.handle, e)
+                continue
             try:
                 self.handle(e)
             except Exception as ex:
@@ -92,6 +100,9 @@ class Handler(Loader, Launcher):
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
             if txt:
+                if self.sleep:
+                    if (time.time() - self.state.last) < 3.0:
+                        time.sleep(1.0 * (self.state.nrsend % 10))
                 self._say(channel, txt, type)
 
     def poll(self):
@@ -112,7 +123,6 @@ class Handler(Loader, Launcher):
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """
-        logging.warning("scan %s" % get_name(mod))
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if o.__code__.co_argcount == 1 and "event" in o.__code__.co_varnames:
                 ob.set(self.cmds, key, o)
