@@ -10,23 +10,6 @@ from ob.dpt import dispatch
 from ob.shl import execute, hd, parse_cli
 from ob.tms import elapsed
 
-def edit(obj, setter):
-    """ edit an objects with the setters key/value. """
-    if not setter:
-        setter = {}
-    count = 0
-    for key, value in setter.items():
-        count += 1
-        if "," in value:
-            value = value.split(",")
-        if value in ["True", "true"]:
-            ob.set(obj, key, True)
-        elif value in ["False", "false"]:
-            ob.set(obj, key, False)
-        else:
-            ob.set(obj, key, value)
-    return count
-
 def ed(event):
     """ edit an object, select with key==value, set with key=value. """
     if not event.args:
@@ -40,7 +23,7 @@ def ed(event):
     objs = k.db.find(event.match, event.selector, event.index, event.delta)
     nr = 0
     for o in objs:
-        edit(o, event.setter)
+        ob.edit(o, event.setter)
         o.save()
         nr += 1
     event.reply("edit %s" % nr)

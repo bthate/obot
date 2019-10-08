@@ -27,8 +27,6 @@ class Fleet(Persist):
     def announce(self, txt):
         for b in self.bots:
             b.announce(str(txt))
-        else:
-            ob.k.raw(txt)
 
     def echo(self, bid, channel, txt, mtype="chat"):
         b = self.get_bot(bid)

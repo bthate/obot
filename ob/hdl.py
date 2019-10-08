@@ -166,6 +166,6 @@ class Handler(Loader, Launcher):
         for n in mns:
             logging.warn("load %s" % n[1])
             mods.append(self.load_mod(n[1]))
-        for m in mods:
-            self.scan(m)
+        #for m in mods:
+        #    self.scan(m)
         return mods

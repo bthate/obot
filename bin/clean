@@ -1,1 +1,1 @@
-rm -fR run.tar.gz history _build build envs dist obdocs.egg-info *~ docs/*~ bin/*~ obot/*~ obot/cmd/*~ obot/util/*~ obot/init/*~ mods/*~ obot/__pycache__ mods/__pycache__ tests/*~ tests/__pycache__ docs/code/ docs/html docs/obj
+rm -fR runobot.tar.gz history _build build envs dist obot.egg-info *~ docs/*~ bin/*~ obot/*~ obot/cmd/*~ obot/util/*~ mods/*~ ob/__pycache__ obot/__pycache__ mods/__pycache__ tests/*~ tests/__pycache__ docs/code/ docs/html docs/obj

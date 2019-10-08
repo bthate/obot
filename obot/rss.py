@@ -28,7 +28,7 @@ from ob.tms import to_time
 from ob.utl import get_url, strip_html, unescape
 
 def __dir__():
-    return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"fetch", "init", "rss")
+    return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "fetch", "init", "rss")
 
 def init():
     """ rss initialisation. """
@@ -42,7 +42,7 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.display_list = ["title", "summary", "published", "link"]
+        self.display_list = ["title", "link"]
         self.dosave = False
 
 class Feed(Persist):
@@ -114,6 +114,7 @@ class Fetcher(Persist):
             if self.cfg.dosave and "updated" in dir(feed):
                 date = file_time(to_time(feed.updated))
                 feed.save(stime=date)
+        self.seen.save()
         for o in objs:
             k.fleet.announce(self.display(o))
         return counter
@@ -129,7 +130,6 @@ class Fetcher(Persist):
             self._thrs.append(k.launch(self.fetch, o))
         for thr in self._thrs:
             thr.join()
-        self.seen.save()
         return self._thrs
 
     def start(self, repeat=True):
@@ -183,6 +183,19 @@ def fetch(event):
     fetcher.start(repeat=False)
     res = fetcher.run()
     event.reply("fetched %s" % ",".join([str(x.join()) for x in res]))
+
+def display(event):
+    """ use to add a rss feed or get a overview of registered rss feeds. """
+    if len(event.args) < 2:
+        event.reply("display <feed> key1,key2,etc.")
+        return
+    nr = 0
+    setter = {"display_list": event.args[1]}
+    for o in k.db.find("obot.rss.Rss", {"rss": event.args[0]}):
+        nr += 1
+        ob.edit(o, setter)
+        o.save()
+    event.reply("ok %s" % nr)
 
 def rss(event):
     """ use to add a rss feed or get a overview of registered rss feeds. """

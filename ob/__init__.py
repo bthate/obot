@@ -54,6 +54,23 @@ def default(obj):
         return obj
     return repr(obj)
 
+def edit(obj, setter):
+    """ edit an objects with the setters key/value. """
+    if not setter:
+        setter = {}
+    count = 0
+    for key, value in items(setter):
+        count += 1
+        if "," in value:
+            value = value.split(",")
+        if value in ["True", "true"]:
+            set(obj, key, True)
+        elif value in ["False", "false"]:
+            set(obj, key, False)
+        else:
+            set(obj, key, value)
+    return count
+
 def eq(obj1, obj2):
     """ check for equality. """
     if isinstance(obj2, (Dict, dict)):
