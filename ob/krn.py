@@ -149,7 +149,7 @@ class Kernel(Handler):
         set_completer(self.cmds)
         enable_history()
         writepid()
-        super().start(handler, not self.cfg.noshell, output)
+        super().start(handler, input, output)
 
     def wait(self):
         """ sleep in a loop. """

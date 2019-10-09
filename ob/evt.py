@@ -113,11 +113,9 @@ class Command(Object):
         self.args = []
         self.cc = ""
         self.delta = 0
-        self.direct = False
         self.dkeys = []
         self.index = None
         self.match = None
-        self.name = ""
         self.noignore = ""
         self.options = ""
         self.orig = ""
@@ -125,12 +123,10 @@ class Command(Object):
         self.rest = ""
         self.result = []
         self.selector = {}
-        self.sep = "\n"
         self.setter = {}
         self.start = None
         self.stop = None
         self.time = 0
-        self.type = "chat"
         self.txt = ""
 
     def parse(self, txt="", options=""):
@@ -216,10 +212,7 @@ class Event(Command, Persist):
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()
-        self._thrs = []
-        self.cc = ""
         self.channel = ""
-        self.direct = False
         self.type = "chat"
         self.name = ""
         self.sep = "\n"

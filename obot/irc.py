@@ -282,6 +282,7 @@ class IRC(Bot):
                 break
             time.sleep(nr * 3.0)
             nr += 1
+            print(nr)
         if not k.cfg.resume:
             self.logon(self.cfg.server, self.cfg.nick)
 

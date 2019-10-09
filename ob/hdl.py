@@ -59,10 +59,7 @@ class Handler(Loader, Launcher):
         """ return the event to be handled. """
         thrs = []
         for h in self.handlers:
-            if "threaded" in dir(h) and h.threaded:
-                e._thrs.append(self.launch(h, self, e))
-            else:
-                h(self, e)
+            e._thrs.append(self.launch(h, self, e))
 
     def handler(self):
         """ basic event handler routine. """
@@ -74,6 +71,7 @@ class Handler(Loader, Launcher):
                 self.handle(e)
             except Exception as ex:
                 logging.error(get_exception())
+        logging.warn("stop %s" % get_name(self))
         self._ready.set()
 
     def input(self):
