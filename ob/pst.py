@@ -55,4 +55,5 @@ class Persist(ob.Object):
         cdir(opath)
         with open(opath, "w") as file:
             json.dump(self, file, default=ob.default, indent=4, sort_keys=True)
+        self.__path__ = path
         return path

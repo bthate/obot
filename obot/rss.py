@@ -125,11 +125,13 @@ class Fetcher(Persist):
 
     def run(self):
         """ run a poll on all registered feeds. """
+        res = []
+        thrs = []
         for o in k.db.all("obot.rss.Rss"):
-            self._thrs.append(k.launch(self.fetch, o))
-        for thr in self._thrs:
-            thr.join()
-        return self._thrs
+            thrs.append(k.launch(self.fetch, o))
+        for thr in thrs:
+            res.append(thr.join())
+        return res
 
     def start(self, repeat=True):
         """ start rss fetcher. """
@@ -181,7 +183,7 @@ def delete(event):
 def fetch(event):
     """ fetch registered feeds. """
     res = fetcher.run()
-    event.reply("fetched %s" % ",".join([str(x.join()) for x in res]))
+    event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
 def display(event):
     """ use to add a rss feed or get a overview of registered rss feeds. """

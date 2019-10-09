@@ -241,6 +241,7 @@ def last(obj, skip=True):
     val = k.db.last(str(get_type(obj)))
     if val:
         update(obj, val)
+        obj.__path__ = val.__path__
 
 #:
 k = Kernel()
