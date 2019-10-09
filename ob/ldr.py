@@ -28,9 +28,9 @@ class Loader(Persist):
         """ do a direct import. """
         return importlib.import_module(name)
 
-    def load_mod(self, name, mod=None):
+    def load_mod(self, name, mod=None, force=False):
         """ load a module into the table. """
-        if name not in self.table:
+        if force or name not in self.table:
             self.table[name] = mod or self.direct(name)
         return self.table[name]
 

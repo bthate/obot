@@ -181,11 +181,10 @@ def mods(h, ms):
                 logging.error(get_exception())
                 return modules
             try:
-                m = h.walk("ob.%s" % mn)
+                m = h.walk("obot.cmd.%s" % mn)
             except ModuleNotFoundError as ex:
                 if mn not in str(ex):
                     logging.error(get_exception())
-                    return modules
                 try:
                     m = h.walk("obot.%s" % mn)
                 except ModuleNotFoundError as ex:
@@ -196,13 +195,13 @@ def mods(h, ms):
                         m = h.walk("%s.%s" % (h.cfg.name, mn))
                     except ModuleNotFoundError:
                         try:
-                            m = h.walk("obot.cmd.%s" % mn)
+                            m = h.walk("ob.%s" % mn)
                         except ModuleNotFoundError as ex:
                             if mn not in str(ex):
-                                 logging.error(get_exception())
-                            return modules
-            if m:
-                modules.extend(m)
+                                logging.error(get_exception())
+                                return modules
+        if m:
+            modules.extend(m)
     return modules
 
 def names(name, delta=None):

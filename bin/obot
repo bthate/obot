@@ -14,7 +14,6 @@ def main():
     k.load_mod("obot.cmd.cmds")
     k.init(k.cfg.modules)
     k.start(output=False)
-    print(k)
     k.wait()
 
 execute(main)

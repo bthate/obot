@@ -155,5 +155,7 @@ class Handler(Loader, Launcher):
             mns = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
         for n in mns:
             logging.warn("load %s" % n[1])
-            mods.append(self.load_mod(n[1]))
+            mods.append(self.load_mod(n[1], force=True))
+        for m in mods:
+            self.scan(m)
         return mods

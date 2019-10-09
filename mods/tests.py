@@ -87,9 +87,6 @@ def tinder(event):
                 func = ob.get(k.cmds, cn)
                 e._thrs.append(k.launch(func, e))
                 events.append(e)
-    #for e in events:
-    #    e.ready()
-    print(k.cmds)
     consume(events)
 
 def tinder2(event):
