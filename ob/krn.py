@@ -13,7 +13,7 @@ from ob.dbs import Db
 from ob.dpt import dispatch
 from ob.err import EINIT 
 from ob.flt import Fleet
-from ob.hdl import Event, Handler
+from ob.hdl import Handler
 from ob.shl import enable_history, set_completer, writepid
 from ob.thr import Launcher
 from ob.usr import Users
@@ -57,6 +57,7 @@ class Kernel(Handler):
         """ execute a string as a command. """
         if not txt:
             return
+        from ob.evt import Event
         self.load_mod("ob.dpt")
         self.cfg.prompt = False
         self.cfg.verbose = True
@@ -108,6 +109,7 @@ class Kernel(Handler):
         return e
 
     def poll(self):
+        from ob.evt import Event
         e = Event()
         e.options = self.cfg.options
         e.origin = "root@shell"

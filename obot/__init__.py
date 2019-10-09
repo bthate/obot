@@ -9,7 +9,7 @@ import threading
 
 from ob import k
 from ob.cls import Cfg
-from ob.hdl import Event, Handler
+from ob.hdl import Handler
 from ob.shl import enable_history, set_completer
 
 def __dir__():

@@ -5,10 +5,7 @@ import sys
 import traceback
 import _thread
 
-exceptions = []
-
 def get_exception(txt="", sep=""):
-    from ob import k
     exctype, excvalue, tb = sys.exc_info()
     trace = traceback.extract_tb(tb)
     result = ""
@@ -25,10 +22,7 @@ def get_exception(txt="", sep=""):
         ownname = '.'.join(mod[::-1])
         result += "%s:%s %s %s " % (ownname, linenr, func, sep)
     res = "%s%s: %s %s" % (result, exctype, excvalue, str(txt))
-    exceptions.append(res)
     del trace
-    if k.cfg.bork:
-        _thread.interrupt_main()
     return res
 
 def get_from(nr=2):

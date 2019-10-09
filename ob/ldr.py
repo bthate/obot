@@ -30,7 +30,8 @@ class Loader(Persist):
 
     def load_mod(self, name, mod=None):
         """ load a module into the table. """
-        self.table[name] = mod or self.direct(name)
+        if name not in self.table:
+            self.table[name] = mod or self.direct(name)
         return self.table[name]
 
     def unload(self, modname):

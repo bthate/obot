@@ -11,7 +11,6 @@ import threading
 
 from ob.cls import Cfg, Register
 from ob.err import ENOTIMPLEMENTED
-from ob.evt import Event
 from ob.ldr import Loader
 from ob.pst import Persist
 from ob.thr import Launcher
@@ -21,7 +20,7 @@ from ob.utl import get_name
 from ob.cls import get_type
 
 def __dir__():
-    return ("Event", "Handler")
+    return ("Handler")
 
 class Handler(Loader, Launcher):
 
@@ -46,7 +45,6 @@ class Handler(Loader, Launcher):
         self.state = ob.Object()
         self.state.last = time.time()
         self.state.nrsend = 0
-        self.threaded = True
 
     def get_cmd(self, cmd):
         """ return matching function. """
@@ -62,12 +60,9 @@ class Handler(Loader, Launcher):
         thrs = []
         for h in self.handlers:
             if "threaded" in dir(h) and h.threaded:
-                thrs.append(self.launch(h, self, e))
+                e._thrs.append(self.launch(h, self, e))
             else:
                 h(self, e)
-        for thr in thrs:
-            thr.join()
-        e.ready()
 
     def handler(self):
         """ basic event handler routine. """
@@ -75,9 +70,6 @@ class Handler(Loader, Launcher):
             e = self._queue.get()
             if not e:
                 break
-            if self.threaded:
-                self.launch(self.handle, e)
-                continue
             try:
                 self.handle(e)
             except Exception as ex:
@@ -166,6 +158,4 @@ class Handler(Loader, Launcher):
         for n in mns:
             logging.warn("load %s" % n[1])
             mods.append(self.load_mod(n[1]))
-        #for m in mods:
-        #    self.scan(m)
         return mods

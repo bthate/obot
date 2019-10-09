@@ -33,7 +33,6 @@ class Persist(ob.Object):
         self.__path__ = path
         return self
 
-    @locked
     def save(self, path="", stime=None, timed=False):
         """ save(path="", stime=None, timed=False, strict=False)
         

@@ -15,7 +15,7 @@ from ob import Object, k, last, set
 from ob.cls import Cfg 
 from ob.dpt import dispatch
 from ob.err import EINIT
-from ob.hdl import Event
+from ob.evt import Event
 from ob.pst import Persist
 from ob.trc import get_exception
 from ob.utl import locked

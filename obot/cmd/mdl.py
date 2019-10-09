@@ -18,7 +18,8 @@ def load(event):
         m.extend(mods(k, name))
         k.init(name)
     set_completer(k.cmds)
-    event.reply("%s loaded" % ",".join([get_name(x) for x in m]))
+    if m:
+        event.reply("%s loaded" % ",".join([get_name(x) for x in m]))
 
 def unload(event):
     """ unload a module from the table. """

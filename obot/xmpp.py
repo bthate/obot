@@ -14,7 +14,7 @@ from ob import Object, k, last
 from ob.cls import Cfg
 from ob.dpt import dispatch
 from ob.err import EINIT
-from ob.hdl import Event
+from ob.evt import Event
 from ob.pst import Persist
 
 from obot import Bot

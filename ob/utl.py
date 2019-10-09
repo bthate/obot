@@ -201,8 +201,8 @@ def mods(h, ms):
                             if mn not in str(ex):
                                  logging.error(get_exception())
                             return modules
-        if m:
-            modules.extend(m)
+            if m:
+                modules.extend(m)
     return modules
 
 def names(name, delta=None):

@@ -35,3 +35,4 @@ def find(event):
         nr += 1
         event.display(o, str(nr))
 
+find.threaded = True

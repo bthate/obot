@@ -34,7 +34,6 @@ class Thr(threading.Thread):
             self._result = func(*args)
         except Exception as ex:
             logging.error(get_exception())
-        
  
     def join(self, timeout=None):
         super().join(timeout)

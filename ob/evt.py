@@ -5,7 +5,7 @@ import ob
 import time
 import threading
 
-from ob import Object, format
+from ob import Object, format, k
 from ob.err import ENOTXT
 from ob.pst import Persist
 from ob.tms import days, parse_date, to_day
@@ -67,7 +67,6 @@ class Token(Object):
         except ValueError:
             pass
         if nr == 1:
-            from ob import k
             self.match = k.names.get(word, word)
             self.arg = word
             return
@@ -133,55 +132,6 @@ class Command(Object):
         self.time = 0
         self.type = "chat"
         self.txt = ""
-
-class Event(Command, Persist):
-
-    """ Basic event class. """
-
-    def __init__(self):
-        super().__init__()
-        self._ready = threading.Event()
-        self.cc = ""
-        self.channel = ""
-        self.direct = False
-        self.type = "chat"
-        self.name = ""
-        self.sep = "\n"
-
-    def _aliased(self, txt):
-        """ return aliased version of txt. """
-        spl = txt.split()
-        if spl and spl[0] in aliases:
-            cmd = spl[0]
-            v = aliases.get(cmd, None)
-            if v:
-                spl[0] = cmd.replace(cmd, v)
-        txt2 = " ".join(spl)
-        return txt2 or txt
-
-    def display(self, o, txt=""):
-        """ display an object. """
-        if "k" in self.options:
-            self.reply("|".join(o))
-            return
-        if "d" in self.options:
-            self.reply(str(o))
-            return
-        full = False
-        if "f" in self.options:
-            full = True
-        if self.dkeys:
-            txt += " " + format(o, self.dkeys, full)
-        else:
-            txt += " " + format(o, full=full)
-        if "t" in self.options:
-            try: 
-                txt += " " + days(o.__path__)
-            except Exception as ex:
-                pass
-        txt = txt.rstrip()
-        if txt:
-            self.reply(txt)
 
     def parse(self, txt="", options=""):
         """ parse txt into a command. """
@@ -259,6 +209,56 @@ class Event(Command, Persist):
         self.rest = " ".join(self.args)
         self.time = to_day(self.rest)
 
+class Event(Command, Persist):
+
+    """ Basic event class. """
+
+    def __init__(self):
+        super().__init__()
+        self._ready = threading.Event()
+        self._thrs = []
+        self.cc = ""
+        self.channel = ""
+        self.direct = False
+        self.type = "chat"
+        self.name = ""
+        self.sep = "\n"
+
+    def _aliased(self, txt):
+        """ return aliased version of txt. """
+        spl = txt.split()
+        if spl and spl[0] in aliases:
+            cmd = spl[0]
+            v = aliases.get(cmd, None)
+            if v:
+                spl[0] = cmd.replace(cmd, v)
+        txt2 = " ".join(spl)
+        return txt2 or txt
+
+    def display(self, o, txt=""):
+        """ display an object. """
+        if "k" in self.options:
+            self.reply("|".join(o))
+            return
+        if "d" in self.options:
+            self.reply(str(o))
+            return
+        full = False
+        if "f" in self.options:
+            full = True
+        if self.dkeys:
+            txt += " " + format(o, self.dkeys, full)
+        else:
+            txt += " " + format(o, full=full)
+        if "t" in self.options:
+            try: 
+                txt += " " + days(o.__path__)
+            except Exception as ex:
+                pass
+        txt = txt.rstrip()
+        if txt:
+            self.reply(txt)
+
     def ready(self):
         self._ready.set()
 
@@ -266,7 +266,6 @@ class Event(Command, Persist):
         self.result.append(txt)
 
     def show(self):
-        from ob import k
         for line in self.result:
             k.say(self.orig, self.channel, line, self.type)
 

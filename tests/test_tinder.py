@@ -9,7 +9,7 @@ import unittest
 import obot
 
 from ob import Object, k
-from ob.hdl import Event
+from ob.evt import Event
 from ob.utl import consume, randomname
 
 class Param(Object):
@@ -61,8 +61,9 @@ def tests(b):
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
             continue
         events.extend(do_cmd(b, cmd))
+    print(events)
     consume(events)
-
+    print(events)
 def do_cmd(b, cmd):
     exs = ob.get(param, cmd, [randomname(), randomname()])
     e = list(exs)
