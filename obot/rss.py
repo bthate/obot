@@ -32,7 +32,6 @@ def __dir__():
 
 def init():
     """ rss initialisation. """
-    fetcher = Fetcher()
     fetcher.start()
     return fetcher
 
@@ -145,6 +144,8 @@ class Fetcher(Persist):
         """ stop rss poller. """
         self.seen.save()
 
+fetcher = Fetcher()
+
 def get_feed(url):
     """ return entries of a RSS feed. """
     result = ""
@@ -179,8 +180,6 @@ def delete(event):
 
 def fetch(event):
     """ fetch registered feeds. """
-    fetcher = Fetcher()
-    fetcher.start(repeat=False)
     res = fetcher.run()
     event.reply("fetched %s" % ",".join([str(x.join()) for x in res]))
 

@@ -41,7 +41,7 @@ class Persist(ob.Object):
         """
         assert ob.workdir
         from ob.typ import get_type
-        otype = get_type(self)
+        self.__type__ = get_type(self)
         if not path:
             try:
                 path = self.__path__
@@ -50,7 +50,7 @@ class Persist(ob.Object):
         if not path or stime:
             if not stime:
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)
-            path = os.path.join(otype, str(self.__id__), stime)
+            path = os.path.join(self.__type__, stime)
         logging.debug("save %s" % path)
         opath = os.path.join(ob.workdir, "store", path)
         cdir(opath)

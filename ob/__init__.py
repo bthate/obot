@@ -21,14 +21,7 @@ from ob.utl import locked
 
 class Object:
 
-    __slots__ = ("__type__", "__id__", "__path__", "__dict__")
-
-    @locked
-    def __init__(self):
-        super().__init__()
-        self.__type__ = get_type(self)
-        self.__id__ = uuid.uuid4()
-        self.__path__ = os.path.join(self.__type__, str(self.__id__), str(datetime.datetime.now()).replace(" ", os.sep))
+    __slots__ = ("__dict__", "__path__", "__type__")
 
     def __iter__(self):
         return iter(self.__dict__)
@@ -240,7 +233,6 @@ def update2(obj1, obj2):
 def values(obj):
     """ return values of obj. """
     return obj.__dict__.values()
-
 
 from ob.krn import Kernel
 

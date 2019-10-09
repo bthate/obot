@@ -201,7 +201,6 @@ class Event(Command, Persist):
         self.args = []
         self.dkeys = []
         self.options = options or self.options or ""
-        prev = ""
         words = self.txt.split()
         tokens = []
         nr = -1
@@ -211,8 +210,12 @@ class Event(Command, Persist):
             token.parse(nr, word)
             tokens.append(token)
         nr = -1
+        prev = ""
         for token in tokens:
             nr += 1
+            if prev:
+                self.options += token.value
+                continue
             if token.chk:
                 self.chk = token.chk
             if token.match:
