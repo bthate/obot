@@ -69,4 +69,5 @@ def level(loglevel="", logdir="", logfile="obot.log", nostream=False):
     return logger
 
 def log_handler(handler, event):
-    event.save()
+    if event.dolog:
+        event.save()

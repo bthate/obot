@@ -11,7 +11,6 @@ import unittest
 
 import ob
 
-from ob import k
 from ob.cls import get_cls
 from ob.log import level
 from ob.shl import execute, parse_cli
@@ -20,10 +19,14 @@ from ob.utl import cdir
 
 def initialize():
     cdir("testdata")
-    k.walk("ob")
-    k.walk("obot")
-    k.walk("obot.cmd")
-    for c in k.classes:
+    ob.k.users.oper("test@shell")
+    ob.k.cfg.prompt = False
+    ob.k.walk("ob")
+    ob.k.walk("obot")
+    ob.k.walk("obot.cmd")
+    ob.k.start()
+    print(ob)
+    for c in ob.k.classes:
         try:
             o = get_cls(c)()
             o.txt = "yo!"
@@ -40,18 +43,18 @@ def main():
     ob.workdir = "testdata"
     level("debug")
     initialize()
-    k.cfg.exclude = "mdl,rss"
-    k.cfg.debug = True
-    level(k.cfg.level)
+    ob.k.cfg.exclude = "mdl,rss"
+    ob.k.cfg.debug = True
+    level(ob.k.cfg.level)
     test_path = os.getcwd() + os.sep + "tests"
     p = ""
-    if k.cfg.args:
-        p = "test_%s*" % k.cfg.args[0]
+    if ob.k.cfg.args:
+        p = "test_%s*" % ob.k.cfg.args[0]
     if not p:
         p = "test_*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=p)
     unittest.TextTestRunner(verbosity=3).run(suite)
    
 execute(main)
-print(elapsed(time.time() - k.state.starttime))
+print(elapsed(time.time() - ob.k.state.starttime))
 os._exit(0)

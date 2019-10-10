@@ -240,6 +240,9 @@ def values(obj):
 
 from ob.krn import Kernel
 
+#:
+k = Kernel()
+
 def last(obj, skip=True):
     """ return the last version of this type. """
     val = k.db.last(str(get_type(obj)))
@@ -247,5 +250,3 @@ def last(obj, skip=True):
         update(obj, val)
         obj.__path__ = val.__path__
 
-#:
-k = Kernel()

@@ -199,7 +199,6 @@ class Command(Object):
                 break
             except ValueError:
                 pass
-            continue
         self.start = time.time() + self.delta
         self.stop = time.time()
         self.rest = " ".join(self.args)
@@ -213,6 +212,7 @@ class Event(Command, Persist):
         super().__init__()
         self._ready = threading.Event()
         self.channel = ""
+        self.dolog = False
         self.type = "chat"
         self.name = ""
         self.sep = "\n"

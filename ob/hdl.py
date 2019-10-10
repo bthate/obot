@@ -82,7 +82,7 @@ class Handler(Loader, Launcher):
 
     def load_mod(self, mn, force=True):
         """ load module and scan for functions. """
-        mod = super().load_mod(mn, force)
+        mod = super().load_mod(mn, force=force)
         self.scan(mod)
         return mod
 
@@ -149,12 +149,11 @@ class Handler(Loader, Launcher):
         """ scan package for module to load. """
         mod = self.load_mod(pkgname)
         mods = [mod,]
-        if "__path__" in dir(mod):
+        try:
             mns = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
-        elif "__file__" in dir(mod):
+        except:
             mns = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
-        else:
-            return mods
+        print(mns)        
         for n in mns:
             logging.warn("load %s" % str(n[1]))
             mods.append(self.load_mod(n[1], force=True))

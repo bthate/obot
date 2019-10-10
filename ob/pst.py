@@ -19,7 +19,7 @@ class Persist(ob.Object):
         """ load this object from disk. """
         assert path
         assert ob.workdir
-        logging.debug("load %s" % path)
+        logging.debug("disk %s" % path)
         lpath = os.path.join(ob.workdir, "store", path)
         if not lpath:
             cdir(lpath)
