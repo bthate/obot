@@ -12,6 +12,8 @@ from ob.tms import days, fntime
 def __dir__():
     return ("Db", "hook")
 
+cache = {}
+
 class Db(Persist):
 
     """ database object providing all, deleted, find, last methods. """
@@ -94,6 +96,8 @@ class Db(Persist):
 
 def hook(fn):
     """ read json file from fn and create corresponding object. """
+    if fn in cache:
+        return cache[fn]
     t = fn.split(os.sep)[0]
     if not t:
         raise ob.err.ENOFILE(fn)
@@ -104,6 +108,7 @@ def hook(fn):
         return o
     except json.decoder.JSONDecodeError:
         raise ob.err.EJSON(fn)
+    cache[fn] = o
     return o
 
 def names(name, delta=None):
