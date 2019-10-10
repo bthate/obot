@@ -63,14 +63,13 @@ class Db(Persist):
                     continue
                 yield o
 
-    def last_fn(self, type, index=None, delta=0):
+    def last(self, type, index=None, delta=0):
         fns = names(type, delta)
         if fns:
             fn = fns[-1]
-            return (fn, hook(fn))
-        return (None, None)
+            return hook(fn)
 
-    def last(self, otype, selector=None, index=None, delta=0):
+    def last_all(self, otype, selector=None, index=None, delta=0):
         """ return last object of type otype. """
         if not selector:
             selector = {}

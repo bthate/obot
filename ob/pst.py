@@ -11,6 +11,8 @@ from ob.err import EEMPTY, ENOFILE
 from ob.utl import cdir, locked
 from ob.typ import get_cls
 
+cache = {}
+
 class Persist(ob.Object):
 
     """ JSON object persistence. """
@@ -19,6 +21,8 @@ class Persist(ob.Object):
         """ load this object from disk. """
         assert path
         assert ob.workdir
+        if path in cache:
+            return cache[path]
         logging.debug("disk %s" % path)
         lpath = os.path.join(ob.workdir, "store", path)
         if not lpath:
@@ -31,6 +35,7 @@ class Persist(ob.Object):
                 raise EEMPTY(path)
             ob.update(self, val)
         self.__path__ = path
+        cache[path] = self
         return self
 
     def save(self, path="", stime=None, timed=False):

@@ -46,7 +46,6 @@ class Test_Tinder(unittest.TestCase):
 def tests(b):
     events = []
     keys = list(b.cmds)
-    print(keys)
     random.shuffle(keys)
     for cmd in keys:
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:

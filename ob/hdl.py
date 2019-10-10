@@ -153,8 +153,13 @@ class Handler(Loader, Launcher):
             mns = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
         except:
             mns = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
-        print(mns)        
         for n in mns:
+            skip = False
+            for ex in self.cfg.exclude.split(","):
+                if ex and ex in n[1]:
+                    skip = True
+            if skip:
+                continue
             logging.warn("load %s" % str(n[1]))
             mods.append(self.load_mod(n[1], force=True))
         for m in mods:

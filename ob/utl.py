@@ -169,6 +169,7 @@ def match(a, b):
 
 def mods(h, ms):
     """ walk packages and load modules into the handler. """
+    from ob import k
     modules = []
     for mn in ms.split(","):
         if not mn:

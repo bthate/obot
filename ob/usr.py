@@ -46,18 +46,13 @@ class Users(Persist):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        for o in self.db.all("ob.usr.User", s):
-            return o
+        return self.db.all("ob.usr.User", s)
 
     def get_user(self, origin):
-        u = ob.get(Users.cache, origin, None)
+        u =  list(self.get_users())
         if u:
-            return u
-        s = {"user": origin}
-        for o in self.db.find("ob.usr.User", s):
-            ob.set(Users.cache, origin, o)
-            return o
-
+            return u[-1]
+ 
     def meet(self, origin, perms=None):
         if not perms:
             perms = []
