@@ -233,6 +233,8 @@ class IRC(Bot):
     def _say(self, channel, txt, mtype="chat"):
         """ wrap text before output to server. """
         wrapper = TextWrap()
+        wrapper.width = 450
+        wrapper.break_long_words = False
         for line in txt.split("\n"):
             for t in wrapper.wrap(line):
                 self.command("PRIVMSG", channel, t)
