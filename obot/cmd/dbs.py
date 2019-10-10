@@ -19,8 +19,8 @@ def find(event):
             event.reply("|".join(fns))
         return
     if len(event.args) == 1 and not event.selector:
-        fn, o = k.db.last_fn(event.match)
-        if fn:
+        o = k.db.last(event.match)
+        if o:
             res = sorted({x.split(".")[-1].lower() for x in o})
             if len(res) > 1:
                 event.reply("|".join(res))

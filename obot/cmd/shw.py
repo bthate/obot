@@ -1,5 +1,6 @@
 """ show runtime status. """
 
+import json
 import ob
 import obot
 import os
@@ -37,7 +38,7 @@ def show(event):
         except (ValueError, IndexError):
             event.reply([get_type(x) for x in k.fleet.bots])
     elif cmd == "kernel":
-        event.reply(str(k))
+        event.reply(k.json())
     elif cmd == "ls":
         event.reply("|".join(os.listdir(os.path.join(k.cfg.workdir, "store"))))
     elif cmd == "pid":

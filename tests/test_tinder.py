@@ -23,7 +23,7 @@ e.parse("-o %s" % ob.k.cfg.options)
 param = Param()
 param.ed = ["%s txt==yo channel=#mekker" % x for x in ob.k.names]
 param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in ob.k.names])
-param.find = ["%s txt==yo" % x for x in ob.k.names] + ["email txt==gif", ]
+param.find = ["%s txt==yo -f" % x for x in ob.k.names] + ["email txt==gif", ]
 param.load = ob.k.table.keys()
 param.log = ["yo!",]
 param.rm = ["%s txt==yo" % x for x in ob.k.names]

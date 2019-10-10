@@ -239,7 +239,7 @@ class Event(Command, Persist):
         full = False
         if "f" in self.options:
             full = True
-        if self.dkeys:
+        if not full and self.dkeys:
             txt += " " + format(o, self.dkeys, full)
         else:
             txt += " " + format(o, full=full)

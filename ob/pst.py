@@ -15,6 +15,8 @@ class Persist(ob.Object):
 
     """ JSON object persistence. """
 
+    default = ob.default
+
     def load(self, path):
         """ load this object from disk. """
         assert path
