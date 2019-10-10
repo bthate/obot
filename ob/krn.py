@@ -37,6 +37,7 @@ class Kernel(Handler):
         self._outputed = False
         self._prompted = threading.Event()
         self._prompted.set()
+        self._ready = threading.Event()
         self._started = False
         self.cfg = Cfg()
         self.db = Db()
@@ -123,6 +124,9 @@ class Kernel(Handler):
         sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()
 
+    def ready(self):
+        self._ready.set()
+
     def say(self, orig, channel, txt, type="chat"):
         """ output text on console or relay to fleet. """
         if orig == repr(self):
@@ -153,5 +157,4 @@ class Kernel(Handler):
 
     def wait(self):
         """ sleep in a loop. """
-        while not self._stopped:
-            time.sleep(1.0)
+        self._ready.wait()

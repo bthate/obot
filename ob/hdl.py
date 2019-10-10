@@ -59,7 +59,7 @@ class Handler(Loader, Launcher):
         """ return the event to be handled. """
         thrs = []
         for h in self.handlers:
-            e._thrs.append(self.launch(h, self, e))
+            h(self, e)
 
     def handler(self):
         """ basic event handler routine. """
@@ -80,9 +80,9 @@ class Handler(Loader, Launcher):
             e = self.poll()
             self.put(e)
 
-    def load_mod(self, mn):
+    def load_mod(self, mn, force=True):
         """ load module and scan for functions. """
-        mod = super().load_mod(mn)
+        mod = super().load_mod(mn, force)
         self.scan(mod)
         return mod
 
@@ -149,12 +149,14 @@ class Handler(Loader, Launcher):
         """ scan package for module to load. """
         mod = self.load_mod(pkgname)
         mods = [mod,]
-        try:
+        if "__path__" in dir(mod):
             mns = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
-        except:
+        elif "__file__" in dir(mod):
             mns = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
+        else:
+            return mods
         for n in mns:
-            logging.warn("load %s" % n[1])
+            logging.warn("load %s" % str(n[1]))
             mods.append(self.load_mod(n[1], force=True))
         for m in mods:
             self.scan(m)

@@ -189,7 +189,7 @@ class Command(Object):
             if not self.noignore and token.ignore:
                 self.ignore = token.ignore
                 continue
-            if token.dkey:
+            if token.dkey and not token.dkey in self.dkeys:
                 self.dkeys.append(token.dkey)
             if token.arg:
                 self.args.append(token.arg)

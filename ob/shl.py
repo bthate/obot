@@ -48,6 +48,7 @@ def close_history():
     if not HISTFILE:
         HISTFILE = os.path.join(ob.workdir, "history")
     if not os.path.isfile(HISTFILE):
+        cdir(HISTFILE)
         touch(HISTFILE)
     readline.write_history_file(HISTFILE)
 

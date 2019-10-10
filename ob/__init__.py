@@ -21,7 +21,11 @@ from ob.utl import locked
 
 class Object:
 
-    __slots__ = ("__dict__", "__path__", "__type__")
+    __slots__ = ("__dict__", "__cfrom__", "__path__", "__type__")
+
+    def __init__(self):
+        super().__init__()
+        self.__cfrom__ = get_from(3)
 
     def __iter__(self):
         return iter(self.__dict__)
