@@ -151,7 +151,8 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    path = os.path.join(ob.workdir, "obot.pid")
+    from ob import k
+    path = os.path.join(k.cfg.workdir, "obot.pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

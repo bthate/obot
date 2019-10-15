@@ -1,0 +1,4 @@
+cp init.d/obot.service /etc/systemd/system
+systemctl daemon-reload
+service obot start
+systemctl status obot

@@ -140,7 +140,7 @@ def kill(thrname):
         if "stop" in dir(task):
             task.stop()
 
-def last(otype):
+def fnlast(otype):
     """ return the fn of the last save object. """
     fns = list(names(otype))
     if fns:
@@ -247,7 +247,7 @@ def touch(fname):
 
 def useragent():
     """ display useragent. """
-    return 'Mozilla/5.0 (X11; Linux x86_64) OB +http://bitbucket.org/bthate/ob)'
+    return 'Mozilla/5.0 (X11; Linux x86_64) OBOT +http://bitbucket.org/bthate/obot)'
 
 def unescape(text):
     """ convert characters in text. """
