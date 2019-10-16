@@ -1,6 +1,7 @@
 cp init.d/obot.service /etc/systemd/system
+systemctl enable obot
 systemctl daemon-reload
-service obot start
-systemctl status obot
 ob -m irc,shw,rss,ent -d /var/lib/obot --logdir /var/log/obot -p localhost \#obot obot -s -l debug
 ob -d /var/lib/obot -m usr meet ~bart@127.0.0.1
+service obot start
+systemctl status obot
