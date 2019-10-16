@@ -12,7 +12,6 @@ __version__ = 1
 import datetime
 import io
 import logging
-import feedparser
 import ob
 import obot
 import os
@@ -20,6 +19,11 @@ import random
 import re
 import urllib
 
+try:
+    import feedparser
+except ModuleNotFoundError:
+    feedparser = None
+    
 from ob import Object, k, last
 from ob.clk import Repeater
 from ob.cls import Cfg
@@ -158,10 +162,11 @@ def get_feed(url):
     except urllib.error.HTTPError as ex:
         logging.error("%s: %s" % (url, ex))
         yield None
-    result = feedparser.parse(result)
-    if "entries" in result:
-        for entry in result["entries"]:
-            yield entry
+    if feedparser:
+        result = feedparser.parse(result)
+        if "entries" in result:
+            for entry in result["entries"]:
+                yield entry
 
 def file_time(timestamp):
     """ convert timestamp to filename. """
