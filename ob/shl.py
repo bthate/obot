@@ -132,8 +132,6 @@ def parse_cli(name="ob", version=None, wd=None, usage=None):
     if not os.path.exists(sp):
         cdir(sp)
     ob.workdir = cfg.workdir
-    if cfg.daemon:
-        ob.last(ob.k.cfg)
     ob.update(ob.k.cfg, cfg)
     ob.log.level(cfg.level or "error")
     st = time.ctime(time.time())

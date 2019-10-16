@@ -117,14 +117,15 @@ def names(name, delta=None):
         return []
     if not delta:
         delta = 0
-    assert ob.workdir
-    p = os.path.join(ob.workdir, "store", name) + os.sep
+    assert ob.k.cfg.workdir
+    p = os.path.join(ob.k.cfg.workdir, "store", name) + os.sep
+    print(p)
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(ob.workdir, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(ob.k.cfg.workdir, "store"))[-1]
             if delta:
                 if fntime(fnn) < past:
                     continue

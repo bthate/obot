@@ -12,8 +12,8 @@ def main():
     if k.cfg.daemon:
         daemon()
     k.load_mod("obot.cmd.cmds")
-    k.init(k.cfg.modules)
     k.start(True, not k.cfg.noshell, False)
+    k.init(k.cfg.modules)
     k.wait()
 
 execute(main)

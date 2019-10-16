@@ -116,6 +116,17 @@ obot also provides the ob program that can be used as a command line shell progr
 standalone shell is provided by the obs program and standard daemonized version 
 with the obd program.
 
+init.d
+======
+
+you can hook obot into the services system by running init.d/install. after
+reboot run the following to configure your bot.
+
+::
+
+ sudo ./bin/ob -m irc,shw,rss,ent,usr -d /var/lib/obot --logdir /var/log/obot -p localhost \#obot obot -s -l debug
+
+
 modules
 =======
 

@@ -252,4 +252,5 @@ def last(obj, skip=True):
     if val:
         update(obj, val)
         obj.__path__ = val.__path__
+        return obj.__path__
 

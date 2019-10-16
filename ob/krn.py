@@ -61,7 +61,7 @@ class Kernel(Handler):
         self.load_mod("ob.dpt")
         self.cfg.prompt = False
         self.cfg.verbose = True
-        self.fleet.add(self)
+        self.start()
         e = Event()
         e.txt = txt
         e.options = self.cfg.options
@@ -141,11 +141,10 @@ class Kernel(Handler):
         if not self.cfg.noshell:
             input = True
         if dosave:
-            self.save()
+            self.cfg.save()
         if self.cfg.kernel:
-            k = self.db.last(str(get_type(self)))
-            if k:
-                ob.update(self.cfg, k.cfg)
+            path = ob.last(self.cfg)
+            logging.debug("kernel from %s" % path)
         set_completer(self.cmds)
         enable_history()
         writepid()
