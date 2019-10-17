@@ -307,7 +307,7 @@ class IRC(Bot):
             self.joinall()
         elif cmd == "PING":
             self.state.pongcheck = True
-            self.command("PONG", e.txt)
+            self.command("PONG", e.txt or "")
         elif cmd == "PONG":
             self.state.pongcheck = False
         elif cmd == "433":
@@ -329,7 +329,7 @@ class IRC(Bot):
             return
         self._connected.wait()
         self.raw("NICK %s" % nick, True)
-        self.raw("USER %s %s %s :%s" % (self.cfg.username or "ob", server, server, self.cfg.realname or "ob"), True)
+        self.raw("USER %s %s %s :%s" % (self.cfg.username or "obot", server, server, self.cfg.realname or "obot"), True)
 
     def raw(self, txt, direct=False):
         """ raw(txt, direct=False)
