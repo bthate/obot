@@ -280,11 +280,11 @@ class IRC(Bot):
         nr = 0
         while 1:
             self.state.nrconnect += 1
+            logging.warning("connect #%s" % self.state.nrconnect)
             if self._connect():
                 break
             time.sleep(nr * 3.0)
             nr += 1
-            print(nr)
         if not k.cfg.resume:
             self.logon(self.cfg.server, self.cfg.nick)
 

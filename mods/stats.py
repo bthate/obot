@@ -98,7 +98,6 @@ def stat(event, **kwargs):
             txt += " door een %s" % ob.get(soort, name)
         else:
             txt += " door een %s" % random.choice(list(ob.values(soort)))
-        txt += " bijv. in %s" % random.choice(gemeenten)
         if name in tags:
             txt += " %s" % ob.get(tags, name)
         else:

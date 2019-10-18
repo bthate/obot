@@ -119,7 +119,6 @@ def names(name, delta=None):
         delta = 0
     assert ob.k.cfg.workdir
     p = os.path.join(ob.k.cfg.workdir, "store", name) + os.sep
-    print(p)
     res = []
     now = time.time()
     past = now + delta
