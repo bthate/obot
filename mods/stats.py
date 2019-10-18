@@ -8,7 +8,7 @@ import time
 
 from ob import Object, k
 from ob.clk import Repeater
-from ob.hdl import Event
+from ob.evt import Event
 from ob.tms import elapsed, today, to_day
 
 from obot.rss import Fetcher, to_time
@@ -34,8 +34,8 @@ def init():
 
 ## defines
 
-#startdate = "2018-10-05 00:00:00"
-startdate = "2012-09-13 00:00:00"
+startdate = "2018-10-05 00:00:00"
+#startdate = "2012-09-13 00:00:00"
 starttime = to_day(startdate)
 source = "https://bitbucket.org/bthate/obot"
 
@@ -72,7 +72,7 @@ def stats(event, **kwargs):
             if not needed:
                 continue
             nrtimes = int(delta/needed)
-            txt += "\n%s #%s %s %s in %s" % (key.upper(), nrtimes, ob.get(tags, key, ""), ob.get(zorg, random.choice(list(ob.keys(zorg))), ""), random.choice(gemeenten))
+            txt += "\n%s #%s %s %s" % (key.upper(), nrtimes, ob.get(tags, key, ""), ob.get(zorg, random.choice(list(ob.keys(zorg))), ""))
     event.reply(txt.strip())
 
 def stat(event, **kwargs):
@@ -108,6 +108,10 @@ def stat(event, **kwargs):
         k.fleet.announce(txt)
 
 ## DATA
+
+oorzaak = Object()
+oorzaak.suicide = 1800
+oorzaak.psychosestoornis = 12000
 
 nrsec = Object()
 nrsec.dag = 24 * 60 * 60.0
@@ -298,8 +302,8 @@ show.bewindvoering = 295000
 show.pogingen = cijfers.pogingen
 
 wanted = Object()
-wanted.suicide = suicide
 wanted.pogingen = pogingen
+wanted.oorzaak = oorzaak
 wanted.alarm = alarm
 wanted.e33 = e33
 

@@ -12,7 +12,8 @@ import unittest
 import ob.trc
 
 from ob import Object, k
-from ob.hdl import Event, Handler
+from ob.evt import Event
+from ob.hdl import Handler
 from ob.utl import cdir, consume, match, randomname
 
 outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ"
