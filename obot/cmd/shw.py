@@ -17,6 +17,7 @@ def __dir__():
 
 def show(event):
     """ display runtime information. """
+    event.parse()
     if not event.args:
         event.reply("cfg|cmds|fleet|kernel|ls|pid|tasks|version")
         return

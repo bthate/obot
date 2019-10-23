@@ -36,10 +36,10 @@ class Object:
 
     def __str__(self):
         """ return json string. """
-        return json.dumps(self, default=default, sort_keys=True)
+        return json.dumps(self, default=default, indent=4, sort_keys=True)
 
     def json(self):
-        return json.dumps(self, default=default, indent=4, sort_keys=True)
+        return json.dumps(self, default=default, sort_keys=True)
 
 def default(obj):
     """ default an object to JSON. """

@@ -301,10 +301,9 @@ show.bewindvoering = 295000
 show.pogingen = cijfers.pogingen
 
 wanted = Object()
-wanted.pogingen = pogingen
+wanted.oordeel = oordeel
 wanted.oorzaak = oorzaak
-wanted.alarm = alarm
-wanted.e33 = e33
+wanted.rechter = rechter
 
 omdat = Object()
 omdat.blokkeren = "met antipsychotica de werking van receptoren BLOKKEREN en dat dat benadeling van de gezondheid is."

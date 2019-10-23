@@ -10,9 +10,8 @@ def dispatch(handler, event):
     if not event or not event.txt:
         event.ready()
         return
-    event.parse(event.txt)
+    event._func = handler.get_cmd(event.txt.split()[0])
     event.orig = event.orig or repr(handler)
-    event._func = handler.get_cmd(event.chk)
     if event._func:
         event._func(event)
         event.show()

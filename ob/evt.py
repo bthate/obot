@@ -208,14 +208,18 @@ class Event(Command, Persist):
 
     """ Basic event class. """
 
-    def __init__(self):
+    def __init__(self, txt=""):
         super().__init__()
         self._ready = threading.Event()
         self.channel = ""
+        self.chk = ""
         self.dolog = False
         self.type = "chat"
         self.name = ""
         self.sep = "\n"
+        self.txt = txt
+        if self.txt:
+            self.chk = self.txt.split()[0]
 
     def _aliased(self, txt):
         """ return aliased version of txt. """

@@ -22,6 +22,18 @@ from ob.cls import get_type
 def __dir__():
     return ("Handler")
 
+aliases = {
+           "c": "cmds",
+           "cfg": "show cfg",
+           "f": "find",
+           "l": "log",
+           "ps": "show tasks",
+           "t": "todo",
+           "u": "show uptime",
+           "v": "show version"
+           }
+
+
 class Handler(Loader, Launcher):
 
     """ Event Handler class. """
@@ -46,11 +58,31 @@ class Handler(Loader, Launcher):
         self.state.last = time.time()
         self.state.nrsend = 0
 
+    def aliased(self, txt):
+        """ return aliased version of txt. """
+        spl = txt.split()
+        if spl and spl[0] in aliases:
+            cmd = spl[0]
+            v = aliases.get(cmd, None)
+            if v:
+                return v.split()[0]
+        return txt
+
     def get_cmd(self, cmd):
         """ return matching function. """
+        cmd = self.aliased(cmd)
         func = self.cmds.get(cmd, None)
         if not func and self.cfg.autoload:
-            mn = self.names.get(func, None)
+            mn = self.names.get(cmd, None)
+            if mn:
+                self.load_mod(mn)
+        return self.cmds.get(cmd, None)
+
+    def get_handler(self, cmd):
+        cmd = self.aliased(cmd)
+        func = self.handler.get(cmd, None)
+        if not func and self.cfg.autoload:
+            mn = self.names.get(cmd, None)
             if mn:
                 self.load_mod(mn)
         return self.cmds.get(cmd, None)
@@ -106,6 +138,7 @@ class Handler(Loader, Launcher):
 
     def register(self, handler):
         """ register a handler for a command. """
+        logging.debug("register %s" % get_name(handler))
         if handler not in self.handlers:
             self.handlers.append(handler)
 
@@ -115,9 +148,12 @@ class Handler(Loader, Launcher):
     def scan(self, mod):
         """ scan a module for commands/callbacks. """
         for key, o in inspect.getmembers(mod, inspect.isfunction):
-            if o.__code__.co_argcount == 1 and "event" in o.__code__.co_varnames:
-                self.cmds[key] = o
-                self.modules[key] = o.__module__
+            if "event" in o.__code__.co_varnames:
+                if o.__code__.co_argcount == 1 and key not in self.cmds:
+                    self.cmds[key] = o
+                    self.modules[key] = o.__module__
+                elif o.__code__.co_argcount == 2 and key not in self.handlers:
+                    self.handlers.append(o)
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Persist):
                 t = get_type(o)
