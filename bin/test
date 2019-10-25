@@ -24,6 +24,7 @@ def initialize():
     ob.k.walk("ob")
     ob.k.walk("obot")
     ob.k.walk("obot.cmd")
+    ob.k.walk("mods")
     ob.k.start()
     for c in ob.k.classes:
         try:

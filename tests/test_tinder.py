@@ -8,7 +8,7 @@ import unittest
 
 import obot
 
-from ob import Object
+from ob import Object, k
 from ob.evt import Event
 from ob.utl import consume, randomname
 
@@ -16,17 +16,17 @@ class Param(Object):
 
     pass
 
-ob.k.users.oper("test@shell")
+k.users.oper("test@shell")
 e = Event()
 e.parse("-o %s" % ob.k.cfg.options)
 
 param = Param()
-param.ed = ["%s txt==yo channel=#mekker" % x for x in ob.k.names]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in ob.k.names])
-param.find = ["%s txt==yo -f" % x for x in ob.k.names] + ["email txt==gif", ]
-param.load = ob.k.table.keys()
+param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
+param.find = ["%s txt==yo -f" % x for x in k.names] + ["email txt==gif", ]
+param.load = k.table.keys()
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % x for x in ob.k.names]
+param.rm = ["%s txt==yo" % x for x in k.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
 #param.mbox = ["~/evidence/25-1-2013",]
 
@@ -35,20 +35,20 @@ class Test_Tinder(unittest.TestCase):
     def test_tinder(self):
         thrs = []
         for x in range(e.index or 1):
-            thrs.append(ob.k.launch(tests, ob.k))
+            thrs.append(k.launch(tests, ob.k))
         for thr in thrs:
             thr.join()
 
     def test_tinder2(self):
         for x in range(e.index or 1):
-            tests(ob.k)
+            tests(k)
         
 def tests(b):
     events = []
     keys = list(b.cmds)
     random.shuffle(keys)
     for cmd in keys:
-        if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
+        if cmd in ["fetch", "exit", "reboot", "reconnect", "tests", "test"]:
             continue
         events.extend(do_cmd(b, cmd))
     consume(events)

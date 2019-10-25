@@ -57,10 +57,6 @@ def init():
     except ValueError:
         pass
 
-def exceptions(event):
-    for ex in ob.trc.exceptions:
-        event.reply(ex)
-
 def reconnect(event):
     bot = k.fleet.get_bot(event.orig)
     if bot:
@@ -73,7 +69,7 @@ def tinder(event):
     try:
         nr = int(event.args[0])
     except (IndexError, ValueError):
-        nr = 10
+        nr = 1
     events = []
     for x in range(nr):
         for cn in k.cmds:
@@ -94,7 +90,7 @@ def tinder2(event):
     try:
         nr = int(event.args[0])
     except (IndexError, ValueError):
-        nr = 10
+        nr = 1
     events = []
     for x in range(nr):
         for cn in k.cmds:

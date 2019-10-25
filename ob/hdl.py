@@ -20,7 +20,7 @@ from ob.utl import get_name
 from ob.cls import get_type
 
 def __dir__():
-    return ("Handler")
+    return ("Handler", "aliases")
 
 aliases = {
            "c": "cmds",
@@ -33,10 +33,9 @@ aliases = {
            "v": "show version"
            }
 
-
 class Handler(Loader, Launcher):
 
-    """ Event Handler class. """
+    """ event Handler class. """
 
     def __init__(self):
         super().__init__()
@@ -183,7 +182,11 @@ class Handler(Loader, Launcher):
 
     def walk(self, pkgname):
         """ scan package for module to load. """
-        mod = self.load_mod(pkgname)
+        try:
+            mod = self.load_mod(pkgname)
+        except ModuleNotFoundError:
+            logging.debug("not found %s" % pkgname)
+            return []
         mods = [mod,]
         try:
             mns = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
@@ -197,7 +200,10 @@ class Handler(Loader, Launcher):
             if skip:
                 continue
             logging.warn("load %s" % str(n[1]))
-            mods.append(self.load_mod(n[1], force=True))
+            try:
+                mods.append(self.load_mod(n[1], force=True))
+            except ModuleNotFoundError:
+                logging.debug("not found %s" % n[1])
         for m in mods:
             self.scan(m)
         return mods
