@@ -20,18 +20,7 @@ from ob.utl import get_name
 from ob.cls import get_type
 
 def __dir__():
-    return ("Handler", "aliases")
-
-aliases = {
-           "c": "cmds",
-           "cfg": "show cfg",
-           "f": "find",
-           "l": "log",
-           "ps": "show tasks",
-           "t": "todo",
-           "u": "show uptime",
-           "v": "show version"
-           }
+    return ("Handler",)
 
 class Handler(Loader, Launcher):
 
@@ -57,19 +46,8 @@ class Handler(Loader, Launcher):
         self.state.last = time.time()
         self.state.nrsend = 0
 
-    def aliased(self, txt):
-        """ return aliased version of txt. """
-        spl = txt.split()
-        if spl and spl[0] in aliases:
-            cmd = spl[0]
-            v = aliases.get(cmd, None)
-            if v:
-                return v.split()[0]
-        return txt
-
     def get_cmd(self, cmd):
         """ return matching function. """
-        cmd = self.aliased(cmd)
         func = self.cmds.get(cmd, None)
         if not func and self.cfg.autoload:
             mn = self.names.get(cmd, None)
@@ -78,7 +56,6 @@ class Handler(Loader, Launcher):
         return self.cmds.get(cmd, None)
 
     def get_handler(self, cmd):
-        cmd = self.aliased(cmd)
         func = self.handler.get(cmd, None)
         if not func and self.cfg.autoload:
             mn = self.names.get(cmd, None)
@@ -102,7 +79,7 @@ class Handler(Loader, Launcher):
                 self.handle(e)
             except Exception as ex:
                 logging.error(get_exception())
-        logging.warn("stop %s" % get_name(self))
+        logging.warning("stop %s" % get_name(self))
         self._ready.set()
 
     def input(self):
@@ -137,7 +114,7 @@ class Handler(Loader, Launcher):
 
     def register(self, handler):
         """ register a handler for a command. """
-        logging.debug("register %s" % get_name(handler))
+        logging.warning("register %s" % get_name(handler))
         if handler not in self.handlers:
             self.handlers.append(handler)
 
@@ -182,11 +159,7 @@ class Handler(Loader, Launcher):
 
     def walk(self, pkgname):
         """ scan package for module to load. """
-        try:
-            mod = self.load_mod(pkgname)
-        except ModuleNotFoundError:
-            logging.debug("not found %s" % pkgname)
-            return []
+        mod = self.load_mod(pkgname)
         mods = [mod,]
         try:
             mns = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
@@ -197,13 +170,12 @@ class Handler(Loader, Launcher):
             for ex in self.cfg.exclude.split(","):
                 if ex and ex in n[1]:
                     skip = True
+                    break
             if skip:
                 continue
             logging.warn("load %s" % str(n[1]))
             try:
                 mods.append(self.load_mod(n[1], force=True))
             except ModuleNotFoundError:
-                logging.debug("not found %s" % n[1])
-        for m in mods:
-            self.scan(m)
+                logging.debug(get_exception())
         return mods

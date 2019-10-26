@@ -8,9 +8,6 @@ from ob.utl import cdir, hd
 
 logfiled = ""
 
-def init():
-    k.register(log_handler)
-
 class DumpHandler(logging.StreamHandler):
 
     """ handles nothing. """

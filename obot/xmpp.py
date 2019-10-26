@@ -90,7 +90,6 @@ class XMPP(Bot):
         self.jid = None
         self.rooms = []
         self.state = Object()
-        self.register(dispatch)
 
     def _bind(self, data):
         """ session_bind. """

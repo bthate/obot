@@ -17,7 +17,9 @@ class Test_Fuzzer(unittest.TestCase):
 
     def test_fuzzer1(self):
         for key in k.modules:
+            print(key)
             for n in k.names:
+                print(n)
                 t = k.names[n]
                 try:
                     e = get_cls(t)()

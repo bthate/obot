@@ -7,6 +7,7 @@ from ob import Object, k
 
 def find(event):
     """ find an object matching to a key==value selector. """
+    event.parse()
     if "k" in event.options:
         o = k.db.last(event.match)
         if o:

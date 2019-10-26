@@ -372,7 +372,6 @@ class DCC(Bot):
         self._fsock = None
         self.encoding = "utf-8"
         self.origin = ""
-        self.register(dispatch)
 
     def raw(self, txt):
         """ raw socket output. """

@@ -108,6 +108,7 @@ class Command(Object):
         self._cb = None
         self._error = None
         self._func = None
+        self._parsed = False
         self._ready = threading.Event()
         self._thrs = []
         self.args = []
@@ -129,6 +130,16 @@ class Command(Object):
         self.time = 0
         self.txt = ""
 
+    def aliased(self, txt):
+        """ return aliased version of txt. """
+        spl = txt.split()
+        if spl and spl[0] in aliases:
+            cmd = spl[0]
+            v = aliases.get(cmd, None)
+            if v:
+                return v
+        return txt
+
     def parse(self, txt="", options=""):
         """ parse txt into a command. """
         if not txt:
@@ -140,7 +151,7 @@ class Command(Object):
         txt = txt.replace("\001", "")
         if txt and self.cc == txt[0]:
             txt = txt[1:]
-        self.txt = self._aliased(txt)
+        self.txt = self.aliased(txt)
         if not self.txt:
             self.txt = txt
         nr = -1
@@ -220,17 +231,6 @@ class Event(Command, Persist):
         self.txt = txt
         if self.txt:
             self.chk = self.txt.split()[0]
-
-    def _aliased(self, txt):
-        """ return aliased version of txt. """
-        spl = txt.split()
-        if spl and spl[0] in aliases:
-            cmd = spl[0]
-            v = aliases.get(cmd, None)
-            if v:
-                spl[0] = cmd.replace(cmd, v)
-        txt2 = " ".join(spl)
-        return txt2 or txt
 
     def display(self, o, txt=""):
         """ display an object. """

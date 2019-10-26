@@ -34,9 +34,9 @@ class Thr(threading.Thread):
             self._result = func(*args)
         except Exception as ex:
             logging.error(get_exception())
-        if args:
-            if "ready" in dir(args[0]):
-                args[0].ready()
+        #if args:
+        #    if "ready" in dir(args[0]):
+        #        args[0].ready()
  
     def join(self, timeout=None):
         super().join(timeout)

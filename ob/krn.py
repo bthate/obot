@@ -41,7 +41,6 @@ class Kernel(Handler):
         self.cfg = Cfg()
         self.db = Db()
         self.fleet = Fleet()
-        self.register(dispatch)
         self.state = ob.Object()
         self.state.started = False
         self.state.starttime = time.time()
@@ -74,8 +73,9 @@ class Kernel(Handler):
         if not modstr:
             return
         if "all" in modstr:
-            modstr += ",ob,obot.cmd,obot"
+            modstr += "ob.dpt,obot.cmd,obot"
             modstr = modstr.replace("all", "")
+        thrs = []
         for mod in mods(self, modstr):
             next = False
             for ex in self.cfg.exclude.split(","):
@@ -84,16 +84,18 @@ class Kernel(Handler):
                     break
             if next:
                 continue
-            logging.warn("init %s" % get_name(mod))
             if "init" not in dir(mod):
                 continue
+            logging.warn("init %s" % get_name(mod))
             try:
-                mod.init()
+                thrs.append(self.launch(mod.init))
             except EINIT:
                 if not self.cfg.debug:
                     _thread.interrupt_main()
             except Exception as ex:
                 logging.error(get_exception())
+        for thr in thrs:
+            thr.join()
 
     def input(self):
         """ start a input loop. """

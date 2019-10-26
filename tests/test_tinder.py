@@ -18,7 +18,8 @@ class Param(Object):
 
 k.users.oper("test@shell")
 e = Event()
-e.parse("-o %s" % ob.k.cfg.options)
+if k.cfg.options:
+    e.parse("-o %s" % k.cfg.options)
 
 param = Param()
 param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
@@ -62,6 +63,7 @@ def do_cmd(b, cmd):
         e = Event()
         e.origin = "test@shell"
         e.txt = cmd + " " + ex
+        print(e.txt)
         b.put(e)
         events.append(e)
     return events

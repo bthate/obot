@@ -17,15 +17,16 @@ from ob.shl import execute, parse_cli
 from ob.tms import elapsed
 from ob.utl import cdir
 
+from ob import k
+
 def initialize():
     cdir("testdata")
-    ob.k.users.oper("test@shell")
-    ob.k.cfg.prompt = False
-    ob.k.walk("ob")
-    ob.k.walk("obot")
-    ob.k.walk("obot.cmd")
-    ob.k.walk("mods")
-    ob.k.start()
+    k.users.oper("test@shell")
+    k.cfg.prompt = False
+    k.walk("ob")
+    k.walk("obot")
+    k.walk("obot.cmd")
+    k.start()
     for c in ob.k.classes:
         try:
             o = get_cls(c)()
@@ -43,13 +44,13 @@ def main():
     ob.workdir = "testdata"
     level("debug")
     initialize()
-    ob.k.cfg.exclude = "mdl,rss"
-    ob.k.cfg.debug = True
-    level(ob.k.cfg.level)
+    k.cfg.exclude = "mdl,rss"
+    k.cfg.debug = True
+    level(k.cfg.level)
     test_path = os.getcwd() + os.sep + "tests"
     p = ""
-    if ob.k.cfg.args:
-        p = "test_%s*" % ob.k.cfg.args[0]
+    if k.cfg.args:
+        p = "test_%s*" % k.cfg.args[0]
     if not p:
         p = "test_*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=p)
