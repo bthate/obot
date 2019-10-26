@@ -11,6 +11,7 @@ def main():
     parse_cli("obot", __version__)
     if k.cfg.daemon:
         daemon()
+    k.load_mod("ob.dpt")
     k.load_mod("obot.cmd.cmds")
     k.start(True, not k.cfg.noshell, False)
     k.init(k.cfg.modules)
