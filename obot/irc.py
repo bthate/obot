@@ -37,8 +37,9 @@ def init():
             bot.cfg.nick = nick
             bot.cfg.save()
         except ValueError:
-            sys.stdout.write("%s -m irc <server> <channel> <nick>\n" % k.cfg.name)
-            sys.stdout.flush()
+            if k.cfg.verbose:
+                sys.stdout.write("%s -m irc <server> <channel> <nick>\n" % k.cfg.name)
+                sys.stdout.flush()
             raise EINIT
     bot.start()
     return bot

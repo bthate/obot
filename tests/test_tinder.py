@@ -63,7 +63,6 @@ def do_cmd(b, cmd):
         e = Event()
         e.origin = "test@shell"
         e.txt = cmd + " " + ex
-        print(e.txt)
         b.put(e)
         events.append(e)
     return events

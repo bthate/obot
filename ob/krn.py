@@ -60,7 +60,7 @@ class Kernel(Handler):
         self.load_mod("ob.dpt")
         self.cfg.prompt = False
         self.cfg.verbose = True
-        self.start()
+        #self.start()
         e = Event()
         e.txt = txt
         e.options = self.cfg.options
@@ -89,13 +89,14 @@ class Kernel(Handler):
             logging.warn("init %s" % get_name(mod))
             try:
                 thrs.append(self.launch(mod.init))
-            except EINIT:
-                if not self.cfg.debug:
-                    _thread.interrupt_main()
             except Exception as ex:
                 logging.error(get_exception())
         for thr in thrs:
-            thr.join()
+            try:
+                thr.join()
+            except EINIT:
+                if not self.cfg.debug:
+                    _thread.interrupt_main()
 
     def input(self):
         """ start a input loop. """
@@ -120,7 +121,7 @@ class Kernel(Handler):
 
     def raw(self, txt):
         """ write directly to display. """
-        if not txt:
+        if not self.cfg.verbose or not txt:
             return
         sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()

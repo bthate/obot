@@ -27,6 +27,7 @@ opts = [
     ('-k', '', 'store_true', False, 'kernel', 'use saved kernel config'),
     ('-l', '', 'string', '', 'level', 'loglevel.'),
     ('-m', '', 'string', '', 'modules', 'modules to load.'),
+    ('-n', '', 'string', 'obot', 'name', "program name."),
     ('-o', '', "string", "", 'options', "options to use."),
     ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
     ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
@@ -113,7 +114,7 @@ def make_opts(options, usage, version):
             parser.add_option(opt[0], opt[1], type=otype, default=deft, dest=dest, help=htype)
     return parser.parse_args()
 
-def parse_cli(name="ob", version=None, wd=None, usage=None):
+def parse_cli(name="obot", version=None, wd=None, usage=None):
     import ob
     import ob.krn
     import ob.log

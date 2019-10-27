@@ -6,7 +6,9 @@ import queue
 import threading
 import time
 import types
+import _thread
 
+from ob.err import EINIT
 from ob.trc import get_exception
 from ob.utl import get_name
 
@@ -32,6 +34,8 @@ class Thr(threading.Thread):
         func, args = self._queue.get()
         try:
             self._result = func(*args)
+        except EINIT:
+            _thread.interrupt_main()
         except Exception as ex:
             logging.error(get_exception())
         #if args:
