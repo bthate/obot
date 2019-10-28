@@ -68,7 +68,6 @@ def consume(elems):
     """ call wait on all elements. """
     fixed = []
     for e in elems:
-        logging.debug("waiting %s" % e)
         e.wait()
         fixed.append(e)
     for f in fixed:

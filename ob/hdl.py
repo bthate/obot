@@ -119,7 +119,8 @@ class Handler(Loader, Launcher):
             self.handlers.append(handler)
 
     def say(self, channel, txt, type="chat"):
-        print(txt)
+        if self.cfg.verbose:
+            print(txt)
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """
