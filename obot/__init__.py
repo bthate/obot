@@ -9,6 +9,7 @@ import threading
 
 from ob import k
 from ob.cls import Cfg
+from ob.dpt import dispatch
 from ob.hdl import Handler
 from ob.shl import enable_history, set_completer
 
@@ -21,15 +22,12 @@ class Bot(Handler):
 
     def __init__(self):
         super().__init__()
-        self.cfg = Cfg()
-        ob.update(self.cfg, {"prompt": True, "verbose": True})
         self.channels = []
 
     def announce(self, txt):
         """ announce txt on all registered channels. """
-        if self.cfg.verbose:
-            for channel in self.channels:
-                self.say(channel, txt)
+        for channel in self.channels:
+            self.say(channel, txt)
 
     def raw(self, txt):
         """ write directly to display. """

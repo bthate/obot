@@ -41,9 +41,11 @@ class Kernel(Handler):
         self.cfg = Cfg()
         self.db = Db()
         self.fleet = Fleet()
+        self.prompt = True
         self.state = ob.Object()
         self.state.started = False
         self.state.starttime = time.time()
+        self.verbose = True
         self.users = Users()
 
     def add(self, cmd, func):
@@ -58,9 +60,7 @@ class Kernel(Handler):
             return
         from ob.evt import Event
         self.load_mod("ob.dpt")
-        self.cfg.prompt = False
-        self.cfg.verbose = True
-        #self.start()
+        self.prompt = False
         e = Event()
         e.txt = txt
         e.options = self.cfg.options
@@ -88,15 +88,12 @@ class Kernel(Handler):
                 continue
             logging.warn("init %s" % get_name(mod))
             try:
-                thrs.append(self.launch(mod.init))
-            except Exception as ex:
-                logging.error(get_exception())
-        for thr in thrs:
-            try:
-                thr.join()
+                mod.init()
             except EINIT:
                 if not self.cfg.debug:
                     _thread.interrupt_main()
+            except Exception as ex:
+                logging.error(get_exception())
 
     def input(self):
         """ start a input loop. """
@@ -105,7 +102,7 @@ class Kernel(Handler):
             self.put(e)
             e.wait()
 
-    def prompt(self, e):
+    def doprompt(self, e):
         """ return a event by prompting for some text. """
         e.txt = input("> ")
         e.txt = e.txt.rstrip()
@@ -116,12 +113,12 @@ class Kernel(Handler):
         e = Event()
         e.options = self.cfg.options
         e.origin = "root@shell"
-        self.prompt(e)
+        self.doprompt(e)
         return e
 
     def raw(self, txt):
         """ write directly to display. """
-        if not self.cfg.verbose or not txt:
+        if not self.verbose or not txt:
             return
         sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()
@@ -151,6 +148,7 @@ class Kernel(Handler):
         set_completer(self.cmds)
         enable_history()
         writepid()
+        self.walk("ob.dpt")
         super().start(handler, input, output)
 
     def wait(self):

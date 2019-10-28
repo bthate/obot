@@ -63,7 +63,7 @@ def main():
     k.cmds["rm"] = rm
     k.cmds["undel"] = undel
     k.init(k.cfg.modules)
-    k.start(input=True)
+    k.start()
     k.wait()
         
 execute(main)

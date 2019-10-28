@@ -36,6 +36,7 @@ class Handler(Loader, Launcher):
         self._threaded = False
         self._type = get_type(self)
         self.cfg = Cfg()
+        ob.update(self.cfg, {"prompt": True, "verbose": True})
         self.classes = []
         self.cmds = {}
         self.handlers = []
@@ -119,8 +120,7 @@ class Handler(Loader, Launcher):
             self.handlers.append(handler)
 
     def say(self, channel, txt, type="chat"):
-        if self.cfg.verbose:
-            print(txt)
+        print(txt)
 
     def scan(self, mod):
         """ scan a module for commands/callbacks. """
