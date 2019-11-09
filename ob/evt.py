@@ -137,8 +137,8 @@ class Command(Object):
             cmd = spl[0]
             v = aliases.get(cmd, None)
             if v:
-                return v
-        return txt
+                spl[0] = v
+        return " ".join(spl)
 
     def parse(self, txt="", options=""):
         """ parse txt into a command. """

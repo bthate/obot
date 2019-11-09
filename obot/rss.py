@@ -32,7 +32,7 @@ from ob.tms import to_time
 from ob.utl import get_url, strip_html, unescape
 
 def __dir__():
-    return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "fetch", "init", "rss")
+    return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
 
 def init():
     """ rss initialisation. """
@@ -46,7 +46,7 @@ class Cfg(Cfg):
     def __init__(self):
         super().__init__()
         self.display_list = ["title", "link"]
-        self.dosave = False
+        self.dosave = True
 
 class Feed(Persist):
 
@@ -185,11 +185,6 @@ def delete(event):
         rss.save()
     event.reply("ok %s" % nr)
 
-def fetch(event):
-    """ fetch registered feeds. """
-    res = fetcher.run()
-    event.reply("fetched %s" % ",".join([str(x) for x in res]))
-
 def display(event):
     """ use to add a rss feed or get a overview of registered rss feeds. """
     if len(event.args) < 2:
@@ -202,6 +197,24 @@ def display(event):
         ob.edit(o, setter)
         o.save()
     event.reply("ok %s" % nr)
+
+def feed(event):
+    """ use to add a rss feed or get a overview of registered rss feeds. """
+    match = ""
+    if event.args:
+        match = event.args[0]
+    nr = 0
+    res = list(k.db.find("obot.rss.Feed", {"summary": match}))
+    for o in res:
+        if match:
+            event.reply("%s %s %s %s" % (nr, o.title, o.summary, o.link))
+        nr += 1
+    event.reply("%s items matched" % nr)
+ 
+def fetch(event):
+    """ fetch registered feeds. """
+    res = fetcher.run()
+    event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
 def rss(event):
     """ use to add a rss feed or get a overview of registered rss feeds. """

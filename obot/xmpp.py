@@ -263,11 +263,11 @@ class XMPP(Bot):
                 self.channels.remove(o.origin)
             return
         elif o.mtype == "available":
-            if o.origin not in self.channels:
-                self.channels.append(o.origin)
+            if o.user not in self.channels:
+                self.channels.append(o.user)
         elif o.mtype == "unavailable":
-            if o.origin in self.channels:
-                self.channels.remove(o.origin)
+            if o.user in self.channels:
+                self.channels.remove(o.user)
 
 def stripped(jid):
     """ strip everything after the / """
