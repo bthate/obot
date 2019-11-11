@@ -114,9 +114,15 @@ class Fetcher(Persist):
             self.seen.urls.append(url)
             counter += 1
             objs.append(feed)
-            if self.cfg.dosave and "updated" in dir(feed):
-                date = file_time(to_time(feed.updated))
-                feed.save(stime=date)
+            if self.cfg.dosave:
+                try:
+                    date = file_time(to_time(feed.updated))
+                except:
+                    date = False
+                if date:
+                    feed.save(stime=date)
+                else:
+                    feed.save()
         self.seen.save()
         for o in objs:
             k.fleet.announce(self.display(o))
@@ -204,12 +210,18 @@ def feed(event):
     if event.args:
         match = event.args[0]
     nr = 0
-    res = list(k.db.find("obot.rss.Feed", {"summary": match}))
+    res = list(k.db.find("obot.rss.Feed", {"title": match}, delta=-60*60*24))
     for o in res:
         if match:
-            event.reply("%s %s %s %s" % (nr, o.title, o.summary, o.link))
+            event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
-    event.reply("%s items matched" % nr)
+    res = list(k.db.find("obot.rss.Feed", {"summary": match}, delta=-60*60*24))
+    for o in res:
+        if match:
+            event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
+        nr += 1
+    if not nr:
+        event.reply("no results found")
  
 def fetch(event):
     """ fetch registered feeds. """
