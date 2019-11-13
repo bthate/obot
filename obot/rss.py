@@ -17,6 +17,7 @@ import obot
 import os
 import random
 import re
+import time
 import urllib
 
 try:
@@ -27,8 +28,9 @@ except ModuleNotFoundError:
 from ob import Object, k, last
 from ob.clk import Repeater
 from ob.cls import Cfg
+from ob.cls import Default
 from ob.pst import Persist
-from ob.tms import to_time
+from ob.tms import day, to_time
 from ob.utl import get_url, strip_html, unescape
 
 def __dir__():
@@ -48,7 +50,7 @@ class Cfg(Cfg):
         self.display_list = ["title", "link"]
         self.dosave = True
 
-class Feed(Persist):
+class Feed(Default):
 
     """ feed entry. """
 
@@ -120,6 +122,7 @@ class Fetcher(Persist):
                 except:
                     date = False
                 if date:
+                    logging.debug(date)
                     feed.save(stime=date)
                 else:
                     feed.save()
@@ -210,12 +213,20 @@ def feed(event):
     if event.args:
         match = event.args[0]
     nr = 0
-    res = list(k.db.find("obot.rss.Feed", {"title": match}, delta=-60*60*24))
+    diff = time.time() - to_time(day())
+    res = list(k.db.find("obot.rss.Feed", {"link": match}, delta=-diff))
+    for o in res:
+        if match:
+            event.reply("%s %s - %s - %s - %s" % (nr, o.title, o.summary, o.updated or o.published or "nodate", o.link))
+        nr += 1
+    if nr:
+        return
+    res = list(k.db.find("obot.rss.Feed", {"title": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
-    res = list(k.db.find("obot.rss.Feed", {"summary": match}, delta=-60*60*24))
+    res = list(k.db.find("obot.rss.Feed", {"summary": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))

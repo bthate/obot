@@ -1,6 +1,7 @@
 """ object query. """
 
 import json
+import logging
 import ob
 import os
 import time
