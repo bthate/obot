@@ -117,8 +117,9 @@ class Fetcher(Persist):
             counter += 1
             objs.append(feed)
             if self.cfg.dosave:
+                logging.debug(feed)
                 try:
-                    date = file_time(to_time(feed.updated))
+                    date = file_time(to_time(feed.published))
                 except:
                     date = False
                 if date:

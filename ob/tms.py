@@ -20,6 +20,7 @@ timestrings = [
     "%Y-%m-%dt%H:%M:%S+00:00",
     "%a, %d %b %Y %H:%M:%S +0000",
     "%d %b %Y %H:%M:%S +0000",
+   "%d, %b %Y %H:%M:%S +0000"
 ]
 
 year_formats = [
@@ -194,6 +195,7 @@ def to_time(daystr):
     for tstring in timestrings:
         try:
             res = time.mktime(time.strptime(daystr, tstring))
+            break
         except ValueError:
             try:
                 res = time.mktime(time.strptime(" ".join(daystr.split()[:-1]), tstring))

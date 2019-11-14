@@ -5,10 +5,10 @@
 
 import os; import sys; sys.path.insert(0, os.getcwd())
 
-from ob import Cfg
-from ob.shell import parse_cli
-from ob.trace import get_exception
-from ob.utils import strip_html
+from ob.cls import Cfg
+from ob.shl import parse_cli
+from ob.trc import get_exception
+from ob.utl import strip_html
 
 import logging
 import select

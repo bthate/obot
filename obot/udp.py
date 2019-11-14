@@ -9,6 +9,7 @@ import time
 from ob import Object, k
 from ob.cls import Cfg
 from ob.pst import Persist
+from ob.utl import get_name
 
 def __dir__():
     return ("UDP", "Cfg", "init") 
@@ -55,7 +56,8 @@ class UDP(Persist):
         text = text.replace("\00", "")
         if passwd == self.cfg.password:
             for b in k.fleet.bots:
-                b.announce(text)
+                if "DCC" in get_name(b):
+                    b.announce(text)
 
     def server(self, host="", port=""):
         """ loop to read from udp socket. """
