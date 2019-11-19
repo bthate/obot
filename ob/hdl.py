@@ -129,8 +129,8 @@ class Handler(Loader, Launcher):
                 if o.__code__.co_argcount == 1 and key not in self.cmds:
                     self.cmds[key] = o
                     self.modules[key] = o.__module__
-                elif o.__code__.co_argcount == 2 and key not in self.handlers:
-                    self.register(o)
+                #elif o.__code__.co_argcount == 2 and key not in self.handlers:
+                #    self.register(o)
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Persist):
                 t = get_type(o)

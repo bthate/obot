@@ -125,9 +125,6 @@ class IRC(Bot):
         self.state.nrsend = 0
         self.state.pongcheck = False
         self.state.resume = None
-        self.register(errored)
-        self.register(noticed)
-        self.register(privmsged)
         self.sleep = True
         self.threaded = False
         if self.cfg.channel and self.cfg.channel not in self.channels:
@@ -359,6 +356,10 @@ class IRC(Bot):
         """ start irc bot. """
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
+        self.register(dispatch)
+        self.register(errored)
+        self.register(privmsged)
+        self.register(noticed)
         self.connect()
         super().start(True, True, True)
         
@@ -423,7 +424,7 @@ class DCC(Bot):
 
 def errored(handler, event):
     """ error handler. """
-    if event.chk != "ERROR":
+    if event.command != "ERROR":
         return
     handler.state.error = event
     handler._connected.clear()
@@ -432,7 +433,7 @@ def errored(handler, event):
 
 def noticed(handler, event):
     """ notice handler. """
-    if event.chk != "NOTICE":
+    if event.command != "NOTICE":
         return
     if event.txt.startswith("VERSION"):
         txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, __version__, k.cfg.description)
@@ -440,7 +441,7 @@ def noticed(handler, event):
 
 def privmsged(handler, event):
     """ privmsg handler. """
-    if event.chk != "PRIVMSG":
+    if event.command != "PRIVMSG":
         return
     if event.origin != k.cfg.owner:
         set(k.users.userhosts, event.nick, event.origin)
@@ -454,7 +455,6 @@ def privmsged(handler, event):
         except ConnectionRefusedError:
             return
     if event.txt and event.txt[0] == handler.cc:
-        if not k.users.allowed(event.origin, "USER"):
+        if not k.cfg.nousers and not k.users.allowed(event.origin, "USER"):
             return
-        event.parse(event.txt[1:])
         k.put(event)

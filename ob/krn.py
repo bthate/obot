@@ -148,7 +148,7 @@ class Kernel(Handler):
         set_completer(self.cmds)
         enable_history()
         writepid()
-        self.walk("ob.dpt")
+        self.register(dispatch)
         super().start(handler, input, output)
 
     def wait(self):

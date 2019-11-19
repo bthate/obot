@@ -38,10 +38,11 @@ opts = [
     ('-z', '', 'store_true', False, 'noshell', 'disable shell.'),
     ('', '--autoload', 'store_true', False, 'autoload', 'use on demand module loading.'),
     ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
-    ('', '--cached"', 'store_true', False, 'cached', 'use caching'),
+    ('', '--cached', 'store_true', False, 'cached', 'use caching'),
     ('', '--debug', "string", "", 'debug', "enable debug mode"),
     ('', '--logdir', "string", "", 'logdir', "directory to log to."),
-    ('', '--owner', "string", "", 'owner', "owner's userhost or JID.")
+    ('', '--owner', "string", "", 'owner', "owner's userhost or JID."),
+    ('', '--nousers', 'store_true', False, 'nousers', 'disabled users.'),
 ]
 
 def close_history():

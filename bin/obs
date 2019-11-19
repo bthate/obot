@@ -57,7 +57,6 @@ def undel(event):
 
 def main():
     parse_cli("obs", __version__, hd(".obot"), "obs [options]")
-    k.walk("obot")
     k.walk("obot.cmd")
     k.cmds["ed"] = ed
     k.cmds["rm"] = rm

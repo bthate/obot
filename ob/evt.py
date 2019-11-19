@@ -151,14 +151,12 @@ class Command(Object):
         txt = txt.replace("\001", "")
         if txt and self.cc == txt[0]:
             txt = txt[1:]
-        self.txt = self.aliased(txt)
-        if not self.txt:
-            self.txt = txt
+        txt = self.aliased(txt)
         nr = -1
         self.args = []
         self.dkeys = []
         self.options = options or self.options or ""
-        words = self.txt.split()
+        words = txt.split()
         tokens = []
         nr = -1
         for word in words:
