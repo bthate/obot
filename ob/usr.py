@@ -26,6 +26,8 @@ class Users(Persist):
     userhosts = Persist()
 
     def allowed(self, origin, perm):
+        if ob.k.cfg.nousers:
+            return True
         perm = perm.upper()
         user = self.get_user(origin)
         if user:
