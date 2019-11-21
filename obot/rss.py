@@ -86,6 +86,8 @@ class Fetcher(Persist):
         try:
             dl = o.display_list
         except AttributeError:
+            pass
+        if not dl:
             dl = self.cfg.display_list
         for key in dl:
             data = ob.get(o, key, None)
@@ -117,13 +119,11 @@ class Fetcher(Persist):
             counter += 1
             objs.append(feed)
             if self.cfg.dosave:
-                logging.debug(feed)
                 try:
                     date = file_time(to_time(feed.published))
                 except:
                     date = False
                 if date:
-                    logging.debug(date)
                     feed.save(stime=date)
                 else:
                     feed.save()

@@ -10,6 +10,17 @@ from ob.dpt import dispatch
 from ob.shl import execute, hd, parse_cli
 from ob.tms import elapsed
 
+opts = [
+    ('-d', '', 'string', "", 'workdir', 'set working directory.'),
+    ('-l', '', 'string', '', 'level', 'loglevel.'),
+    ('-m', '', 'string', '', 'modules', 'modules to load.'),
+    ('-o', '', "string", "", 'options', "options to use."),
+    ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
+    ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('-x', '', 'string', '', 'exclude', 'skip modules'),
+    ('', '--owner', "string", "", 'owner', "owner's userhost or JID."),
+]
+
 def ed(event):
     """ edit an object, select with key==value, set with key=value. """
     if not event.args:
@@ -56,13 +67,13 @@ def undel(event):
     event.reply("ok %s %s" % (nr+1, elapsed(time.time()-st)))
 
 def main():
-    parse_cli("ob", __version__, hd(".obot"), "ob options cmd [arg1 arg2}")
-    k.register(dispatch)
+    parse_cli("ob", __version__, opts, hd(".obot"), "ob cmd [arg1 arg2}")
     k.walk("obot.cmd")
-    k.cmds["ed"] = ed
-    k.cmds["rm"] = rm
-    k.cmds["undel"] =  undel
+    k.cmds.register("ed", ed)
+    k.cmds.register("rm", rm)
+    k.cmds.register("undel", undel)
     k.init(k.cfg.modules)        
+    k.register(dispatch)
     k.cmd(" ".join(k.cfg.args))
 
 execute(main)

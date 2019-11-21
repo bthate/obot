@@ -29,7 +29,7 @@ def init():
     """ initialise irc bot. """
     bot = IRC()
     last(bot.cfg)
-    if k.cfg.prompting or not bot.cfg.server:
+    if k.cfg.prompting:
         try:
             server, channel, nick = k.cfg.args
             bot.cfg.server = server
@@ -38,7 +38,7 @@ def init():
             bot.cfg.save()
         except ValueError:
             if k.verbose:
-                sys.stdout.write("%s -m irc <server> <channel> <nick>" % k.cfg.name)
+                sys.stdout.write("%s <server> <channel> <nick>" % k.cfg.name)
                 sys.stdout.flush()
             raise EINIT
     bot.start()
@@ -354,6 +354,8 @@ class IRC(Bot):
 
     def start(self):
         """ start irc bot. """
+        if not self.cfg.server:
+            return
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
         self.register(dispatch)

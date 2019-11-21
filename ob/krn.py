@@ -140,11 +140,11 @@ class Kernel(Handler):
             dosave = True
         if not self.cfg.noshell:
             input = True
-        if dosave:
-            self.cfg.save()
         if self.cfg.kernel:
             path = ob.last(self.cfg)
             logging.debug("kernel from %s" % path)
+        elif dosave:
+            self.cfg.save()
         set_completer(self.cmds)
         enable_history()
         writepid()

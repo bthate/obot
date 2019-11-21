@@ -1,7 +1,7 @@
 README
 ######
 
-OBOT is a IRC/XMPP bot you can use to display RSS feeds, uses a timestamped 
+OBOT is a IRC bot you can use to display RSS feeds, uses a timestamped 
 JSON file backend to provide persistence, makes it possible to program your
 own module enabling your own commands, is in the Public Domain and contains
 no copyright or LICENSE.
@@ -69,7 +69,6 @@ obot
     obot.mbox
     obot.rss
     obot.udp
-    obot.xmpp
 
 shell
 =====
@@ -159,7 +158,6 @@ possbile modules to load are:
  mbox  - email to object scanner.
  rss   - rss feed fetcher.
  udp   - udp to channel relay
- xmpp  - XMPP bot for obot.
 
 rss
 ===
@@ -181,8 +179,8 @@ you can use the find command to see what urls are registered:
 irc
 ===
 
-the default bot just starts the shell, if you want to connect to IRC or XMPP
-use the -p (prompt) option to provide connection arguments,  for IRC this is <server> <channel> <nick>>.
+the default bot just starts the shell, if you want to connect to IRC use the -p (prompt) option to provide connection arguments
+for IRC this is <server> <channel> <nick>>.
 
 ::
 

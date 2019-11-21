@@ -21,30 +21,6 @@ HISTFILE = ""
 def __dir__():
     return ("daemon", "execute", "parse_cli", "set_completer")
 
-opts = [
-    ('-b', '', 'store_true', False, 'daemon', 'enable daemon mode.'),
-    ('-d', '', 'string', "", 'workdir', 'set working directory.'),
-    ('-k', '', 'store_true', False, 'kernel', 'use saved kernel config'),
-    ('-l', '', 'string', '', 'level', 'loglevel.'),
-    ('-m', '', 'string', '', 'modules', 'modules to load.'),
-    ('-n', '', 'string', 'obot', 'name', "program name."),
-    ('-o', '', "string", "", 'options', "options to use."),
-    ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
-    ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
-    ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
-    ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
-    ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
-    ('-x', '', 'string', '', 'exclude', 'skip modules'),
-    ('-z', '', 'store_true', False, 'noshell', 'disable shell.'),
-    ('', '--autoload', 'store_true', False, 'autoload', 'use on demand module loading.'),
-    ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
-    ('', '--cached', 'store_true', False, 'cached', 'use caching'),
-    ('', '--debug', "string", "", 'debug', "enable debug mode"),
-    ('', '--logdir', "string", "", 'logdir', "directory to log to."),
-    ('', '--owner', "string", "", 'owner', "owner's userhost or JID."),
-    ('', '--nousers', 'store_true', False, 'nousers', 'disabled users.'),
-]
-
 def close_history():
     global HISTFILE
     if not HISTFILE:
@@ -115,7 +91,7 @@ def make_opts(options, usage, version):
             parser.add_option(opt[0], opt[1], type=otype, default=deft, dest=dest, help=htype)
     return parser.parse_args()
 
-def parse_cli(name="obot", version=None, wd=None, usage=None):
+def parse_cli(name="obot", version=None, opts=[], wd=None, usage=None, level="error"):
     import ob
     import ob.krn
     import ob.log
@@ -135,7 +111,7 @@ def parse_cli(name="obot", version=None, wd=None, usage=None):
         cdir(sp)
     ob.workdir = cfg.workdir
     ob.update(ob.k.cfg, cfg)
-    ob.log.level(cfg.level or "error")
+    ob.log.level(cfg.level or level)
     st = time.ctime(time.time())
     txt = "%s started (%s) at %s" % (cfg.name.upper(), cfg.level, st)
     logging.warning(txt)

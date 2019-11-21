@@ -38,10 +38,10 @@ class Handler(Loader, Launcher):
         self.cfg = Cfg()
         ob.update(self.cfg, {"prompt": True, "verbose": True})
         self.classes = []
-        self.cmds = {}
+        self.cmds = Register()
         self.handlers = []
-        self.modules = {}
-        self.names = {}
+        self.modules = Register()
+        self.names = Register()
         self.sleep = False
         self.state = ob.Object()
         self.state.last = time.time()
@@ -127,10 +127,8 @@ class Handler(Loader, Launcher):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1 and key not in self.cmds:
-                    self.cmds[key] = o
-                    self.modules[key] = o.__module__
-                #elif o.__code__.co_argcount == 2 and key not in self.handlers:
-                #    self.register(o)
+                    self.cmds.register(key, o)
+                    self.modules.register(key, o.__module__)
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Persist):
                 t = get_type(o)
@@ -138,7 +136,7 @@ class Handler(Loader, Launcher):
                     self.classes.append(t)
                 w = t.split(".")[-1].lower()
                 if w not in self.names:
-                    self.names[w] = str(t)
+                    self.names.register(w, str(t))
 
     def start(self, handler=True, input=True, output=True):
         """ start this handler. """
@@ -156,7 +154,7 @@ class Handler(Loader, Launcher):
 
     def sync(self, other):
         self.handlers = other.handlers
-        self.cmds.update(other.cmds)
+        ob.update(self.cmds, other.cmds)
 
     def walk(self, pkgname):
         """ scan package for module to load. """

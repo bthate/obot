@@ -1,5 +1,6 @@
 """ class definitions. """
 
+import ob
 import os
 import importlib
 import json
@@ -16,8 +17,6 @@ def __dir__():
 
 class Default(Persist):
 
-    """ default empty string value. """
-
     def __init__(self, cfg=None):
         super().__init__()
         if cfg:
@@ -30,11 +29,12 @@ class Default(Persist):
 
 class Cfg(Default):
 
-    """ config with empty string default. """
+    pass
 
 class Register(Persist):
 
-    """ register key/values on a Default. """
+    def get(self, k, d):
+        return ob.get(self, k, d)
 
     def register(self, k, v):
         set(self, k, v)

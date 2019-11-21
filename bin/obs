@@ -10,6 +10,30 @@ from ob.shl import execute, parse_cli
 from ob.tms import elapsed
 from ob.utl import hd
 
+opts = [
+    ('-b', '', 'store_true', False, 'daemon', 'enable daemon mode.'),
+    ('-d', '', 'string', "", 'workdir', 'set working directory.'),
+    ('-k', '', 'store_true', False, 'kernel', 'use saved kernel config'),
+    ('-l', '', 'string', '', 'level', 'loglevel.'),
+    ('-m', '', 'string', '', 'modules', 'modules to load.'),
+    ('-n', '', 'string', 'obot', 'name', "program name."),
+    ('-o', '', "string", "", 'options', "options to use."),
+    ('-p', '', 'store_true', False, 'prompting', 'prompt for initial values.'),
+    ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
+    ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
+    ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
+    ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('-x', '', 'string', '', 'exclude', 'skip modules'),
+    ('-z', '', 'store_true', False, 'noshell', 'disable shell.'),
+    ('', '--autoload', 'store_true', False, 'autoload', 'use on demand module loading.'),
+    ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
+    ('', '--cached', 'store_true', False, 'cached', 'use caching'),
+    ('', '--debug', "string", "", 'debug', "enable debug mode"),
+    ('', '--logdir', "string", "", 'logdir', "directory to log to."),
+    ('', '--owner', "string", "", 'owner', "owner's userhost or JID."),
+    ('', '--nousers', 'store_true', False, 'nousers', 'disabled users.'),
+]
+
 def ed(event):
     """ edit an object, select with key==value, set with key=value. """
     if not event.args:
@@ -56,11 +80,11 @@ def undel(event):
     event.reply("ok %s %s" % (nr+1, elapsed(time.time()-st)))
 
 def main():
-    parse_cli("obs", __version__, hd(".obot"), "obs [options]")
+    parse_cli("obs", __version__, opts, hd(".obot"), "obs [options]")
     k.walk("obot.cmd")
-    k.cmds["ed"] = ed
-    k.cmds["rm"] = rm
-    k.cmds["undel"] = undel
+    k.cmds.register("ed", ed)
+    k.cmds.register("rm", rm)
+    k.cmds.register("undel", undel)
     k.init(k.cfg.modules)
     k.start()
     k.wait()
