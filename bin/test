@@ -12,12 +12,37 @@ import unittest
 import ob
 
 from ob.cls import get_cls
+from ob.evt import waiting
 from ob.log import level
 from ob.shl import execute, parse_cli
 from ob.tms import elapsed
 from ob.utl import cdir
 
 from ob import k
+
+opts = [
+    ('-b', '', 'store_true', False, 'daemon', 'enable daemon mode.'),
+    ('-d', '', 'string', "", 'workdir', 'set working directory.'),
+    ('-k', '', 'store_true', False, 'kernel', 'use saved kernel config'),
+    ('-l', '', 'string', '', 'level', 'loglevel.'),
+    ('-m', '', 'string', '', 'modules', 'modules to load.'),
+    ('-n', '', 'string', 'obot', 'name', "program name."),
+    ('-o', '', "string", "", 'options', "options to use."),
+    ('-p', '', 'store_false', True, 'prompting', 'disable prompting for initial values.'),
+    ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
+    ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
+    ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
+    ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('-x', '', 'string', '', 'exclude', 'skip modules'),
+    ('-z', '', 'store_true', False, 'noshell', 'disable shell.'),
+    ('', '--autoload', 'store_true', False, 'autoload', 'use on demand module loading.'),
+    ('', '--bork', 'store_true', False, 'bork', 'bork on exception.'),
+    ('', '--cached', 'store_true', False, 'cached', 'use caching'),
+    ('', '--debug', "string", "", 'debug', "enable debug mode"),
+    ('', '--logdir', "string", "", 'logdir', "directory to log to."),
+    ('', '--owner', "string", "", 'owner', "owner's userhost or JID."),
+    ('', '--nousers', 'store_true', False, 'nousers', 'disabled users.'),
+]
 
 def initialize():
     cdir("testdata")
@@ -40,7 +65,7 @@ def main():
         shutil.rmtree("testdata")
     except:
         pass
-    parse_cli(wd="testdata")
+    parse_cli(wd="testdata", opts=opts)
     ob.workdir = "testdata"
     level("debug")
     initialize()
@@ -57,5 +82,7 @@ def main():
     unittest.TextTestRunner(verbosity=3).run(suite)
    
 execute(main)
+for e in waiting:
+    print(e)
 print(elapsed(time.time() - ob.k.state.starttime))
 os._exit(0)

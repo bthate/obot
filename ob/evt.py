@@ -24,6 +24,8 @@ aliases = {
            "v": "show version"
            }
 
+waiting = []
+
 class Token(Object):
 
     """ represent a single word in a sentence. """
@@ -266,6 +268,7 @@ class Event(Command, Persist):
 
     def wait(self):
         """ wait for event to finish. """
+        waiting.append(self)
         self._ready.wait()
         thrs = []
         vals = []
@@ -283,5 +286,6 @@ class Event(Command, Persist):
                 pass
         for thr in thrs:
             self._thrs.remove(thr)
+        waiting.remove(self)
         self.ready()
         return self

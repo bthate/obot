@@ -10,7 +10,7 @@ def load(event):
         event.reply("EOWNER, use the --owner option")
         return
     if not event.args:
-        event.reply("|".join({x.split(".")[-1] for x in k.modules.values()}))
+        event.reply("|".join({modules[x].split(".")[-1] for x in k.modules}))
         return
     m = []
     for name in event.args[0].split(","):
@@ -32,15 +32,17 @@ def unload(event):
     bot = k.fleet.get_bot(event.orig)
     name = event.args[0]
     for key in k.modules:
-        mn = k.modules[key]
+        mn = k.modules.get(key)
         if name in mn:
             try:
                 k.handlers.remove(key)
-                del k.cmds[key]
+                k.cmds.remove(key)
             except (RuntimeError, KeyError, ValueError):
                 continue
     todo = []
     for key in k.table:
+        if "mdl" in key:
+            continue
         if name in key:
            todo.append(key)
     for key in todo:

@@ -33,11 +33,11 @@ class Cfg(Default):
 
 class Register(Persist):
 
-    def get(self, k, d):
+    def get(self, k, d=None):
         return ob.get(self, k, d)
 
     def register(self, k, v):
-        set(self, k, v)
+        ob.set(self, k, v)
 
 def get_cls(name):
     modname, clsname = name.rsplit(".", 1)

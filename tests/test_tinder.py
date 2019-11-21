@@ -21,6 +21,8 @@ e = Event()
 if k.cfg.options:
     e.parse("-o %s" % k.cfg.options)
 
+events = []
+
 param = Param()
 param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
 param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
@@ -29,9 +31,14 @@ param.load = k.table.keys()
 param.log = ["yo!",]
 param.rm = ["%s txt==yo" % x for x in k.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
+param.unload = [k.modules.get(v) for v in k.modules]
+
 #param.mbox = ["~/evidence/25-1-2013",]
 
 class Test_Tinder(unittest.TestCase):
+
+    def tearDown(self):
+        print(events)
 
     def test_tinder(self):
         thrs = []
@@ -45,7 +52,6 @@ class Test_Tinder(unittest.TestCase):
             tests(k)
         
 def tests(b):
-    events = []
     keys = list(b.cmds)
     random.shuffle(keys)
     for cmd in keys:

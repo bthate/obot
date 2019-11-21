@@ -51,7 +51,7 @@ class Handler(Loader, Launcher):
         """ return matching function. """
         func = self.cmds.get(cmd, None)
         if not func and self.cfg.autoload:
-            mn = self.names.get(cmd, None)
+            mn = self.modules.get(cmd, None)
             if mn:
                 self.load_mod(mn)
         return self.cmds.get(cmd, None)
@@ -59,7 +59,7 @@ class Handler(Loader, Launcher):
     def get_handler(self, cmd):
         func = self.handler.get(cmd, None)
         if not func and self.cfg.autoload:
-            mn = self.names.get(cmd, None)
+            mn = self.modules.get(cmd, None)
             if mn:
                 self.load_mod(mn)
         return self.cmds.get(cmd, None)
@@ -76,10 +76,13 @@ class Handler(Loader, Launcher):
             e = self._queue.get()
             if not e:
                 break
-            try:
-                self.handle(e)
-            except Exception as ex:
-                logging.error(get_exception())
+            if self._threaded:
+                self.launch(self.handle, e)
+            else:
+                try:
+                    self.handle(e)
+                except Exception as ex:
+                    logging.error(get_exception())
         logging.warning("stop %s" % get_name(self))
         self._ready.set()
 
@@ -134,10 +137,8 @@ class Handler(Loader, Launcher):
                 t = get_type(o)
                 if t not in self.classes:
                     self.classes.append(t)
-                w = t.split(".")[-1].lower()
-                if w not in self.names:
-                    self.names.register(w, str(t))
-
+                self.names.register(t.split(".")[-1], str(t))
+                
     def start(self, handler=True, input=True, output=True):
         """ start this handler. """
         logging.warning("start %s" % get_name(self))
