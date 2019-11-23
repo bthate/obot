@@ -34,11 +34,21 @@ def out(txt):
 def main():
     """ listen on stdin and forward received data to the bot. """
     cfg = parse_cli()
+    fd = None
     if cfg.args:
-        out(" ".join(cfg.args))
+        if os.path.exists(cfg.args[0]):
+            f = open(cfg.args[0], "r")
+        else:
+            out(" ".join(cfg.args))
+            return
+    if not fd:
+        fd = f.fileno()
+    else:
+        for txt in f.readlines():
+            out(txt)
         return
     while 1:
-        (i, o, e) = select.select([sys.stdin], [], [sys.stderr,])
+        (i, o, e) = select.select([f], [], [sys.stderr,])
         if e:
             break
         stop = False

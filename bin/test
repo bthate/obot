@@ -31,7 +31,7 @@ opts = [
     ('-p', '', 'store_false', True, 'prompting', 'disable prompting for initial values.'),
     ('-r', '', 'store_true', False, 'resume', 'resume the bot.'),
     ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
-    ('-t', '', 'store_true', False, 'tables', 'dump tables.'),
+    ('-t', '', 'store_true', False, 'threading', 'enabled threading.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
     ('-x', '', 'string', '', 'exclude', 'skip modules'),
     ('-z', '', 'store_true', False, 'noshell', 'disable shell.'),
@@ -69,6 +69,8 @@ def main():
     ob.workdir = "testdata"
     level("debug")
     initialize()
+    if k.cfg.threading:
+       k._threaded = True
     k.cfg.exclude = "mdl,rss"
     k.cfg.debug = True
     level(k.cfg.level)
