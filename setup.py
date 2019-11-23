@@ -23,7 +23,7 @@ setup(
     license='Public Domain',
     zip_safe=True,
     install_requires=["ob"],
-    packages=["obot", "obot.cmd"],
+    packages=["obot"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',
