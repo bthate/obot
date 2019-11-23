@@ -35,6 +35,7 @@ def main():
     parse_cli("obot", __version__, opts)
     if k.cfg.daemon:
         daemon()
+    k.walk("obot.cmd")
     k.init("cmds,irc,rss,shw,udp")
     k.init(k.cfg.modules)
     k.start(input=not k.cfg.prompting)
