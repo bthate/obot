@@ -1,4 +1,4 @@
-""" udp to channel relay """
+""" udp to channel relay server. """
 
 __version__ = 1
 
