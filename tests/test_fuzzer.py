@@ -11,7 +11,6 @@ from ob.trc import get_exception
 k.cfg.prompt = False
 k.walk("obot")
 k.walk("ob")
-k.users.oper("test@shell")
 
 class Test_Fuzzer(unittest.TestCase):
 

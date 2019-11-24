@@ -46,11 +46,9 @@ opts = [
 
 def initialize():
     cdir("testdata")
-    k.users.oper("test@shell")
     k.cfg.prompt = False
     k.walk("ob")
     k.walk("obot")
-    k.walk("obot.cmd")
     k.start()
     for c in ob.k.classes:
         try:

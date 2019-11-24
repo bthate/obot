@@ -16,7 +16,6 @@ class Param(Object):
 
     pass
 
-k.users.oper("test@shell")
 e = Event()
 if k.cfg.options:
     e.parse("-o %s" % k.cfg.options)
