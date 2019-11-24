@@ -40,70 +40,6 @@ class Todo(Persist):
         super().__init__()
         self.txt = ""
 
-def cmds(event):
-    event.reply("|".join(sorted(k.cmds)))
-
-def ed(event):
-    if not event.args:
-        fns = os.listdir(os.path.join(ob.workdir, "store"))
-        fns = sorted({x.split(".")[-1].lower() for x in fns})
-        event.reply("|".join(fns))
-        return
-    if len(event.args) == 1 and not event.selector:
-        event.reply("ed <type> key==value")
-        return
-    objs = k.db.find(event.match, event.selector, event.index, event.delta)
-    nr = 0
-    for o in objs:
-        ob.edit(o, event.setter)
-        o.save()
-        nr += 1
-    event.reply("edit %s" % nr)
-
-def find(event):
-    if "k" in event.options:
-        o = k.db.last(event.match)
-        if o:
-            event.reply("|".join(sorted({x for x in o.keys() if not x.startswith("_")})))
-            return
-    if not event.args:
-        fns = os.listdir(os.path.join(ob.workdir, "store"))
-        fns = sorted({x.split(".")[-1].lower() for x in fns})
-        if fns:
-            event.reply("|".join(fns))
-        return
-    if len(event.args) == 1 and not event.selector:
-        o = k.db.last(event.match)
-        if o:
-            res = sorted({x.split(".")[-1].lower() for x in o})
-            if len(res) > 1:
-                event.reply("|".join(res))
-            else:
-                for a in res:
-                    if a not in event.selector:
-                        event.selector[a] = None
-                    if a not in event.dkeys:
-                        event.dkeys.append(a)
-    nr = -1
-    for o in k.db.find(event.match, event.selector, event.index, event.delta):
-        nr += 1
-        event.display(o, str(nr))
-
-find.threaded = True
-
-def load(event):
-    if not event.args:
-        event.reply("|".join({modules[x].split(".")[-1] for x in k.modules}))
-        return
-    m = []
-    for name in event.args[0].split(","):
-        name = event.args[0]
-        m.extend(mods(k, name))
-        k.init(name)
-    set_completer(k.cmds)
-    if m:
-        event.reply("%s loaded" % ",".join([get_name(x) for x in m]))
-
 def log(event):
     if not event.rest:
         nr = 0
@@ -118,84 +54,6 @@ def log(event):
     obj.txt = event.rest
     obj.save()
     event.reply("ok")
-
-def rm(event):
-    if not event.args:
-        event.reply("rm <selector>")
-        return
-    nr = -1
-    for o in k.db.find(event.match, event.selector, event.index, event.delta):
-        if not o:
-            continue
-        nr += 1
-        o._deleted = True
-        o.save()
-    event.reply("ok %s" % (nr+1))
-
-def show(event):
-    if not event.args:
-        event.reply("cfg|cmds|fleet|kernel|ls|pid|tasks|version")
-        return
-    bot = k.fleet.get_bot(event.orig)
-    cmd = event.args[0]
-    if cmd == "cfg":
-        if len(event.args) == 2:
-            config = k.db.last("%s.%s.Cfg" % ("obot", event.args[1].lower()))
-            event.reply(config)
-        else:
-            event.reply(k.cfg)
-    elif cmd == "cmds":
-        event.reply("|".join(sorted(k.cmds)))
-    elif cmd == "fleet":
-        try:
-            index = int(event.args[1])
-            event.reply(k.fleet.bots[index])
-            return
-        except (ValueError, IndexError):
-            event.reply([get_type(x) for x in k.fleet.bots])
-    elif cmd == "kernel":
-        event.reply(k)
-    elif cmd == "ls":
-        event.reply("|".join(os.listdir(os.path.join(k.cfg.workdir, "store"))))
-    elif cmd == "pid":
-        event.reply(str(os.getpid()))
-    elif cmd == "tasks":
-        psformat = "%-8s %-60s"
-        result = []
-        for thr in sorted(threading.enumerate(), key=lambda x: x.getName()):
-            if str(thr).startswith("<_"):
-                continue
-            d = vars(thr)
-            o = Object()
-            ob.update(o, d)
-            if getattr(o, "sleep", None):
-                up = o.sleep - int(time.time() - o.state.latest)
-            else:
-                up = int(time.time() - k.state.starttime)
-            result.append((up, thr.getName(), o))
-        nr = -1
-        for up, thrname, o in sorted(result, key=lambda x: x[0]):
-            nr += 1
-            res = "%s %s" % (nr, psformat % (elapsed(up), thrname[:60]))
-            if res.strip():
-                event.reply(res)
-    elif cmd == "uptime":
-        event.reply(elapsed(time.time() - k.state.starttime))
-    elif cmd == "version":
-        res = []
-        res.append("OB %s" % ob.__version__)
-        res.append("OBOT %s" % obot.__version__)
-        for name, mod in k.table.items():
-            if name in ["ob", "obot"]:
-                continue
-            if not mod:
-                continue
-            ver = getattr(mod, "__version__", None)
-            if ver:
-                txt = "%s %s" % (name, ver)
-                res.append(txt.upper())
-        if res:
-            event.reply(" | ".join(res))
 
 def todo(event):
     if not event.rest:
@@ -212,60 +70,10 @@ def todo(event):
     obj.save()
     event.reply("ok")
 
-def undel(event):
-    if not event.args:
-        event.reply("undel <selector>")
-        return
-    st = time.time()
-    nr = -1
-    for o in k.db.deleted(event.match, event.selector):
-        nr += 1
-        o._deleted = False
-        o.save()
-    event.reply("ok %s %s" % (nr+1, elapsed(time.time()-st)))
-
-def unload(event):
-    if not event.args:
-        event.reply("|".join({x.split(".")[-1] for x in k.modules.values()}))
-        return
-    bot = k.fleet.get_bot(event.orig)
-    name = event.args[0]
-    for key in k.modules:
-        mn = k.modules.get(key)
-        if name in mn:
-            try:
-                k.handlers.remove(key)
-                k.cmds.remove(key)
-            except (RuntimeError, KeyError, ValueError):
-                continue
-    todo = []
-    for key in k.table:
-        if "mdl" in key:
-            continue
-        if name in key:
-           todo.append(key)
-    for key in todo:
-        try:
-            del k.table[key]
-        except (KeyError, ValueError):
-            event.reply("%s is not loaded." % name)
-            return
-    set_completer(k.cmds)
-    event.reply("unload %s" % name)
-
 def main():
     parse_cli("obd", __version__, opts, hd(".ob"), "obs -m mod1,mod2")
     daemon()
-    k.cmds.register("cmds", cmds)
-    k.cmds.register("ed", ed)
-    k.cmds.register("find", find)
-    k.cmds.register("load", load)
-    k.cmds.register("log", log)
-    k.cmds.register("rm", rm)
-    k.cmds.register("show", show)
-    k.cmds.register("todo", todo)
-    k.cmds.register("unload", unload)
-    k.cmds.register("undel", undel)
+    k.walk("__main__")
     k.init(k.cfg.modules)        
     k.register(dispatch)
     k.start()
