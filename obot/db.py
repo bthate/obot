@@ -2,6 +2,7 @@ import ob
 import time
 
 from ob import k
+from ob.tms import elapsed
 
 def find(event):
     if "k" in event.options:

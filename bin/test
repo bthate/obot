@@ -65,10 +65,10 @@ def main():
         pass
     parse_cli(wd="testdata", opts=opts)
     ob.workdir = "testdata"
-    level("debug")
     initialize()
     if k.cfg.threading:
        k._threaded = True
+    k.verbose = k.cfg.verbose
     k.cfg.exclude = "mdl,rss"
     k.cfg.debug = True
     level(k.cfg.level)

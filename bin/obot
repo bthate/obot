@@ -6,6 +6,7 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import json
 import ob
+import ob.evt
 import obot
 import os
 import time

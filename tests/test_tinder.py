@@ -17,6 +17,7 @@ class Param(Object):
     pass
 
 e = Event()
+
 if k.cfg.options:
     e.parse("-o %s" % k.cfg.options)
 
@@ -36,8 +37,12 @@ param.unload = [k.modules.get(v) for v in k.modules]
 
 class Test_Tinder(unittest.TestCase):
 
+    def setUp(self):
+        k.walk("obot")
+
     def tearDown(self):
-        print(events)
+        if events:
+            print(events)
 
     def test_tinder(self):
         thrs = []
