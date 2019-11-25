@@ -49,7 +49,7 @@ def log(event):
         event.options += "t"
         if not event.dkeys:
             event.dkeys.append("txt")
-        for o in k.db.find("Log", event.selector or {"txt": ""}):
+        for o in k.db.find("__main__.Log", event.selector or {"txt": ""}):
             event.display(o, "%-2s" % str(nr))
             nr += 1
         return
@@ -64,7 +64,7 @@ def todo(event):
         event.options += "t"
         if "txt" not in event.dkeys:
             event.dkeys.append("txt")
-        for o in k.db.find("Todo", event.selector or {"txt": ""}):
+        for o in k.db.find("__main__.Todo", event.selector or {"txt": ""}):
             event.display(o, "%-2s" % str(nr))
             nr += 1
         return
@@ -76,7 +76,6 @@ def todo(event):
 def main():
     parse_cli("obot", __version__, opts, hd(".obot"), "obot -m mod1,mod2")
     k.walk(__name__)
-    k.walk("obot")
     k.init(k.cfg.modules)        
     k.register(dispatch)
     k.start()
