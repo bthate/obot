@@ -29,54 +29,9 @@ opts = [
     ('-x', '', 'string', '', 'exclude', 'skip modules'),
 ]
 
-class Log(Persist):
-
-    def __init__(self):
-        super().__init__()
-        self.txt = ""
-
-class Todo(Persist):
-
-    def __init__(self):
-        super().__init__()
-        self.txt = ""
-
-def cmds(event):
-    event.reply("|".join(sorted(k.cmds)))
-
-def log(event):
-    if not event.rest:
-        nr = 0
-        event.options += "t"
-        if not event.dkeys:
-            event.dkeys.append("txt")
-        for o in k.db.find("__main__.Log", event.selector or {"txt": ""}):
-            event.display(o, "%-2s" % str(nr))
-            nr += 1
-        return
-    obj = Log()
-    obj.txt = event.rest
-    obj.save()
-    event.reply("ok")
-
-def todo(event):
-    if not event.rest:
-        nr = 0
-        event.options += "t"
-        if "txt" not in event.dkeys:
-            event.dkeys.append("txt")
-        for o in k.db.find("__main__.Todo", event.selector or {"txt": ""}):
-            event.display(o, "%-2s" % str(nr))
-            nr += 1
-        return
-    obj = Todo()
-    obj.txt = event.rest
-    obj.save()
-    event.reply("ok")
-
 def main():
     parse_cli("obot", __version__, opts, hd(".obot"), "obot -m mod1,mod2")
-    k.walk(__name__)
+    k.walk("obot")
     k.init(k.cfg.modules)        
     k.register(dispatch)
     k.start()
