@@ -14,7 +14,7 @@ from ob.err import ENOUSER
 from ob.pst import Persist
 
 def __dir__():
-    return ("User", "Users")
+    return ("User", "Users", "meet")
 
 class User(Persist):
 
@@ -52,7 +52,7 @@ class Users(Persist):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        return self.db.all("obot.usr.User", s)
+        return self.db.all("obot.user.User", s)
 
     def get_user(self, origin):
         u =  list(self.get_users())
@@ -95,8 +95,9 @@ def meet(event):
     try:
         origin, *perms = event.args[:]
     except ValueError:
-        event.reply("|".join(sorted(k.users.userhosts)))
+        event.reply("meet origin [permissions]")
         return
-    origin = ob.get(k.users.userhosts, origin, origin)
-    u = k.users.meet(origin, perms)
-    event.reply("added %s" % u.user)
+    for bot in k.fleet.bots:
+        origin = ob.get(bot.users.userhosts, origin, origin)
+        u = bot.users.meet(origin, perms)
+        event.reply("added %s on %s" % (u.user, bot.cfg.server))

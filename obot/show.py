@@ -6,6 +6,7 @@ import threading
 
 from ob import Object, k
 from ob.tms import elapsed
+from ob.typ import get_type
 
 def show(event):
     if not event.args:

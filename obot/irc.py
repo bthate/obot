@@ -1,5 +1,3 @@
-""" IRC bot for OBOT. """
-
 __version__ = 1
 
 import logging
@@ -21,12 +19,12 @@ from ob.trc import get_exception
 from ob.utl import locked
 
 from obot import Bot
+from obot.user import Users
 
 def __dir__():
     return ('Bot', 'Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "cb_log", "errored", "noticed", "privmsged")
 
 def init():
-    """ initialise irc bot. """
     bot = IRC()
     last(bot.cfg)
     if k.cfg.prompting:
@@ -46,8 +44,6 @@ def init():
 
 class Cfg(Cfg):
 
-    """ IRC configuration file. """
-
     def __init__(self):
         super().__init__()
         self.blocking = True
@@ -63,8 +59,6 @@ class Cfg(Cfg):
 
 class Event(Event):
 
-    """ IRC event. """
-
     def __init__(self):
         super().__init__()
         self.arguments = []
@@ -75,8 +69,6 @@ class Event(Event):
         self.target = ""
 
 class DEvent(Event):
-
-    """ DCC event. """
 
     def __init__(self):
         super().__init__()
@@ -93,8 +85,6 @@ class DEvent(Event):
 
 class TextWrap(textwrap.TextWrapper):
 
-    """ textwrapper (default 500 chars). """
-
     def __init__(self):
         super().__init__()
         self.drop_whitespace = False
@@ -104,8 +94,6 @@ class TextWrap(textwrap.TextWrapper):
         self.width = 500
 
 class IRC(Bot):
-
-    """ IRC bot. """
 
     def __init__(self):
         super().__init__()
@@ -129,9 +117,9 @@ class IRC(Bot):
         self.threaded = False
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
+        self.users = Users()
 
     def _connect(self):
-        """ raw connect code. """
         oldsock = None
         if k.cfg.resume:
             fd = None
@@ -170,7 +158,6 @@ class IRC(Bot):
         return True
 
     def _parsing(self, txt):
-        """ parse incoming text into an event. """
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
@@ -229,7 +216,6 @@ class IRC(Bot):
         return o
 
     def _say(self, channel, txt, mtype="chat"):
-        """ wrap text before output to server. """
         wrapper = TextWrap()
         wrapper.width = 450
         wrapper.break_long_words = False
@@ -238,7 +224,6 @@ class IRC(Bot):
                 self.command("PRIVMSG", channel, t)
 
     def _some(self, use_ssl=False, encoding="utf-8"):
-        """ poll (blocking) for some input on socket. """
         if use_ssl:
             inbytes = self._sock.read()
         else:
@@ -254,12 +239,10 @@ class IRC(Bot):
         self.state.lastline = splitted[-1]
 
     def announce(self, txt):
-        """ announce txt on all joined channels. """
         for channel in self.channels:
             self.say(channel, txt)
 
     def command(self, cmd, *args):
-        """ send command to server. """
         if not args:
             self.raw(cmd)
             return
@@ -274,7 +257,6 @@ class IRC(Bot):
             return
 
     def connect(self):
-        """ connect till connected. """
         nr = 0
         while 1:
             self.state.nrconnect += 1
@@ -287,7 +269,6 @@ class IRC(Bot):
             self.logon(self.cfg.server, self.cfg.nick)
 
     def poll(self):
-        """ return (blocking) event from irc server. """
         self._connected.wait()
         if not self._buffer:
             try:
@@ -317,12 +298,10 @@ class IRC(Bot):
         return e
 
     def joinall(self):
-        """ join all channels. """
         for channel in self.channels:
             self.command("JOIN", channel)
 
     def logon(self, server, nick):
-        """ perform logon on the irc server. """
         if k.cfg.resume:
             return
         self._connected.wait()
@@ -330,10 +309,6 @@ class IRC(Bot):
         self.raw("USER %s %s %s :%s" % (self.cfg.username or "obot", server, server, self.cfg.realname or "obot"), True)
 
     def raw(self, txt, direct=False):
-        """ raw(txt, direct=False)
-
-            send txt on the socket.
-        """
         txt = txt.rstrip()
         logging.info(txt)
         if self._stopped:
@@ -347,13 +322,11 @@ class IRC(Bot):
         self.state.nrsend += 1
 
     def say(self, channel, txt, mtype="chat"):
-        """ wrap text before output to server. """
         if (time.time() - self.state.last) < 3.0:
             time.sleep(1.0 * (self.state.nrsend % 10))
         self._outqueue.put((channel, txt, mtype))
 
     def start(self):
-        """ start irc bot. """
         if not self.cfg.server:
             return
         if self.cfg.channel:
@@ -367,8 +340,6 @@ class IRC(Bot):
         
 class DCC(Bot):
 
-    """ DCC bot. """
-
     def __init__(self):
         super().__init__()
         self._connected = threading.Event()
@@ -378,17 +349,14 @@ class DCC(Bot):
         self.origin = ""
 
     def raw(self, txt):
-        """ raw socket output. """
         self._fsock.write(txt.rstrip())
         self._fsock.write("\n")
         self._fsock.flush()
 
     def announce(self, txt):
-        """ announce to client. """
         self.raw(txt)
 
     def connect(self, event):
-        """ connect to dcc client. """
         arguments = event.txt.split()
         addr = arguments[3]
         port = arguments[4]
@@ -408,7 +376,6 @@ class DCC(Bot):
         super().start()
 
     def poll(self):
-        """ return event from dcc socket. """
         self._connected.wait()
         e = DEvent()
         e.txt = self._fsock.readline()
@@ -421,11 +388,9 @@ class DCC(Bot):
         return e
 
     def say(self, channel, txt, type="chat"):
-        """ echo to DCC client. """
         self.raw(txt)
 
 def errored(handler, event):
-    """ error handler. """
     if event.command != "ERROR":
         return
     handler.state.error = event
@@ -434,7 +399,6 @@ def errored(handler, event):
     handler.connect()
 
 def noticed(handler, event):
-    """ notice handler. """
     if event.command != "NOTICE":
         return
     if event.txt.startswith("VERSION"):
@@ -442,11 +406,10 @@ def noticed(handler, event):
         handler.command("NOTICE", event.channel, txt)
 
 def privmsged(handler, event):
-    """ privmsg handler. """
     if event.command != "PRIVMSG":
         return
     if event.origin != k.cfg.owner:
-        set(k.users.userhosts, event.nick, event.origin)
+        set(handler.users.userhosts, event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
         try:
             dcc = DCC()
@@ -457,6 +420,6 @@ def privmsged(handler, event):
         except ConnectionRefusedError:
             return
     if event.txt and event.txt[0] == handler.cc:
-        if not k.cfg.nousers and not k.users.allowed(event.origin, "USER"):
+        if k.cfg.users and not handler.users.allowed(event.origin, "USER"):
             return
         k.put(event)
