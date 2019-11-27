@@ -1,1 +1,0 @@
-rm -fR runobot testdata runobot.tar.gz history _build build envs dist obot.egg-info *~ docs/*~ bin/*~ obot/*~ obot/cmd/*~ obot/util/*~ mods/*~ ob/__pycache__ obot/__pycache__ mods/__pycache__ ob/*~ tests/*~ obot/cmd/__pycache__ tests/__pycache__ docs/code/ docs/html docs/obj

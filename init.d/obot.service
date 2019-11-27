@@ -1,8 +1,0 @@
-[Unit]
-Description=obot
-
-[Service]
-ExecStart=/usr/local/bin/obot -k -d /var/lib/obot --logdir /var/log/obot -z -p
-
-[Install]
-WantedBy=multi-user.target

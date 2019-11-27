@@ -1,3 +1,0 @@
-systemctl status obot
-ps p `cat /home/bart/.obot/pid`
-
