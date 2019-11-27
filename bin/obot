@@ -45,7 +45,6 @@ def main():
     k.cmds.register("cmds", cmds)
     k.init(k.cfg.modules)        
     if k.cfg.shell:
-        k.init("obot.irc")
         k.start()
         k.wait()
         return
