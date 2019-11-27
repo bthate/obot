@@ -13,7 +13,7 @@ from ob.dpt import dispatch
 from ob.pst import Persist
 from ob.shl import execute, hd, parse_cli, set_completer
 from ob.tms import elapsed
-from ob.utl import get_name, mods
+from ob.utl import get_name
 
 ob.evt.aliases = {
            "c": "cmds",
@@ -45,7 +45,7 @@ def main():
     k.cmds.register("cmds", cmds)
     k.init(k.cfg.modules)        
     if k.cfg.shell:
-        k.init("irc")
+        k.init("obot.irc")
         k.start()
         k.wait()
         return
