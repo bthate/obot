@@ -121,7 +121,6 @@ you can contact me on IRC/freenode/#dunkbots.
     zip_safe=True,
     install_requires=["ob"],
     packages=["obot"],
-    scripts=["bin/obot"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',

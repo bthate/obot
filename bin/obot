@@ -1,0 +1,55 @@
+#!/usr/bin/python3 -u
+
+import json
+import ob
+import ob.evt
+import obot
+import os
+import time
+import threading
+
+from ob import Object, k, __version__
+from ob.dpt import dispatch
+from ob.pst import Persist
+from ob.shl import execute, hd, parse_cli, set_completer
+from ob.tms import elapsed
+from ob.utl import get_name, mods
+
+ob.evt.aliases = {
+           "c": "cmds",
+           "cfg": "show cfg",
+           "f": "find",
+           "l": "log",
+           "ps": "show tasks",
+           "t": "todo",
+           "u": "show uptime",
+           "v": "show version"
+           }
+
+opts = [
+    ('-d', '', 'string', "", 'workdir', 'set working directory.'),
+    ('-l', '', 'string', '', 'level', 'loglevel.'),
+    ('-p', '', 'store_false', True, 'prompting', 'prompt for user input'),
+    ('-m', '', 'string', '', 'modules', 'modules to load.'),
+    ('-o', '', "string", "", 'options', "options to use."),
+    ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
+    ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+    ('-z', '', 'store_false', True, 'shell', ' enable shell (default).'),
+]
+
+def cmds(event):
+    event.reply("|".join(sorted(k.cmds)))
+
+def main():
+    parse_cli("obot", __version__, opts, hd(".ob"), "obot [options]")
+    k.cmds.register("cmds", cmds)
+    k.init(k.cfg.modules)        
+    if k.cfg.shell:
+        k.init("irc")
+        k.start()
+        k.wait()
+        return
+    k.cmd(" ".join(k.cfg.args))
+
+execute(main)
+os._exit(0)

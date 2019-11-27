@@ -1,0 +1,36 @@
+#!/usr/bin/python3 -u
+
+import json
+import ob
+import obot
+import os
+import time
+import threading
+
+from ob import Object, k, __version__
+from ob.dpt import dispatch
+from ob.pst import Persist
+from ob.shl import daemon, execute, hd, parse_cli, set_completer
+from ob.tms import elapsed
+from ob.utl import get_name, mods
+
+opts = [
+    ('-d', '', 'string', "", 'workdir', 'set working directory.'),
+    ('-l', '', 'string', '', 'level', 'loglevel.'),
+    ('-m', '', 'string', '', 'modules', 'modules to load.'),
+    ('-o', '', "string", "", 'options', "options to use."),
+    ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
+    ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
+]
+
+def main():
+    parse_cli("obd", __version__, opts, hd(".ob"), "obd [options]")
+    daemon()
+    k.cfg.prompting = True
+    k.walk("obot")
+    k.init(k.cfg.modules)        
+    k.start()
+    k.wait()
+
+execute(main)
+os._exit(0)
