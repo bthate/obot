@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='obot',
-    version='17',
+    version='18',
     url='https://bitbucket.org/bthate/obot',
     author='Bart Thate',
     author_email='bthate@dds.nl',
