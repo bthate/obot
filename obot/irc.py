@@ -27,6 +27,7 @@ def __dir__():
 def init():
     bot = IRC()
     last(bot.cfg)
+    print(k.cfg.args)
     if k.cfg.prompting:
         try:
             server, channel, nick = k.cfg.args
@@ -35,7 +36,7 @@ def init():
             bot.cfg.nick = nick
             bot.cfg.save()
         except ValueError:
-            raise EINIT
+            raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
     bot.start()
     return bot
 
@@ -269,7 +270,7 @@ class IRC(Bot):
         self._connected.wait()
         if not self._buffer:
             self.nrread = 0
-            while self._running:
+            while not self._stopped:
                 try:
                     self._some()
                 except (ConnectionResetError, socket.timeout):
