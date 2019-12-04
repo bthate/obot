@@ -35,9 +35,6 @@ def init():
             bot.cfg.nick = nick
             bot.cfg.save()
         except ValueError:
-            if k.verbose:
-                sys.stdout.write("%s <server> <channel> <nick>" % k.cfg.name)
-                sys.stdout.flush()
             raise EINIT
     bot.start()
     return bot
@@ -271,13 +268,19 @@ class IRC(Bot):
     def poll(self):
         self._connected.wait()
         if not self._buffer:
-            try:
-                self._some()
-            except (ConnectionResetError, socket.timeout):
-                e = Event()
-                e._error = get_exception()
-                e.chk = "ERROR"
-                return e
+            self.nrread = 0
+            while self._running:
+                try:
+                    self._some()
+                except (ConnectionResetError, socket.timeout):
+                    e = Event()
+                    e._error = get_exception()
+                    e.command = "ERROR"
+                    return e
+                time.sleep(self.nrread)
+                self.nrread += 1
+                if self._buffer:
+                    break
         e = self._parsing(self._buffer.pop(0))
         cmd = e.command
         if cmd == "001":
