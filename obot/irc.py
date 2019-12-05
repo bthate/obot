@@ -12,7 +12,7 @@ import threading
 from ob import Object, k, last, set
 from ob.cls import Cfg 
 from ob.dpt import dispatch
-from ob.err import EINIT
+from ob.err import EINIT,ENOTXT
 from ob.evt import Event
 from ob.pst import Persist
 from ob.trc import get_exception
@@ -22,7 +22,7 @@ from obot import Bot
 from obot.user import Users
 
 def __dir__():
-    return ('Bot', 'Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "cb_log", "errored", "noticed", "privmsged")
+    return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "cb_log", "errored", "noticed", "privmsged")
 
 def init():
     bot = IRC()
@@ -64,6 +64,7 @@ class Event(Event):
         self.channel = ""
         self.command = ""
         self.nick = ""
+        self.orig = ""
         self.target = ""
 
 class DEvent(Event):
@@ -75,7 +76,7 @@ class DEvent(Event):
         self.channel = ""
 
     def raw(self, txt):
-        self._fsock.write(txt.rstrip() + "\n") 
+        self._fsock.write(str(txt) + "\n") 
         self._fsock.flush()
 
     def reply(self, txt):
@@ -210,7 +211,6 @@ class IRC(Bot):
             o.txt = arguments[1]
         o.args = o.txt.split()
         o.rest = " ".join(o.args)
-        o.chk = o.command
         return o
 
     def _say(self, channel, txt, mtype="chat"):
@@ -269,19 +269,13 @@ class IRC(Bot):
     def poll(self):
         self._connected.wait()
         if not self._buffer:
-            self.nrread = 0
-            while not self._stopped:
-                try:
-                    self._some()
-                except (ConnectionResetError, socket.timeout):
-                    e = Event()
-                    e._error = get_exception()
-                    e.command = "ERROR"
-                    return e
-                time.sleep(self.nrread)
-                self.nrread += 1
-                if self._buffer:
-                    break
+            try:
+                self._some()
+            except (ConnectionResetError, socket.timeout):
+                e = Event()
+                e._error = get_exception()
+                e.chk = "ERROR"
+                return e
         e = self._parsing(self._buffer.pop(0))
         cmd = e.command
         if cmd == "001":
@@ -393,6 +387,22 @@ class DCC(Bot):
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
+
+    def start(self):
+        super().start(output=False)
+
+def dispatch(handler, event):
+    try:
+        event.parse()
+    except ENOTXT:
+        event.ready()
+        return
+    event._func = handler.get_cmd(event.chk)
+    if event._func:
+        event._calledfrom = str(event._func)
+        event._func(event)
+        event.show()
+    event.ready()
 
 def errored(handler, event):
     if event.command != "ERROR":

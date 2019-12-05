@@ -9,6 +9,7 @@ import time
 import threading
 
 from ob import Object, k, __version__
+from ob.csl import Console
 from ob.dpt import dispatch
 from ob.pst import Persist
 from ob.shl import execute, hd, parse_cli, set_completer
@@ -33,6 +34,7 @@ opts = [
     ('-m', '', 'string', '', 'modules', 'modules to load.'),
     ('-o', '', "string", "", 'options', "options to use."),
     ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
+    ('-u', '', 'store_true', False, 'users', 'enable users.'),
     ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
     ('-z', '', 'store_false', True, 'shell', ' enable shell (default).'),
 ]
@@ -44,11 +46,11 @@ def main():
     parse_cli("obot", __version__, opts, hd(".ob"), "obot [options]")
     k.cmds.register("cmds", cmds)
     k.init(k.cfg.modules)        
-    if k.cfg.shell:
-        k.start()
-        k.wait()
-        return
-    k.cmd(" ".join(k.cfg.args))
+    k.start()
+    c = Console()
+    c.start()
+    k.add(c)
+    k.wait()
 
 execute(main)
 os._exit(0)
