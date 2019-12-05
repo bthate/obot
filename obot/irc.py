@@ -27,7 +27,6 @@ def __dir__():
 def init():
     bot = IRC()
     last(bot.cfg)
-    print(k.cfg.args)
     if k.cfg.prompting:
         try:
             server, channel, nick = k.cfg.args
@@ -38,6 +37,7 @@ def init():
         except ValueError:
             raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
     bot.start()
+    k.add(bot)
     return bot
 
 class Cfg(Cfg):
@@ -238,7 +238,7 @@ class IRC(Bot):
 
     def announce(self, txt):
         for channel in self.channels:
-            self.say(channel, txt)
+            self._say(channel, txt)
 
     def command(self, cmd, *args):
         if not args:
@@ -340,8 +340,8 @@ class IRC(Bot):
         self.register(privmsged)
         self.register(noticed)
         self.connect()
-        super().start(True, True, True)
-        
+        super().start()
+
 class DCC(Bot):
 
     def __init__(self):
