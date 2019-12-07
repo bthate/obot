@@ -213,6 +213,7 @@ class IRC(Bot):
         o.rest = " ".join(o.args)
         return o
 
+    @locked
     def _say(self, channel, txt, mtype="chat"):
         wrapper = TextWrap()
         wrapper.width = 450
@@ -220,6 +221,7 @@ class IRC(Bot):
         for line in txt.split("\n"):
             for t in wrapper.wrap(line):
                 self.command("PRIVMSG", channel, t)
+                time.sleep(1)
 
     def _some(self, use_ssl=False, encoding="utf-8"):
         if use_ssl:
@@ -371,7 +373,7 @@ class DCC(Bot):
         self._fsock = self._sock.makefile("rw")
         self.origin = event.origin
         self._connected.set()
-        super().start()
+        self.start()
 
     def poll(self):
         self._connected.wait()
@@ -383,13 +385,14 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
+        k.handle(e)
         return e
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
 
     def start(self):
-        super().start(output=False)
+        super().start(False, True, False)
 
 def dispatch(handler, event):
     try:
