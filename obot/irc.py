@@ -221,7 +221,7 @@ class IRC(Bot):
         for line in txt.split("\n"):
             for t in wrapper.wrap(line):
                 self.command("PRIVMSG", channel, t)
-                time.sleep(1)
+                time.sleep(3.0)
 
     def _some(self, use_ssl=False, encoding="utf-8"):
         if use_ssl:
