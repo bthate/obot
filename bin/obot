@@ -74,7 +74,7 @@ def daemon():
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
-    parse_cli("obot", __version__, opts, hd(".obot"), """obs [-b] [-k] [-p] [-z] [-x cmd] [options]""")
+    parse_cli("obot", __version__, opts, hd(".obot"), """obot [-b] [-k] [-p] [-z] [-x cmd] [options]""")
     k.walk("obot")
     if k.cfg.daemon:
         daemon()
