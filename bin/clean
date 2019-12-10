@@ -1,0 +1,1 @@
+rm -fR runob testdata runob.tar.gz history _build build envs dist obot.egg-info *~ docs/*~ bin/*~ obot/*~ mods/*~ obot/__pycache__
