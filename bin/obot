@@ -10,7 +10,6 @@ import threading
 from ob import k, __version__
 from ob.csl import Console
 from ob.shl import enable_history, execute, hd, parse_cli, set_completer, writepid
-
 from ob.tms import elapsed
 from ob.trm import reset
 from ob.utl import get_name
