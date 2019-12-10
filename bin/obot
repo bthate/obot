@@ -3,17 +3,16 @@
 import json
 import ob
 import ob.evt
-import obot
 import os
 import time
 import threading
 
-from ob import Object, k, __version__
+from ob import k, __version__
 from ob.csl import Console
-from ob.dpt import dispatch
-from ob.pst import Persist
-from ob.shl import execute, hd, parse_cli, set_completer
+from ob.shl import enable_history, execute, hd, parse_cli, set_completer, writepid
+
 from ob.tms import elapsed
+from ob.trm import reset
 from ob.utl import get_name
 
 ob.evt.aliases = {
@@ -28,29 +27,58 @@ ob.evt.aliases = {
            }
 
 opts = [
+    ('-b', '', 'store_true', False, 'daemon', 'background mode.'),
     ('-d', '', 'string', "", 'workdir', 'set working directory.'),
-    ('-l', '', 'string', '', 'level', 'loglevel.'),
-    ('-p', '', 'store_false', True, 'prompting', 'prompt for user input'),
     ('-m', '', 'string', '', 'modules', 'modules to load.'),
+    ('-x', '', 'store_true', False, 'exec', 'execute command.'),
     ('-o', '', "string", "", 'options', "options to use."),
+    ('-k', '', "store_true", False, "kernel", "read from previous kernel config."),
+    ('-p', '', "store_false", True, "prompting", "prompt for initial values."),
     ('-s', '', 'store_true', False, 'dosave', 'save configuration files.'),
-    ('-u', '', 'store_true', False, 'users', 'enable users.'),
-    ('-v', '', 'store_true', False, 'verbose', 'enable verbose mode.'),
-    ('-z', '', 'store_false', True, 'shell', ' enable shell (default).'),
+    ('-z', '', 'store_false', True, 'shell', 'disable shell.'),
+    ('-l', '', 'string', '', 'level', 'loglevel.'),
+    ('', '--logdir', "string", "", 'logdir', "directory to find the logfiles."),
 ]
 
-def cmds(event):
-    event.reply("|".join(sorted(k.cmds)))
+def boot():
+    if k.cfg.exec:
+        k.cmd(k.cfg.txt)
+        return
+    if k.cfg.kernel:
+        p = ob.last(k.cfg)
+    elif k.cfg.dosave:
+        k.cfg.save()
+    k.init(k.cfg.modules)
+    set_completer(k.cmds)
+    enable_history()
+    writepid()
+    k.start()
+    if k.cfg.kernel or k.cfg.shell:
+        c = Console()
+        k.add(c)
+        c.start()
+        k.wait()
+
+def daemon():
+    pid = os.fork()
+    if pid != 0:
+        reset()
+        os._exit(0)
+    os.setsid()
+    os.umask(0)
+    si = open("/dev/null", 'r')
+    so = open("/dev/null", 'a+')
+    se = open("/dev/null", 'a+')
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
-    parse_cli("obot", __version__, opts, hd(".ob"), "obot [options]")
-    k.cmds.register("cmds", cmds)
-    k.init(k.cfg.modules)        
-    k.start()
-    c = Console()
-    c.start()
-    k.add(c)
-    k.wait()
+    parse_cli("obot", __version__, opts, hd(".obot"), """obs [-b] [-k] [-p] [-z] [-x cmd] [options]""")
+    k.walk("obot")
+    if k.cfg.daemon:
+        daemon()
+    boot()
 
 execute(main)
 os._exit(0)

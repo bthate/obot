@@ -1,0 +1,7 @@
+[ ! -d "/var/log/obot" ] && mkdir /var/log/obot
+[ ! -d "/var/lib/obot" ] && mkdir /var/lib/obot
+cp init.d/obot.service /etc/systemd/system
+systemctl enable obot
+systemctl daemon-reload
+service obot start
+systemctl status obot
