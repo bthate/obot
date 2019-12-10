@@ -40,6 +40,7 @@ opts = [
 ]
 
 def boot():
+    k.init(k.cfg.modules)
     if k.cfg.exec:
         k.cmd(k.cfg.txt)
         return
@@ -47,7 +48,6 @@ def boot():
         p = ob.last(k.cfg)
     elif k.cfg.dosave:
         k.cfg.save()
-    k.init(k.cfg.modules)
     set_completer(k.cmds)
     enable_history()
     writepid()
