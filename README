@@ -66,20 +66,56 @@ running:
  4 0s       Kernel.handler
  > 
 
-to run a pure UDP to IRC relay, run the bot with irc,udp modules loaded
+RSS
+===
+
+OBOT provides with the use of feedparser the possibility to server rss
+feeds in your channel. adding rss to mods= will load the rss modules and
+start it's poller.
 
 ::
 
- $ obot mods=irc,udp
- >
+ $ obot mods=rss
 
-use the udp command to send text via the bot to the channel on the irc server:
+to add an url use the rss command with an url:
+
+::
+
+ $ obot rss https://github.com/bthate/obot/commits/master.atom
+ ok 1
+
+run the rss command to see what urls are registered:
+
+::
+
+ $ obot fnd rss
+ 0 https://github.com/bthate/obot/commits/master.atom
+
+the fetch command can be used to poll the added feeds:
+
+::
+
+ $ obot fetch
+ fetched 0
+
+UDP
+===
+
+OBOT also has the possibility to serve as a UDP to IRC relay where you
+can send UDP packages to the bot and have txt displayed on the channel.
+
+use the obot program to send text via the bot to the channel on the irc server:
 
 ::
 
  $ tail -f /var/log/syslog | obot udp
 
-to send a udp packet to the bot:
+to send the tail output to the IRC channel
+
+you can use python3 code to send a UDP packet to obot, it's unencrypted
+txt send to the bot and display on the joined channels.
+
+to send a udp packet to okbot in python3:
 
 ::
 
@@ -125,6 +161,8 @@ OBOT has 1 module, the omod.irc module:
 ::
 
    omod.irc
+
+this package add omod.irc to the omod namespace.
 
 SERVICE
 =======

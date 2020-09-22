@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# OLIB - object library
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -47,7 +47,7 @@ class Cfg(ol.Cfg):
         self.nick = "obot"
         self.port = 6667
         self.realname = "obot"
-        self.server = "irc.freenode.net"
+        self.server = "localhost"
         self.username = "obot"
 
 class Event(ol.hdl.Event):
@@ -355,7 +355,7 @@ class IRC(ol.hdl.Handler):
 
     def NOTICE(self, event):
         if event.txt.startswith("VERSION"):
-            txt = "\001VERSION %s %s - %s\001" % ("OLIB", __version__, "object library")
+            txt = "\001VERSION %s %s - %s\001" % ("OBOT", __version__, "24/7 channel daemon")
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):

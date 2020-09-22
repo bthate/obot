@@ -5,6 +5,7 @@
 import datetime
 import ol
 import os
+import threading
 import time
 
 class Timer(ol.Object):
@@ -25,7 +26,7 @@ class Timer(ol.Object):
 
     def start(self):
         if not self.name:
-            self.name = get_name(self.func)
+            self.name = ol.get_name(self.func)
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
         timer.setName(self.name)
         timer.setDaemon(True)

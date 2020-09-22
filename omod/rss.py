@@ -148,7 +148,7 @@ class Fetcher(ol.Object):
         ol.dbs.last(Fetcher.cfg)
         ol.dbs.last(Fetcher.seen)
         if repeat:
-            repeater = Repeater(300.0, self.run)
+            repeater = ol.tms.Repeater(300.0, self.run)
             repeater.start()
 
     def stop(self):
@@ -162,7 +162,7 @@ def get_feed(url):
     try:
         result = get_url(url)
     except (HTTPError, URLError):
-        return [Object(), Object()]
+        return [ol.Object(), ol.Object()]
     if gotparser:
         result = feedparser.parse(result.data)
         if "entries" in result:
@@ -170,7 +170,7 @@ def get_feed(url):
                 yield entry
     else:
         print("feedparser is missing")
-        return [Object(), Object()]
+        return [ol.Object(), ol.Object()]
 
 def file_time(timestamp):
     s = str(datetime.datetime.fromtimestamp(timestamp))

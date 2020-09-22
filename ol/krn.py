@@ -4,6 +4,7 @@
 
 __version__ = 8
 
+import importlib
 import ol
 import os
 import time
@@ -58,7 +59,7 @@ class Kernel(ol.hdl.Handler):
             mods.append(mod)
             func = getattr(mod, "init", None)
             if func:
-                thrs.append(ol.tsk.launch(func, self, name=get_name(func)))
+                thrs.append(ol.tsk.launch(func, self, name=ol.get_name(func)))
         for thr in thrs:
             thr.join()
         return mods

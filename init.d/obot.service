@@ -1,8 +1,12 @@
 [Unit]
-Description=obot
+Description=OBOT - 24/7 channel daemon
+After=network-online.target
+Wants=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/obot -k -p -d /var/lib/obot --logdir /var/log/obot -l debug
+User=obot
+Group=obot
+ExecStart=/usr/local/bin/obot -n
 
 [Install]
 WantedBy=multi-user.target

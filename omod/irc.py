@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# OLIB - object library
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -295,7 +295,7 @@ class IRC(ol.hdl.Handler):
         elif cmd == "433":
             nick = self.cfg.nick + "_"
             self.cfg.nick = nick
-            self.raw("NICK %s" % self.cfg.nick or "oirc")
+            self.raw("NICK %s" % self.cfg.nick or "obot_next-")
         return e
 
     def raw(self, txt):
@@ -347,15 +347,13 @@ class IRC(ol.hdl.Handler):
         self._connected.clear()
         self.stop()
         self.start()
-        #init(k)
-        #self.connect(self.cfg.server, self.cfg.nick)
 
     def LOG(self, event):
         print(event.error)
 
     def NOTICE(self, event):
         if event.txt.startswith("VERSION"):
-            txt = "\001VERSION %s %s - %s\001" % ("OLIB", __version__, "object library")
+            txt = "\001VERSION %s %s - %s\001" % ("OBOT", __version__, "24/7 channel daemon")
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
@@ -521,6 +519,7 @@ def cfg(event):
     ol.dbs.last(c)
     o = ol.Default()
     ol.prs.parse(o, event.origtxt)
+    print(o, event)
     if o.sets:
         ol.update(c, o.sets)
         ol.save(c)

@@ -1,7 +1,22 @@
-[ ! -d "/var/log/obot" ] && mkdir /var/log/obot
 [ ! -d "/var/lib/obot" ] && mkdir /var/lib/obot
 cp init.d/obot.service /etc/systemd/system
+mkdir /home/obot
+mkdir /home/obot/.obot
+mkdir /home/obot/.obot/omod
+groupadd obot
+chown -R obot:obot /home/obot
+useradd obot -d /home/obot
+passwd obot
+sudo -u obot obot cfg server=irc.freenode.net channel=#dunkbots nick=obot
+omod/*.py /home/obot/.obot/omod
+cp bin/obot /usr/local/bin
+chown -R obot:obot /home/obot
+chown -R obot:obot /home/obot/.obot
+chmod -R 700 /home/obot/.obot/omod/
+chmod -R 400 /home/obot/.obot/omod/*.py
+cp obot.service /etc/systemd/system/obot.service
 systemctl enable obot
 systemctl daemon-reload
+service obot stop
 service obot start
 systemctl status obot
