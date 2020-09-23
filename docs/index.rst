@@ -1,0 +1,263 @@
+OBOT
+####
+
+| Welcome to OBOT, the 24/7 channel daemon ! see https://pypi.org/project/obot/ - source is here :ref:`here <source>`
+
+
+| OBOT is a bot based on the OLIB and OMOD packages.
+| OLIB is a object library and uses timestamped, type in filename, JSON stringified, files on filesystem backend.
+| OMOD is a package of modules for the OLIB library and provides RSS feed fetching, UDP to IRC gateway and is self programmable.
+
+| OLIB,OMOD and OBOT have been placed in the Public Domain and contain no copyright or LICENSE, this makes OBOT truely free (pastable) code you can use how you see fit, 
+
+OBOT can serve as a 24/7 background daaemon in an IRC channel, it can work as a UDP to IRC relay, has user management to limit access to prefered users and 
+can run as a service to let it restart after reboots. 
+
+installation is through pypi:
+
+ > sudo pip3 install obot --upgrade --force-reinstall
+
+you can also run directly from the tarball, see https://pypi.org/project/obot/#files
+
+USAGE
+=====
+
+OBOT has it's own CLI, you can run it by giving the obot command on the
+prompt, it will return with no response:
+
+:: 
+
+ $ obot
+ $ 
+
+you can use obot <cmd> to run a command directly:
+
+::
+
+ $ obot cmds
+ cfg|cmd|dne|edt|fnd|flt|krn|log|add|tsk|tdo|udp|upt|ver
+
+configuration is done with the cfg command:
+
+::
+
+ $ obot cfg
+ channel=#botlib nick=obot port=6667 realname=obot server=localhost username=obot
+
+you can use setters to edit fields in a configuration:
+
+::
+
+ $ obot cfg server=irc.freenode.net channel=\#dunkbots nick=obot
+ channel=#dunkbots nick=botje port=6667 realname=botlib server=irc.freenode.net
+ username=botlib
+
+to start a irc server with the cmd and opr modules loaded and a console
+running:
+
+::
+
+ $ obot mods=irc,csl,cmd,opr
+ > ps
+ 0 0s       Console.input
+ 1 0s       IRC.handler
+ 2 0s       IRC.input
+ 3 0s       IRC.output
+ 4 0s       Kernel.handler
+ > 
+
+RSS
+===
+
+OBOT provides with the use of feedparser the possibility to server rss
+feeds in your channel. adding rss to mods= will load the rss modules and
+start it's poller.
+
+::
+
+ $ obot mods=rss
+
+to add an url use the rss command with an url:
+
+::
+
+ $ obot rss https://github.com/bthate/obot/commits/master.atom
+ ok 1
+
+run the rss command to see what urls are registered:
+
+::
+
+ $ obot fnd rss
+ 0 https://github.com/bthate/obot/commits/master.atom
+
+the fetch command can be used to poll the added feeds:
+
+::
+
+ $ obot fetch
+ fetched 0
+
+UDP
+===
+
+OBOT also has the possibility to serve as a UDP to IRC relay where you
+can send UDP packages to the bot and have txt displayed on the channel.
+
+use the obot program to send text via the bot to the channel on the irc server:
+
+::
+
+ $ tail -f /var/log/syslog | obot udp
+
+to send the tail output to the IRC channel
+
+you can use python3 code to send a UDP packet to obot, it's unencrypted
+txt send to the bot and display on the joined channels.
+
+to send a udp packet to okbot in python3:
+
+::
+
+ import socket
+
+ def toudp(host=localhost, port=5500, txt=""):
+     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+     sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
+
+MODULES
+=======
+
+The OLIB package has the following modules:
+
+::
+
+    ol	 	- object library
+    ol.bus	- announce
+    ol.csl	- console
+    ol.dbs	- databases
+    ol.hdl	- handler
+    ol.krn	- kernel
+    ol.prs 	- parser
+    ol.tms	- times
+    ol.trm	- terminal
+    ol.tsk	- tasks
+    ol.utl	- utilities
+
+OMOD has the following modules available:
+
+::
+
+   omod.cmd	- command
+   omod.edt	- edit
+   omod.ent	- enter log and todo items
+   omod.fnd	- find typed objects
+   omod.mbx	- mailbox
+   omod.rss	- rich site syndicate
+   omod.udp	- UDP to IRC gateway
+
+OBOT has 1 module, the omod.irc module:
+
+::
+
+   omod.irc
+
+this package add omod.irc to the omod namespace.
+
+you can add you own modules to the omod package, its a namespace package (:ref:`index <genindex>`).
+
+
+SERVICE
+=======
+
+if you want to run the bot 24/7 you can install OBOT as a service for
+the systemd daemon. You can do this by copying the following into
+the /etc/systemd/system/obot.service file:
+
+::
+
+
+ [Unit]
+ Description=OBOT - 24/7 channel daemon
+ After=network-online.target
+ Wants=network-online.target
+
+ [Service]
+ User=obot
+ Group=obot
+ ExecStart=/usr/local/bin/obot -n
+
+ [Install]
+ WantedBy=multi-user.target
+
+create a homedir for obot:
+
+::
+
+ $ mkdir /home/obot
+ $ mkdir /home/obot/.obot
+ $ mkdir /home/obot/.obot/omod
+
+add the obot user to the system:
+
+::
+
+ $ groupadd obot
+ $ chown -R obot:obot /home/obot
+ $ useradd obot -d /home/obot
+ $ passwd obot
+
+configure obot to connect to irc:
+
+::
+
+ $ sudo -u obot obot cfg server=irc.freenode.net channel=#obot nick=obot
+
+copy modules over to obot's work directory:
+
+::
+
+ $ cp -Ra mods/*.py /home/obot/.obot/omod
+
+make sure permissions are set properly:
+
+::
+
+ $ chown -R obot:obot /home/obot
+ $ chown -R obot:obot /home/obot/.obot
+ $ chmod -R 700 /home/obot/.obot/omod/
+ $ chmod -R 400 /home/obot/.obot/omod/*.py
+
+add the obot service with:
+
+::
+
+ $ sudo systemctl enable obot
+ $ sudo systemctl daemon-reload
+
+then restart the obot service.
+
+::
+
+ $ sudo service obot stop
+ $ sudo service obot start
+
+if you don't want obot to startup at boot, remove the service file:
+
+::
+
+ $ sudo rm /etc/systemd/system/obot.service
+
+CONTACT
+=======
+
+contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
+
+| Bart Thate (bthate@dds.nl, thatebart@gmail.com)
+| botfather on #dunkbots irc.freenode.net
+
+
+.. toctree::
+    :hidden:
+
+    source
