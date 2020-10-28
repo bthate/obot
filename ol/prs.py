@@ -1,17 +1,27 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import ol
+"parse (prs)"
+
 import sys
+import time
 
-class Token(ol.Object):
+from ol.dft import Default
+from ol.obj import Object, update
+from ol.tms import parse_time
+
+class Token(Object):
+
+    "basic token"
 
     def __init__(self, txt):
         super().__init__()
         self.txt = txt
 
-class Option(ol.Default):
+class Option(Default):
+
+    "token that starts with -- or -"
 
     def __init__(self, txt):
         super().__init__()
@@ -20,7 +30,9 @@ class Option(ol.Default):
         if txt.startswith("-"):
             self.opt = txt[1:]
 
-class Getter(ol.Object):
+class Getter(Object):
+
+    "token that contains =="
 
     def __init__(self, txt):
         super().__init__()
@@ -31,7 +43,9 @@ class Getter(ol.Object):
         if pre:
             self[pre] = post
 
-class Setter(ol.Object):
+class Setter(Object):
+
+    "token that contains ="
 
     def __init__(self, txt):
         super().__init__()
@@ -42,7 +56,9 @@ class Setter(ol.Object):
         if pre:
             self[pre] = post
 
-class Skip(ol.Object):
+class Skip(Object):
+
+    "token that endswith -"
 
     def __init__(self, txt):
         super().__init__()
@@ -58,7 +74,9 @@ class Skip(ol.Object):
         if pre:
             self[pre] = True
 
-class Timed(ol.Object):
+class Timed(Object):
+
+    "token that is a time"
 
     def __init__(self, txt):
         super().__init__()
@@ -66,13 +84,13 @@ class Timed(ol.Object):
         vv = 0
         try:
             pre, post = txt.split("-")
-            v = ol.tms.parse_time(pre)
-            vv = ol.tms.parse_time(post)
+            v = parse_time(pre)
+            vv = parse_time(post)
         except ValueError:
             pass
         if not v or not vv:
             try:
-                vv = ol.tms.parse_time(txt)
+                vv = parse_time(txt)
             except ValueError:
                 vv = 0
             v = 0
@@ -82,36 +100,39 @@ class Timed(ol.Object):
             self["to"] = time.time() - vv
 
 def parse_cli():
-    parsed = ol.Default()
-    parse(parsed, " ".join(sys.argv[1:]))
-    return parsed
+    "parse commandline"
+    cfg = Default()
+    parse(cfg, " ".join(sys.argv[1:]))
+    return cfg
 
 def parse(o, txt):
+    "parse an object"
     args = []
-    o.origtxt = txt
-    o.gets = ol.Object()
-    o.opts = ol.Object()
-    o.sets = ol.Object()
-    o.skip = ol.Object()
-    o.timed = ol.Object()
+    o.otxt = txt
+    o.gets = Object()
+    o.opts = Object()
+    o.sets = Object()
+    o.skip = Object()
+    o.timed = ()
+    o.txt = ""
     o.index = None
     for token in [Token(txt) for txt in txt.split()]:
         s = Skip(token.txt)
         if s:
-            ol.update(o.skip, s)
+            update(o.skip, s)
             token.txt = token.txt[:-1]
         t = Timed(token.txt)
         if t:
-            ol.update(o.timed, t)
+            update(o.timed, t)
             continue
         g = Getter(token.txt)
         if g:
-            ol.update(o.gets, g)
+            update(o.gets, g)
             continue
         s = Setter(token.txt)
         if s:
-            ol.update(o.sets, s)
-            ol.update(o, s)
+            update(o.sets, s)
+            update(o, s)
             continue
         opt = Option(token.txt)
         if opt.opt:

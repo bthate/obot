@@ -1,14 +1,21 @@
-# OLIB - object library
+# OLIB
 #
 #
 
+"time related funcions (tms)"
+
 import datetime
-import ol
 import os
 import threading
 import time
 
-class Timer(ol.Object):
+from ol.obj import Object
+from ol.tsk import start
+from ol.utl import get_name
+
+class Timer(Object):
+
+    "timer class"
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
@@ -17,16 +24,18 @@ class Timer(ol.Object):
         self.args = args
         self.name = kwargs.get("name", "")
         self.kwargs = kwargs
-        self.state = ol.Object()
+        self.state = Object()
         self.timer = None
 
     def run(self, *args, **kwargs):
+        "run the timer"
         self.state.latest = time.time()
-        ol.tsk.launch(self.func, *self.args, **self.kwargs)
+        start(self.func, *self.args, **self.kwargs)
 
     def start(self):
+        "start clock for timer"
         if not self.name:
-            self.name = ol.get_name(self.func)
+            self.name = get_name(self.func)
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
         timer.setName(self.name)
         timer.setDaemon(True)
@@ -40,13 +49,17 @@ class Timer(ol.Object):
         return timer
 
     def stop(self):
+        "stop timer"
         if self.timer:
             self.timer.cancel()
 
 class Repeater(Timer):
 
+    "repeater class"
+
     def run(self, *args, **kwargs):
-        thr = ol.tsk.launch(self.start, **kwargs)
+        "run a repeater"
+        thr = start(self.start, **kwargs)
         super().run(*args, **kwargs)
         return thr
 
@@ -74,12 +87,15 @@ year_formats = [
 ]
 
 def day():
+    "return this day"
     return str(datetime.datetime.today()).split()[0]
 
 def days(path):
+    "return days since saved"
     return elapsed(time.time() - fntime(path))
 
 def elapsed(seconds, short=True):
+    "return elapsed time"
     txt = ""
     nsec = float(seconds)
     year = 365*24*60*60
@@ -123,6 +139,7 @@ def elapsed(seconds, short=True):
     return txt
 
 def fntime(daystr):
+    "return time from filename"
     daystr = daystr.replace("_", ":")
     datestr = " ".join(daystr.split(os.sep)[-2:])
     try:
@@ -138,6 +155,7 @@ def fntime(daystr):
     return t
 
 def get_time(daystr):
+    "extract time from string"
     for f in year_formats:
         try:
             t = time.mktime(time.strptime(daystr, f))
@@ -146,6 +164,7 @@ def get_time(daystr):
             pass
 
 def parse_time(daystr):
+    "elapsed time from string"
     if not any([c.isdigit() for c in daystr]):
         return 0
     valstr = ""
@@ -172,9 +191,11 @@ def parse_time(daystr):
     return total
 
 def today():
+    "return timestamp of today"
     return datetime.datetime.today().timestamp()
 
 def to_day(daystring):
+    "extract time from string"
     line = ""
     daystr = str(daystring)
     for word in daystr.split():

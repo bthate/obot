@@ -3,26 +3,24 @@
 #
 #
 
-import ol
-import os
-
-from omod.irc import IRC
+from ol.csl import Console
+from ol.krn import boot, cmd, os
+from ol.trm import execute
 
 def main():
-    k = ol.krn.boot("obot")
-    k.walk("omod")
-    k.scandir(k.cfg.md or os.getcwd())
+    k = boot("obot")
+    if "h" in k.cfg.opts:
+        from omod.hlp import help
+        return help()
+    k.walk("obot,omod")
+    k.init(k.cfg.mods)
     if k.cfg.txt:
-        return k.cmd(k.cfg.origtxt)
-    k.start()
-    if k.cfg.mods:
-        k.init(k.cfg.mods)
-    i = IRC()
-    i.start()
-    if not "n" in k.cfg.opts:
-        c = ol.csl.Console()
+        return k.cmd(k.cfg.otxt)
+    if "s" in k.cfg.opts or k.cfg.mods:
+        c = Console()
         c.start()
-    k.wait()
+        k.start()
+        k.wait()
 
-ol.trm.execute(main)
+execute(main)
 os._exit(0)

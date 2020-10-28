@@ -41,16 +41,15 @@ configuration is done with the cfg command:
 
 ::
 
- $ obot cfg
- channel=#botlib nick=obot port=6667 realname=obot server=localhost username=obot
+ $ obot icfg
+ channel=#obot nick=obot port=6667 server=localhost
 
 you can use setters to edit fields in a configuration:
 
 ::
 
- $ obot cfg server=irc.freenode.net channel=\#dunkbots nick=obot
- channel=#dunkbots nick=botje port=6667 realname=botlib server=irc.freenode.net
- username=botlib
+ $ obot icfg server=irc.freenode.net channel=\#dunkbots nick=obot
+ channel=#dunkbots nick=botje port=6667 server=irc.freenode.net
 
 to start a irc server with the cmd and opr modules loaded and a console
 running:
@@ -58,7 +57,7 @@ running:
 ::
 
  $ obot mods=irc,csl,cmd,opr
- > ps
+ > tsk
  0 0s       Console.input
  1 0s       IRC.handler
  2 0s       IRC.input
@@ -175,14 +174,14 @@ the /etc/systemd/system/obot.service file:
 
 
  [Unit]
- Description=OBOT - 24/7 channel daemon
+ Description=24/7 channel daemon
  After=network-online.target
  Wants=network-online.target
 
  [Service]
  User=obot
  Group=obot
- ExecStart=/usr/local/bin/obot -n
+ ExecStart=/usr/local/bin/obotd
 
  [Install]
  WantedBy=multi-user.target

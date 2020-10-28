@@ -1,17 +1,22 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import ol
+"database (dbs)"
+
 import os
 
+from ol.obj import search, update
+from ol.utl import get_type, hook
+
 def all(otype, selector=None, index=None, timed=None):
+    "return all matching objects"
     nr = -1
     if selector is None:
         selector = {}
-    for fn in objs(otype, timed):
-        o = ol.hook(fn)
-        if selector and not ol.search(o, selector):
+    for fn in fns(otype, timed):
+        o = hook(fn)
+        if selector and not search(o, selector):
             continue
         if "_deleted" in o and o._deleted:
             continue
@@ -21,19 +26,21 @@ def all(otype, selector=None, index=None, timed=None):
         yield o
 
 def deleted(otype):
-    for fn in objs(otype):
-        o = ol.hook(fn)
+    "return all deleted objects"
+    for fn in fns(otype):
+        o = hook(fn)
         if "_deleted" not in o or not o._deleted:
             continue
         yield o
 
 def find(otype, selector=None, index=None, timed=None):
+    "find objects"
     nr = -1
     if selector is None:
         selector = {}
-    for fn in objs(otype, timed):
-        o = ol.hook(fn)
-        if selector and not ol.search(o, selector):
+    for fn in fns(otype, timed):
+        o = hook(fn)
+        if selector and not search(o, selector):
             continue
         if "_deleted" in o and o._deleted:
             continue
@@ -43,10 +50,11 @@ def find(otype, selector=None, index=None, timed=None):
         yield o
 
 def find_event(e):
+    "find objects based on event"
     nr = -1
-    for fn in objs(e.otype, e.timed):
-        o = ol.hook(fn)
-        if e.gets and not ol.search(o, e.gets):
+    for fn in fns(e.otype, e.timed):
+        o = hook(fn)
+        if e.gets and not search(o, e.gets):
             continue
         if "_deleted" in o and o._deleted:
             continue
@@ -56,45 +64,32 @@ def find_event(e):
         yield o
 
 def last(o):
-    path, l = lastfn(str(ol.get_type(o)))
+    "return last object"
+    path, l = lastfn(str(get_type(o)))
     if  l:
-        ol.update(o, l)
-        o.__stamp__ = path
+        update(o, l)
+        o.stp = os.sep.join(os.path.split(path)[-4:])
 
 def lasttype(otype):
-    fns = objs(otype)
-    if fns:
-        return ol.hook(fns[-1])
+    "return last object of type"
+    fnn = fns(otype)
+    if fnn:
+        return hook(fnn[-1])
 
 def lastfn(otype):
-    fns = objs(otype)
-    if fns:
-        fn = fns[-1]
-        return (fn, ol.hook(fn))
+    "return filename of last object"
+    fn = fns(otype)
+    if fn:
+        fnn = fn[-1]
+        return (fnn, hook(fnn))
     return (None, None)
 
-def names(name, timed=None):
+def fns(name, timed=None):
+    "return filenames"
     if not name:
         return []
-    assert ol.wd
-    p = os.path.join(ol.wd, "store", name) + os.sep
-    res = []
-    for rootdir, _dirs, files in os.walk(p, topdown=False):
-        for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(ol.wd, "store"))[-1]
-            ftime = ol.tms.fntime(fnn)
-            if timed and "from" in timed and timed["from"] and ftime < timed["from"]:
-                continue
-            if timed and timed.to and ftime > timed.to:
-                continue
-            res.append(os.sep.join(fnn.split(os.sep)[1:]))
-    return sorted(res, key=olib.tms.fntime)
-
-def objs(name, timed=None):
-    if not name:
-        return []
-    assert ol.wd
-    p = os.path.join(ol.wd, "store", name) + os.sep
+    import ol.krn
+    p = os.path.join(ol.krn.wd, "store", name) + os.sep
     res = []
     d = ""
     for rootdir, dirs, _files in os.walk(p, topdown=False):

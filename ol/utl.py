@@ -1,19 +1,23 @@
-# OLIB - object library
+# OLIB
 #
 #
+
+"utilities (utl)"
 
 import importlib
 import inspect
 import os
+import pwd
 import sys
-import threading
 import traceback
+import types
 
 class ENOCLASS(Exception):
 
-    pass
+    "is not a class"
 
 def cdir(path):
+    "create directory"
     if os.path.exists(path):
         return
     res = ""
@@ -28,9 +32,11 @@ def cdir(path):
             pass
 
 def direct(name):
+    "load a module"
     return importlib.import_module(name)
 
 def get_cls(name):
+    "return a class"
     try:
         modname, clsname = name.rsplit(".", 1)
     except:
@@ -41,16 +47,8 @@ def get_cls(name):
         mod = importlib.import_module(modname)
     return getattr(mod, clsname)
 
-
-def find_cmds(mod):
-    cmds = {}
-    for key, o in inspect.getmembers(mod, inspect.isfunction):
-        if "event" in o.__code__.co_varnames:
-            if o.__code__.co_argcount == 1:
-                cmds[key] = o
-    return cmds
-
 def find_modules(pkgs, skip=None):
+    "locate modules"
     modules = []
     for pkg in pkgs.split(","):
         if skip is not None and skip not in pkg:
@@ -64,17 +62,20 @@ def find_modules(pkgs, skip=None):
                 modules.append(m)
     return modules
 
-def find_shorts(mn):
-    import ol
-    shorts = ol.Ol()
-    for mod in ol.utl.find_modules(mn):
-        for _key, o in inspect.getmembers(mod, inspect.isclass):
-            if issubclass(o, ol.Object):
-                t = "%s.%s" % (o.__module__, o.__name__)
-                shorts.append(o.__name__.lower(), t)
-    return shorts
+def get_cls(name):
+    "return class from full qualified name"
+    try:
+        modname, clsname = name.rsplit(".", 1)
+    except:
+        raise ENOCLASS(name)
+    if modname in sys.modules:
+        mod = sys.modules[modname]
+    else:
+        mod = importlib.import_module(modname)
+    return getattr(mod, clsname)
 
 def get_exception(txt="", sep=" "):
+    "print exception trace"
     exctype, excvalue, tb = sys.exc_info()
     trace = traceback.extract_tb(tb)
     result = []
@@ -86,7 +87,7 @@ def get_exception(txt="", sep=" "):
         mod = []
         for element in plugfile[::-1]:
             mod.append(element)
-            if "ol" in element or "omod" in element:
+            if "ol" in element or "mods" in element or "python3" in element:
                 break
         ownname = ".".join(mod[::-1])
         result.append("%s:%s" % (ownname, elem[1]))
@@ -94,13 +95,81 @@ def get_exception(txt="", sep=" "):
     del trace
     return res
 
+def get_name(o):
+    "return fully qualified name of an object"
+    t = type(o)
+    if t == types.ModuleType:
+        return o.__name__
+    try:
+        n = "%s.%s" % (o.__self__.__class__.__name__, o.__name__)
+    except AttributeError:
+        try:
+            n = "%s.%s" % (o.__class__.__name__, o.__name__)
+        except AttributeError:
+            try:
+                n = o.__class__.__name__
+            except AttributeError:
+                n = o.__name__
+    return n
+
+def get_type(o):
+    "return type of an object"
+    t = type(o)
+    if t == type:
+        try:
+            return "%s.%s" % (o.__module__, o.__name__)
+        except AttributeError:
+            pass
+    return str(type(o)).split()[-1][1:-2]
+
+def hook(fn):
+    "construct object from filename"
+    if fn.count(os.sep) > 3:
+        oname = fn.split(os.sep)[-4:]
+    else:
+        oname = fn.split(os.sep)
+    t = oname[0]
+    if not t:
+        raise ENOFILENAME(fn)
+    import ol.obj
+    o = get_cls(t)()
+    ol.obj.load(o, fn)
+    return o
+
+def hooked(d):
+    "construct object from stamp"
+    if "stp" in d:
+        t = d["stp"].split(os.sep)[0]
+        if not t:
+            return d
+        o = get_cls(t)()
+        update(o, d)
+    return d
+
 def list_files(wd):
+    "list files in directory"
     path = os.path.join(wd, "store")
     if not os.path.exists(path):
         return ""
     return " ".join(os.listdir(path))
 
+def locked(l):
+    "lock descriptor"
+    def lockeddec(func, *args, **kwargs):
+        def lockedfunc(*args, **kwargs):
+            l.acquire()
+            res = None
+            try:
+                res = func(*args, **kwargs)
+            finally:
+                l.release()
+            return res
+        lockeddec.__doc__ = func.__doc__
+        return lockedfunc
+    return lockeddec
+
 def privileges(name):
+    "lower privileges"
     if os.getuid() != 0:
         return
     pwnam = pwd.getpwnam(name)
@@ -110,14 +179,17 @@ def privileges(name):
     old_umask = os.umask(0o22)
 
 def root():
+    "check if root"
     if os.geteuid() != 0:
         return False
     return True
 
 def spl(txt):
+    "return comma splitted values"
     return iter([x for x in txt.split(",") if x])
 
 def touch(fname):
+    "touch a file"
     try:
         fd = os.open(fname, os.O_RDWR | os.O_CREAT)
         os.close(fd)

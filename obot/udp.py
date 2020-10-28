@@ -1,26 +1,35 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import ol
-import select
-import socket
-import sys
-import time
+"udp to irc relay"
+
+import ol, select, socket, sys, time
+
+from ol.bus import bus
+from ol.cfg import Cfg
+from ol.dbs import last
+from ol.obj import Object
+from ol.tsk import start
 
 def init(kernel):
+    "start a udp to irc relay server and return it"
     u = UDP()
     u.start()
     return u
 
-class Cfg(ol.Cfg):
+class Cfg(Cfg):
+
+    "udp configuration"
 
     def __init__(self):
         super().__init__()
         self.host = "localhost"
         self.port = 5500
 
-class UDP(ol.Object):
+class UDP(Object):
+
+    "udp to irc relay server"
 
     def __init__(self):
         super().__init__()
@@ -33,11 +42,12 @@ class UDP(ol.Object):
         self.cfg = Cfg()
 
     def output(self, txt, addr):
-        k = get_fleet()
-        for bot in k.fleet.bots:
+        "output message on fleet"
+        for bot in bus:
             bot.announce(txt.replace("\00", ""))
 
     def server(self):
+        "loop for output"
         try:
             self._sock.bind((self.cfg.host, self.cfg.port))
         except socket.gaierror:
@@ -52,21 +62,25 @@ class UDP(ol.Object):
             self.output(data, addr)
 
     def exit(self):
+        "stop udp to irc relay server"
         self.stopped = True
         self._sock.settimeout(0.01)
         self._sock.sendto(bytes("exit", "utf-8"), (self.cfg.host, self.cfg.port))
 
     def start(self):
-        ol.last(self.cfg)
-        ol.tsk.launch(self.server)
+        "start udp to irc relay server"
+        last(self.cfg)
+        start(self.server)
 
 def toudp(host, port, txt):
+    "send text over udp to the udp to irc relay server"
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
 
 def udp(event):
+    "send text over udp to the bot"
     cfg = Cfg()
-    ol.dbs.last(cfg)
+    last(cfg)
     if len(sys.argv) > 2:
         txt = " ".join(sys.argv[2:])
         toudp(cfg.host, cfg.port, txt)

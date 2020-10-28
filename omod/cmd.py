@@ -1,43 +1,54 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import ol
-import threading
-import time
+import threading, time
+
+from ol.dft import Default
+from ol.krn import get_kernel, starttime, __version__
+from ol.obj import Object, format, save, get, keys, update
+from ol.prs import parse
+from ol.tms import elapsed
+from ol.utl import get_name
 
 def cmd(event):
-    k = ol.krn.get_kernel()
-    c = sorted(k.cmds)
+    "list commands (cmd)"
+    k = get_kernel()
+    c = sorted(keys(k.cmds))
     if c:
         event.reply(",".join(c))
 
-def mds(event):
-    mm = ol.utl.find_modules("omod")
-    if mm:
-        event.reply(",".join([m.__name__.split(".")[-1] for m in mm]))
+def cfg(event):
+    "configure irc."
+    k = get_kernel()
+    o = Default()
+    parse(o, event.prs.otxt)
+    if o.sets:
+        update(k.cfg, o.sets)
+        save(k.cfg)
+    event.reply(format(k.cfg))
 
 def tsk(event):
+    "list tasks (tsk)"
     psformat = "%s %s"
     result = []
     for thr in sorted(threading.enumerate(), key=lambda x: x.getName()):
         if str(thr).startswith("<_"):
             continue
-        d = vars(thr)
-        o = ol.Object()
-        ol.update(o, d)
-        if ol.get(o, "sleep", None):
+        o = Object()
+        update(o, thr)
+        if get(o, "sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
-            up = int(time.time() - ol.krn.starttime)
+            up = int(time.time() - starttime)
         thrname = thr.getName()
-        result.append((up, psformat % (thrname, ol.tms.elapsed(up))))
+        result.append((up, psformat % (thrname, elapsed(up))))
     res = []
     for up, txt in sorted(result, key=lambda x: x[0]):
         res.append(txt)
-    event.reply(" | ".join(res))
+    if res:
+        event.reply(" | ".join(res))
 
 def ver(event):
-    k = ol.krn.get_kernel()
-    mods = k.walk("ol,omod")
-    event.reply(",".join(["%s %s" % (mod.__name__, mod.__version__) for mod in mods if ol.get(mod, "__version__")]))
+    "show version (ver)"
+    event.reply("OLIB %s" % __version__)

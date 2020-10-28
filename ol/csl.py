@@ -1,58 +1,77 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import atexit
-import ol
-import readline
-import threading
+"console (csl)"
 
-def __dir__():
-    return ("Console", "getcompleter", "setcompleter")
+import atexit, readline, threading
 
+from ol.bus import bus
+from ol.evt import Event
+from ol.krn import get_kernel
+from ol.obj import Object
+from ol.tsk import start
+
+#:
 cmds = []
+#:
 resume = {}
 
-class Console(ol.Object):
+def init(k):
+    c = Console()
+    c.start()
+    return c
+
+class Console(Object):
+
+    "console class"
 
     def __init__(self):
         super().__init__()
         self.ready = threading.Event()
+        bus.add(self)
 
     def announce(self, txt):
-        pass
+        "silence announcing"
+
+    def direct(self, txt):
+        "print txt"
+        print(txt.rstrip())
 
     def input(self):
-        k = ol.krn.get_kernel()
+        "loop for input"
+        k = get_kernel()
         while 1:
             try:
                 event = self.poll()
             except EOFError:
                 print("")
                 continue
+            if not event.txt:
+                continue
             event.orig = repr(self)
-            k.queue.put(event)
+            k.put(event)
             event.wait()
 
     def poll(self):
-        e = ol.hdl.Event()
+        "wait for input"
+        e = Event()
         e.orig = repr(self)
         e.txt = input("> ")
-        ol.prs.parse(e, e.txt)
         return e
 
-    def raw(self, txt):
-        print(txt.rstrip())
-
     def say(self, channel, txt):
-        self.raw(txt)
+        "strip channel from output"
+        self.direct(txt)
 
     def start(self):
-        k = ol.krn.get_kernel()
+        "start console"
+        k = get_kernel()
         setcompleter(k.cmds)
-        ol.tsk.launch(self.input)
+        start(self.input)
 
 def complete(text, state):
+    "complete matches"
     matches = []
     if text:
         matches = [s for s in cmds if s and s.startswith(text)]
@@ -64,9 +83,11 @@ def complete(text, state):
         return None
 
 def getcompleter():
+    "return the completer"
     return readline.get_completer()
 
 def setcompleter(commands):
+    "set the completer"
     cmds.extend(commands)
     readline.set_completer(complete)
     readline.parse_and_bind("tab: complete")

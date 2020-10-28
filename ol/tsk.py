@@ -1,12 +1,17 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import ol
-import queue
-import threading
+"tasks (tsk)"
+
+import ol, queue, threading, time
+
+from ol.obj import Object
+from ol.utl import get_name
 
 class Task(threading.Thread):
+
+    "task class"
 
     def __init__(self, func, *args, name="noname", daemon=True):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
@@ -15,7 +20,7 @@ class Task(threading.Thread):
         self._queue = queue.Queue()
         self._queue.put((func, args))
         self.sleep = 0
-        self.state = ol.Object()
+        self.state = Object()
 
     def __iter__(self):
         return self
@@ -25,22 +30,19 @@ class Task(threading.Thread):
             yield k
 
     def run(self):
+        "run a task"
         func, args = self._queue.get()
         self.setName(self._name)
-        try:
-            self._result = func(*args)
-        except EOFError:
-            _thread.interrupt_main()
-        except Exception as _ex:
-            print(ol.utl.get_exception())
+        self._result = func(*args)
 
-    def join(self, timeout=None):
+    def wait(self, timeout=None):
+        "wait for task to finish"
         super().join(timeout)
         return self._result
 
-       
-def launch(func, *args, **kwargs):
-    name = kwargs.get("name", ol.get_name(func))
+def start(func, *args, **kwargs):
+    "start a task"
+    name = kwargs.get("name", get_name(func))
     t = Task(func, *args, name=name, daemon=True)
     t.start()
     return t

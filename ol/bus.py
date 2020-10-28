@@ -1,20 +1,29 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import ol
+"announce to listeners"
 
-class Bus(ol.Object):
+import ol.obj
+
+class Bus(ol.obj.Object):
+
+    "bus class"
 
     objs = []
+
+    def __call__(self, *args, **kwargs):
+        return self.objs
 
     def __iter__(self):
         return iter(Bus.objs)
 
     def add(self, obj):
+        "add listener to bus"
         Bus.objs.append(obj)
 
     def announce(self, txt, skip=None):
+        "announce to all listeners"
         for h in self.objs:
             if skip is not None and isinstance(h, skip):
                 continue
@@ -22,18 +31,22 @@ class Bus(ol.Object):
                 h.announce(txt)
 
     def dispatch(self, event):
+        "dispatch on all listeners"
         for b in Bus.objs:
             if repr(b) == event.orig:
                 b.dispatch(event)
 
     def by_orig(self, orig):
+        "fetch listener by orig"
         for o in Bus.objs:
             if repr(o) == orig:
                 return o
 
     def say(self, orig, channel, txt):
+        "say something to specific listener"
         for o in Bus.objs:
             if repr(o) == orig:
                 o.say(channel, str(txt))
 
+#: bus object
 bus = Bus()

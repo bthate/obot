@@ -1,11 +1,10 @@
-# OLIB - object library
-#
-#
+"mailbox"
 
 import mailbox
-import ol
 import os
 import time
+
+from ol.obj import O, Object, save, update
 
 bdmonths = ['Bo', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
             'Sep', 'Oct', 'Nov', 'Dec']
@@ -25,7 +24,7 @@ monthint = {
     'Dec': 12
 }
 
-class Email(ol.Object):
+class Email(Object):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -66,30 +65,13 @@ def to_date(date):
                             ddd = ""
     return ddd
 
-def cor(event):
-    if not event.args:
-        return
-    parse(event, event.txt)
-    event.gets["From"] = event.args[0]
-    event.args = list(keys(event.gets)) + event.rest.split()
-    event.otype = "omod.mbx.Email"
-    nr = -1
-    for email in ol.dbs.find_event(event):
-        nr += 1
-        event.reply("%s %s %s" % (nr, ol.format(email, event.args, True, event.skip), ol.tms.elapsed(time.time() - ol.tms.fntime(email.__stamp__))))
-
-def eml(event):
-    if not event.args:
-        return
-    parse(event, event.txt)
-    nr = -1
-    for o in all("omod.mbx.Email"):
-        if event.rest in o.text:
-            nr += 1
-            event.reply("%s %s %s" % (nr, ol.format(o, ["From", "Subject"], False, event.skip), ol.tms.elapsed(time.time() - ol.tms.fntime(o.__stamp__))))
-
 def mbx(event):
     if not event.args:
+        return
+    import ol.krn
+    assert ol.krn.wd
+    if os.path.exists(os.path.join(ol.krn.wd, "store", "mymods.mbx.Email")):
+        event.reply("email is already scanned")
         return
     fn = os.path.expanduser(event.args[0])
     event.reply("reading from %s" % fn)
@@ -106,17 +88,18 @@ def mbx(event):
         pass
     for m in thing:
         o = Email()
-        update(o, m)
-        try:
-            sdate = os.sep.join(ol.tms.to_date(o.Date).split())
-        except AttributeError:
-            sdate = None
+        update(o, O(m))
+        if "Date" in o:
+            sdate = os.sep.join(to_date(o.Date).split())
+        else:
+            print("no date %s" % o.subject)
+            continue
         o.text = ""
         for payload in m.walk():
             if payload.get_content_type() == 'text/plain':
                 o.text += payload.get_payload()
         o.text = o.text.replace("\\n", "\n")
-        ol.save(o, stime=sdate)
+        save(o, stime=sdate)
         nr += 1
     if nr:
         event.reply("ok %s" % nr)

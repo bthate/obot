@@ -1,35 +1,44 @@
-# OLIB - object library
+# OLIB
 #
 #
 
-import ol
+"edit objects"
+
+from ol.dbs import lasttype
+from ol.krn import get_kernel
+from ol.obj import edit, save, get
+from ol.utl import get_cls, list_files
 
 def edt(event):
+    "edit objects"
     if not event.args:
-        f = ol.utl.list_files(ol.wd)
+        import ol.krn
+        assert ol.krn.wd
+        f = list_files(ol.krn.wd)
         if f:
             event.reply(f)
         return
-    cn = event.args[0]
-    if "." not in cn:
-        shorts = ol.utl.find_shorts("omod")
-        if shorts:
-            cn = ol.get(shorts, cn, cn)
+    k = get_kernel()
+    cn = get(k.names, event.args[0], [event.args[0]])
+    if len(cn) > 1:
+        event.reply(cn)
+        return
+    cn = cn[0]
     try:
-        l = ol.dbs.lasttype(cn)
+        l = lasttype(cn)
     except IndexError:
         return
     if not l:
         try:
-            c = ol.get_cls(cn)
+            c = get_cls(cn)
             l = c()
             event.reply("created %s" % cn)
-        except ENOCLASS:
-            event.reply(ol.utl.list_files(ol.wd))
+        except ol.ENOCLASS:
+            event.reply(list_files(wd))
             return
-    if len(event.args) == 1:
+    if not event.prs.sets:
         event.reply(l)
         return
-    ol.edit(l, event.sets)
-    ol.save(l)
+    edit(l, event.prs.sets)
+    save(l)
     event.reply("ok")
