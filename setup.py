@@ -17,6 +17,7 @@ setup(
     description="24/7 channel daemon",
     long_description=readme(),
     license='Public Domain',
+    install_requires=["olib", "feedparser"],
     packages=["obot", "omod", "ol"],
     namespace_packages=["obot", "omod", "ol"],
     scripts=["bin/obot", "bin/obotd"],

@@ -11,7 +11,7 @@ sys.path.insert(0, curdir + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep + ".." + os.sep)
 
-__version__ = 20
+__version__ = 21
 
 needs_sphinx='1.1'
 nitpick_ignore=[
@@ -55,7 +55,7 @@ modindex_common_prefix = [""]
 keep_warnings = True
 html_theme = "haiku"
 html_theme_path = []
-html_short_title = "OBJECT BOT - 24/7 CHANNEL DAEMON"
+html_short_title = "OBOT %s" % __version__
 html_favicon = "smile2.png"
 html_static_path = []
 html_extra_path = []
@@ -71,8 +71,10 @@ html_copy_source = False
 html_use_opensearch = 'http://obot.rtfd.io/'
 html_file_suffix = '.html'
 rst_prolog = """.. image:: obotline.png
-    :height: 3cm
+    :height: 2.7cm
     :width: 100%
+    
+.. title:: 24/7 channel daemon
 """
 htmlhelp_basename = 'pydoc'
 intersphinx_mapping = {'python': ('https://docs.python.org/3',

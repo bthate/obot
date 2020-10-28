@@ -1,1 +1,1 @@
-rm -fR docs/*~ docs/ol* docs/omod* ol/*~ ol/__pycache__ init.d/*~ init.d/__pycache__ omod/*~ omod/__pycache__ run testdata run.tar.gz history _build build envs dist obot.egg-info *~ bin/*~
+rm -fR run run.tar.gz mymod/*~ mymod/__pycache__ obot/*~ obot/__pycache__ env.tar.gz env html docs/*~ docs/__pycache__ docs/obot*.rst docs/omod*.rst docs/ol*.rst ol/*~ ol/__pycache__ dist build *~ __pycache__ bin/*~ mods/*~ omod/__pycache__ tests/*~ tests/__pycache__ obot.egg-info

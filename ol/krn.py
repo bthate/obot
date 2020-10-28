@@ -227,6 +227,8 @@ def execute(main):
     finally:
         termreset()
 
+
+
 def get_kernel():
     "return kernel"
     if kernels:

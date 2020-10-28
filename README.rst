@@ -1,7 +1,7 @@
 README
 ######
 
-| Welcome to OBOT, the 24/7 channel daemon ! see https://pypi.org/project/obot/ - :ref:`source <source>`
+| Welcome to OBOT, the 24/7 channel daemon ! see https://pypi.org/project/obot/ 
 
 OBOT is a pure python3 IRC chat bot that can run as a background daemon
 for 24/7 a day presence in a IRC channel. It installs itself as a service so
@@ -22,13 +22,7 @@ installation is through pypi:
 
 ::
 
- $ sudo pip3 install obot
-
-if the package doesn't update properly force a reinstall:
-
-::
-
- $ sudo pip3 install obot --upgrade --force-reinstall
+ > sudo pip3 install obot --upgrade --force-reinstall
 
 you can also run directly from the tarball, see https://pypi.org/project/obot/#files
 
@@ -235,7 +229,7 @@ create a homedir for obotd:
  $ mkdir /var/lib/obotd
  $ mkdir /var/lib/obotd/omod
 
-add the obotd user to the system (as root):
+add the obotd user to the system:
 
 ::
 
@@ -247,17 +241,13 @@ configure obot to connect to irc:
 
 ::
 
- $ obotd icfg server=irc.freenode.net channel=#obot nick=obot
+ $ sudo obotd icfg server=irc.freenode.net channel=#obot nick=obot
 
 copy modules over to obot's work directory:
-
-::
 
  $ cp -Ra mymod/*.py /var/lib/obotd/omod
 
 make sure permissions are set properly:
-
-::
 
  $ chown -R obotd:obotd /var/lib/obotd
  $ chown -R obotd:obotd /var/lib/obotd
@@ -268,21 +258,21 @@ add the obotd service with:
 
 ::
 
- $ systemctl enable obotd
- $ systemctl daemon-reload
+ $ sudo systemctl enable obotd
+ $ sudo systemctl daemon-reload
 
 then restart the obotd service.
 
 ::
 
- $ service obotd stop
- $ service obotd start
+ $ sudo service obotd stop
+ $ sudo service obotd start
 
 if you don't want obotd to startup at boot, remove the service file:
 
 ::
 
- $ rm /etc/systemd/system/obotd.service
+ $ sudo rm /etc/systemd/system/obotd.service
 
 CONTACT
 =======
@@ -291,9 +281,3 @@ contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 
 | Bart Thate (bthate@dds.nl, thatebart@gmail.com)
 | botfather on #dunkbots irc.freenode.net
-
-.. toctree::
-    :hidden:
-
-    source
-

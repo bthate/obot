@@ -1,0 +1,38 @@
+#!/usr/bin/python3
+# OBOTD - 24/7 channel daemon
+#
+#
+
+from ol.krn import boot, execute, scandir, os, sys
+from ol.trm import termreset
+from ol.utl import privileges
+
+def daemon():
+    pid = os.fork()
+    if pid != 0:
+        termreset()
+        os._exit(0)
+    os.setsid()
+    os.umask(0)
+    si = open("/dev/null", 'r')
+    so = open("/dev/null", 'a+')
+    se = open("/dev/null", 'a+')
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
+
+def main():
+    k = boot("obot", root=True)
+    if "d" in k.cfg.opts:
+        daemon()
+        privileges("obot")
+    k.walk("obot,omod")
+    scandir(k.cfg.wd)
+    if k.cfg.txt:
+        return k.cmd(k.cfg.otxt)
+    k.init(k.cfg.mods)
+    k.start()
+    k.wait()
+
+execute(main)
+os._exit(0)
