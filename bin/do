@@ -6,12 +6,12 @@
 import importlib, os, sys
 importlib.invalidate_caches()
 
-import ol, os, shutil, sys
+import os, shutil, sys
 import urllib
 import urllib.parse
 import urllib.request
 
-from ol.krn import execute
+from ob.krn import execute
 
 from setuptools.command.easy_install import main
 

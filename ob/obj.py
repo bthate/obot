@@ -8,6 +8,7 @@ import datetime, json, os, uuid, _thread
 import ob.utl
 
 sl = _thread.allocate_lock()
+wd = ""
 
 class Object:
 
@@ -81,7 +82,7 @@ def load(o, path):
     assert path
     import ob.krn
     stp = os.sep.join(path.split(os.sep)[-4:])
-    lpath = os.path.join(ob.krn.wd, "store", stp)
+    lpath = os.path.join(wd, "store", stp)
     ob.utl.cdir(lpath)
     id = stp[1]
     with open(lpath, "r") as ofile:
@@ -101,14 +102,14 @@ def register(o, k, v):
 def save(o, stime=None):
     "save object to disk"
     import ob.krn
-    assert ob.krn.wd
+    assert wd
     if stime:
         stp = os.path.join(o.utl.get_type(o), o.__id__,
                              stime + "." + str(random.randint(0, 100000)))
     else:
         timestamp = str(datetime.datetime.now()).split()
         stp = os.path.join(ob.utl.get_type(o), o.__id__, os.sep.join(timestamp))
-    opath = os.path.join(ob.krn.wd, "store", stp)
+    opath = os.path.join(wd, "store", stp)
     ob.utl.cdir(opath)
     with open(opath, "w") as ofile:
         json.dump(o, ofile, default=default)

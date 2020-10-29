@@ -3,7 +3,7 @@
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import os, sys, time, unittest
-import ob.krn
+import ob.obj
 import obot.rss
 
 from ob.krn import boot, execute
@@ -11,7 +11,7 @@ from ob.prs import parse_cli
 
 def main():
     obot.rss.debug = True
-    ob.krn.wd = os.path.expanduser("~/.test")
+    ob.obj.wd = os.path.expanduser("~/.test")
     k = boot("test")
     k.walk("ob,obot,omod,mymod")
     k.start()

@@ -42,7 +42,7 @@ def find_classes(mod):
     "find classes and their full qualified names"
     nms = Ol()
     for _key, o in inspect.getmembers(mod, inspect.isclass):
-        if issubclass(o, ol.Object):
+        if issubclass(o, Object):
             t = "%s.%s" % (o.__module__, o.__name__)
             nms.append(o.__name__, t)
     return nms
@@ -66,7 +66,8 @@ def find_names(mod):
 
 def walk(names):
     "walk over packages and scan their modules"
-    k = ol.krn.get_kernel()
+    from ob.krn import get_kernel
+    k = get_kernel()
     for name in names.split(","):
         spec = importlib.util.find_spec(name)
         if not spec:
@@ -77,7 +78,7 @@ def walk(names):
             continue
         for mi in pkgutil.iter_modules(pn):
             mn = "%s.%s" % (name, mi.name)
-            mod = ol.utl.direct(mn)
+            mod = ob.utl.direct(mn)
             update(k.cmds, find_cmds(mod))
             update(k.funcs, find_funcs(mod))
             update(k.mods, find_mods(mod))

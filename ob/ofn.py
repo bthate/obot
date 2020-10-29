@@ -55,7 +55,7 @@ def format(o, keylist=None, pure=False, skip=None, txt="", sep="\n"):
 
 def mkstamp(o):
     timestamp = str(datetime.datetime.now()).split()
-    return os.path.join(ol.utl.get_type(self), str(uuid.uuid4()), os.sep.join(timestamp))
+    return os.path.join(ob.utl.get_type(self), str(uuid.uuid4()), os.sep.join(timestamp))
 
 def ojson(o, *args, **kwargs):
     "return jsonified string"

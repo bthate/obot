@@ -13,9 +13,9 @@ from ob.utl import get_cls, list_files
 def edt(event):
     "edit objects"
     if not event.args:
-        import ob.krn
-        assert ob.krn.wd
-        f = list_files(ob.krn.wd)
+        import ob.obj
+        assert ob.obj.wd
+        f = list_files(ob.obj.wd)
         if f:
             event.reply(f)
         return
@@ -35,7 +35,7 @@ def edt(event):
             l = c()
             event.reply("created %s" % cn)
         except ob.obj.ENOCLASS:
-            event.reply(list_files(wd))
+            event.reply(list_files(ob.obj.wd))
             return
     if not event.prs.sets:
         event.reply(l)

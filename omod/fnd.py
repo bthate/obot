@@ -5,10 +5,11 @@
 "find objects (fnd)"
 
 import os, time
+import ob.obj
 
 from ob.dbs import find
 from ob.tms import elapsed, fntime
-from ob.krn import get_kernel, wd
+from ob.krn import get_kernel
 from ob.obj import get, keys
 from ob.ofn import format
 from ob.utl import cdir
@@ -16,9 +17,8 @@ from ob.utl import cdir
 def fnd(event):
     "locate and show objects on disk"
     if not event.args:
-        import ob.krn
-        assert ob.krn.wd
-        wd = os.path.join(ob.krn.wd, "store", "")
+        assert ob.obj.wd
+        wd = os.path.join(ob.obj.wd, "store", "")
         cdir(wd)
         fns = os.listdir(wd)
         fns = sorted({x.split(os.sep)[0].split(".")[-1].lower() for x in fns})

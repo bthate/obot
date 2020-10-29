@@ -39,7 +39,7 @@ OBOT provides a "move all methods to functions" like this:
 
  not:
 
- >>> from ol.obj import Object
+ >>> from ob.obj import Object
  >>> o = Object()
  >>> o.set("key", "value")
  >>> o.key
@@ -47,7 +47,7 @@ OBOT provides a "move all methods to functions" like this:
 
  but:
 
- >>> from ol.obj import Object, set
+ >>> from ob.obj import Object, set
  >>> o = Object()
  >>> set(o, "key", "value")
  >>> o.key

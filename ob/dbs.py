@@ -93,8 +93,8 @@ def fns(name, timed=None):
     "return filenames"
     if not name:
         return []
-    import ob.krn
-    p = os.path.join(ob.krn.wd, "store", name) + os.sep
+    import ob.obj
+    p = os.path.join(ob.obj.wd, "store", name) + os.sep
     res = []
     d = ""
     for rootdir, dirs, _files in os.walk(p, topdown=False):

@@ -10,7 +10,6 @@ import importlib, os, pkgutil, sys, time, threading
 
 booted = False
 starttime = time.time()
-wd = ""
 
 from ob.bus import bus
 from ob.cfg import Cfg
@@ -199,7 +198,7 @@ def boot(name, wd="", root=False):
     k = get_kernel()
     update(k.cfg, cfg)
     import ob.krn
-    ob.krn.wd = k.cfg.wd or wd
+    ob.obj.wd = k.cfg.wd or wd
     sys.path.insert(0, k.cfg.wd)
     return k
 
