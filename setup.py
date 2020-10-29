@@ -1,4 +1,4 @@
-# OLIB - the object library !
+# OBOT - 24/7 channel daemon
 #
 #
 

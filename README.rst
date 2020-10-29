@@ -29,7 +29,7 @@ you can also run directly from the tarball, see https://pypi.org/project/obot/#f
 OBJECT PROGRAMMING
 ==================
 
-OLIB provides a "move all methods to functions" like this:
+OBOT provides a "move all methods to functions" like this:
 
 ::
 
@@ -157,28 +157,28 @@ to send a udp packet to okbot in python3:
 MODULES
 =======
 
-The OLIB package has the following modules:
+OBOT has the following modules:
 
 ::
 
-    ol                  - object library
-    ol.all              - all modules
-    ol.bus              - announce
-    ol.cfg              - config
-    ol.csl              - console
-    ol.dbs              - databases
-    ol.dft              - default
-    ol.evt              - event
-    ol.hdl              - handler
-    ol.int              - introspection
-    ol.krn              - kernel
-    ol.ldr              - loader
-    ol.obj              - objects
-    ol.prs              - parser
-    ol.tms              - times
-    ol.trm              - terminal
-    ol.tsk              - tasks
-    ol.utl              - utilities
+    ob                  - object library
+    ob.all              - all modules
+    ob.bus              - announce
+    ob.cfg              - config
+    ob.csl              - console
+    ob.dbs              - databases
+    ob.dft              - default
+    ob.evt              - event
+    ob.hdl              - handler
+    ob.int              - introspection
+    ob.krn              - kernel
+    ob.ldr              - loader
+    ob.obj              - objects
+    ob.prs              - parser
+    ob.tms              - times
+    ob.trm              - terminal
+    ob.tsk              - tasks
+    ob.utl              - utilities
 
 OBOT had the following modules:
 
@@ -207,7 +207,6 @@ the systemd daemon. You can do this by copying the following into
 the /etc/systemd/system/obotd.service file:
 
 ::
-
 
  [Unit]
  Description=24/7 channel daemon

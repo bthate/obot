@@ -5,31 +5,31 @@ source
 
 here is the code used:
 
-OLIB
-====
+OB
+==
 
 .. autosummary::
     :toctree: 
     :template: module.rst
 
-    ol          	- object library
-    ol.all		- all modules
-    ol.bus      	- announce
-    ol.cfg		- config
-    ol.csl      	- console
-    ol.dbs      	- databases
-    ol.dft		- default
-    ol.evt		- event
-    ol.hdl      	- handler
-    ol.int		- introspection
-    ol.krn      	- kernel
-    ol.ldr		- loader
-    ol.obj		- objects
-    ol.prs      	- parser
-    ol.tms      	- times
-    ol.trm      	- terminal
-    ol.tsk      	- tasks
-    ol.utl      	- utilities
+    ob          	- object library
+    ob.all		- all modules
+    ob.bus      	- announce
+    ob.cfg		- config
+    ob.csl      	- console
+    ob.dbs      	- databases
+    ob.dft		- default
+    ob.evt		- event
+    ob.hdl      	- handler
+    ob.int		- introspection
+    ob.krn      	- kernel
+    ob.ldr		- loader
+    ob.obj		- objects
+    ob.prs      	- parser
+    ob.tms      	- times
+    ob.trm      	- terminal
+    ob.tsk      	- tasks
+    ob.utl      	- utilities
 
 OBOT had the following modules:
 

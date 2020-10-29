@@ -1,6 +1,6 @@
-# GENOCIDE - the king of the netherlands commits genocide
+# OBOT - 24/7 channel daemon
 #
-# OTP-CR-117/19/001 otp.informationdesk@icc-cpi.int https://genocide.rtfd.io
+#
 
 "torture definition (trt)"
 
