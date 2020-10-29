@@ -4,7 +4,7 @@ import mailbox
 import os
 import time
 
-from ol.obj import O, Object, save, update
+from ol.obj import Object, save, update
 
 bdmonths = ['Bo', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
             'Sep', 'Oct', 'Nov', 'Dec']
@@ -70,7 +70,7 @@ def mbx(event):
         return
     import ol.krn
     assert ol.krn.wd
-    if os.path.exists(os.path.join(ol.krn.wd, "store", "mymods.mbx.Email")):
+    if os.path.exists(os.path.join(ol.krn.wd, "store", "mymod.mbx.Email")):
         event.reply("email is already scanned")
         return
     fn = os.path.expanduser(event.args[0])
@@ -88,7 +88,7 @@ def mbx(event):
         pass
     for m in thing:
         o = Email()
-        update(o, O(m))
+        update(o, Object(m))
         if "Date" in o:
             sdate = os.sep.join(to_date(o.Date).split())
         else:

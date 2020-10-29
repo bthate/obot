@@ -4,6 +4,8 @@
 
 "object base class (obj)"
 
+from ol.obj import get, items
+
 def edit(o, setter, skip=False):
     "update an object from a dict"
     try:
@@ -50,7 +52,6 @@ def format(o, keylist=None, pure=False, skip=None, txt="", sep="\n"):
             result.append("%s=%s%s" % (k, v, " "))
     txt += " ".join([x.strip() for x in result])
     return txt
-
 
 def mkstamp(o):
     timestamp = str(datetime.datetime.now()).split()

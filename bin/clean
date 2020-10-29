@@ -2,4 +2,4 @@
 #
 #
 
-rm -fR run run.tar.gz mymod/*~ mymod/__pycache__ obot/*~ obot/__pycache__ env.tar.gz env html docs/*~ docs/__pycache__ docs/obot*.rst docs/omod*.rst docs/ol*.rst ol/*~ ol/__pycache__ dist build *~ __pycache__ bin/*~ mods/*~ omod/__pycache__ tests/*~ tests/__pycache__ obot.egg-info
+rm -fR run run.tar.gz mymod/*~ mymod/__pycache__ omod/*~ omod/__pycache__ obot/*~ obot/__pycache__ env.tar.gz env html docs/*~ docs/__pycache__ docs/obot*.rst docs/omod*.rst docs/ol*.rst ol/*~ ol/__pycache__ dist build *~ __pycache__ bin/*~ mods/*~ omod/__pycache__ tests/*~ tests/__pycache__ obot.egg-info

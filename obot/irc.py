@@ -543,13 +543,13 @@ class Users(Object):
     def get_users(self, origin=""):
         "get all users, optionaly provding an matching origin"
         s = {"user": origin}
-        return find("mods.irc.User", s)
+        return find("obot.irc.User", s)
 
     def get_user(self, origin):
         "get specific user with corresponding origin"
         u = list(self.get_users(origin))
         if u:
-            return u[-1]
+            return u[-1][-1]
 
     def meet(self, origin, perms=None):
         "add a irc user"

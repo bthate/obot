@@ -156,7 +156,7 @@ class Fetcher(Object):
     def run(self):
         "update all feeds"
         thrs = []
-        for o in all("botmod.rss.Rss"):
+        for o in all("obot.rss.Rss"):
             thrs.append(start(self.fetch, o))
         return thrs
 
@@ -271,7 +271,7 @@ def rem(event):
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
-    for o in find("botmod.rss.Rss", selector):
+    for fn, o in find("obot.rss.Rss", selector):
         nr += 1
         o._deleted = True
         got.append(o)
@@ -284,7 +284,7 @@ def dpl(event):
     if len(event.args) < 2:
         return
     setter = {"display_list": event.args[1]}
-    for o in find("botmod.rss.Rss", {"rss": event.args[0]}):
+    for fn, o in find("obot.rss.Rss", {"rss": event.args[0]}):
         ol.edit(o, setter)
         ol.save(o)
     event.reply("ok")
@@ -307,7 +307,7 @@ def rss(event):
     if not event.args:
         return
     url = event.args[0]
-    res = list(find("botmod.rss.Rss", {"rss": url}))
+    res = list(find("obot.rss.Rss", {"rss": url}))
     if res:
         return
     o = Rss()
