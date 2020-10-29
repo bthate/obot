@@ -62,7 +62,7 @@ def consume(elems):
         except ValueError:
             continue
     k.stop()
-    print("commands were %s" % ",".join(k.cmds))
+    print("\ncommands were %s" % ",".join(k.cmds))
     return res
     
 def tests(b):
