@@ -121,7 +121,7 @@ class Kernel(Loader, Handler):
                         mnn = "%s.%s" % (mod.__name__, o.__name)
                         modd = self.load(mnn)
                         self.scan(modd)
-                except ModuleNotFound:
+                except ModuleNotFoundError:
                     for pn in self.packages:
                         mnn = "%s.%s" % (pn, mn)
                         try:

@@ -1,7 +1,7 @@
 README
 ######
 
-| Welcome to OBOT, the 24/7 channel daemon ! see https://pypi.org/project/obot/ 
+Welcome to OBOT, the 24/7 channel daemon ! see https://pypi.org/project/obot/ 
 
 OBOT is a pure python3 IRC chat bot that can run as a background daemon
 for 24/7 a day presence in a IRC channel. It installs itself as a service so
