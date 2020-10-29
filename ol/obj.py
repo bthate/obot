@@ -7,7 +7,9 @@
 import datetime, json, os, uuid
 import ol.utl
 
-class O(object):
+class Object:
+
+    "basic object"
 
     __slots__ = ("__dict__",)
 
@@ -33,6 +35,9 @@ class O(object):
 
     def __setitem__(self, k, v):
         self.__dict__[k] = v
+
+    def __str__(self):
+        return json.dumps(self, default=default, sort_keys=True)
 
 def get(o, k, d=None):
     "return o[k]"
@@ -74,20 +79,6 @@ def values(o):
         return o.values()
     except (TypeError, AttributeError):
         return o.__dict__.values()
-
-class Object(O):
-
-    "basic object"
-
-    __slots__ = ("prs", "stp")
-
-    def __init__(self):
-        super().__init__()
-        timestamp = str(datetime.datetime.now()).split()
-        self.stp = os.path.join(ol.utl.get_type(self), str(uuid.uuid4()), os.sep.join(timestamp))
-
-    def __str__(self):
-        return json.dumps(self, default=default, sort_keys=True)
 
 def default(o):
     "return strinfified version of an object"
@@ -153,18 +144,21 @@ def load(o, path):
     "load from disk into an object"
     assert path
     import ol.krn
-    o.stp = os.sep.join(path.split(os.sep)[-4:])
-    lpath = os.path.join(ol.krn.wd, "store", o.stp)
+    stp = os.sep.join(path.split(os.sep)[-4:])
+    lpath = os.path.join(ol.krn.wd, "store", stp)
     ol.utl.cdir(lpath)
     with open(lpath, "r") as ofile:
         try:
-            v = json.load(ofile, object_hook=ol.utl.hooked)
+            v = json.load(ofile)
         except json.decoder.JSONDecodeError as ex:
             print(path, ex)
             return
         if v:
             o.__dict__.update(v)
-    unstamp(o)
+
+def mkstamp(o):
+    timestamp = str(datetime.datetime.now()).split()
+    return os.path.join(ol.utl.get_type(self), str(uuid.uuid4()), os.sep.join(timestamp))
 
 def ojson(o, *args, **kwargs):
     "return jsonified string"
@@ -175,7 +169,7 @@ def save(o, stime=None):
     import ol.krn
     assert ol.krn.wd
     if stime:
-        o.stp = os.path.join(get_type(o), str(uuid.uuid4()),
+        stp = os.path.join(o.utl.get_type(o), str(uuid.uuid4()),
                              stime + "." + str(random.randint(0, 100000)))
     else:
         timestamp = str(datetime.datetime.now()).split()
@@ -187,14 +181,13 @@ def save(o, stime=None):
                 o.stp = os.sep.join(spl)
             except AttributeError:
                 pass
-        if not getattr(o, "stp", None):
-            o.stp = os.path.join(get_type(o), str(uuid.uuid4()), os.sep.join(timestamp))
-    opath = os.path.join(ol.krn.wd, "store", o.stp)
+        stp = os.path.join(ol.utl.get_type(o), str(uuid.uuid4()), os.sep.join(timestamp))
+    opath = os.path.join(ol.krn.wd, "store", stp)
     ol.utl.cdir(opath)
     with open(opath, "w") as ofile:
         json.dump(o, ofile, default=default)
     os.chmod(opath, 0o444)
-    return o.stp
+    return stp
 
 def scan(o, txt):
     "scan object values for txt"
@@ -213,31 +206,6 @@ def search(o, s):
             break
         ok = True
     return ok
-
-def stamp(o):
-    "recursively add stamp to objects in an object"
-    t = o.stp.split(os.sep)[0]
-    oo = get_cls(t)()
-    for k in xdir(o):
-        oo = getattr(o, k, None)
-        stamp(oo)
-        oo.__dict__["stp"] = oo.stp
-    oo.__dict__["stp"] = o.stp
-    return oo
-
-def unstamp(o):
-    "remove stamp from (sub) objects"
-    for k in xdir(o):
-        oo = getattr(o, k, None)
-        try:
-            del oo.__dict__["stp"]
-        except (AttributeError, KeyError, TypeError):
-            pass
-    try:
-        del o.__dict__["stp"]
-    except (AttributeError, KeyError, TypeError):
-        pass
-    return o
 
 def xdir(o, skip=None):
     "return a dir(o) with keys skipped"

@@ -136,16 +136,6 @@ def hook(fn):
     ol.obj.load(o, fn)
     return o
 
-def hooked(d):
-    "construct object from stamp"
-    if "stp" in d:
-        t = d["stp"].split(os.sep)[0]
-        if not t:
-            return d
-        o = get_cls(t)()
-        update(o, d)
-    return d
-
 def list_files(wd):
     "list files in directory"
     path = os.path.join(wd, "store")

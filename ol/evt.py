@@ -15,6 +15,8 @@ class Event(Object):
 
     "event class"
 
+    __slots__ = ("prs", )
+
     def __init__(self):
         super().__init__()
         self.args = []

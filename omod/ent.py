@@ -6,6 +6,7 @@
 
 from ol.dbs import find
 from ol.obj import Object, save
+from ol.utl import get_type
 
 class Log(Object):
 

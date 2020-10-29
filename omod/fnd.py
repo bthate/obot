@@ -34,7 +34,7 @@ def fnd(event):
     k = get_kernel()
     types = get(k.names, event.args[0], [event.cmd,])
     for otype in types:
-        for o in find(otype, event.prs.gets, event.prs.index, event.prs.timed):
+        for fn, o in find(otype, event.prs.gets, event.prs.index, event.prs.timed):
             nr += 1
             pure = True
             if not args:
@@ -43,5 +43,5 @@ def fnd(event):
                 pure = False
             txt = "%s %s" % (str(nr), format(o, args, pure, event.prs.skip))
             if "t" in event.prs.opts:
-                txt = txt + " %s" % (elapsed(time.time() - fntime(o.stp)))
+                txt = txt + " %s" % (elapsed(time.time() - fntime(fn)))
             event.reply(txt)

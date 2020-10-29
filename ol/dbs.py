@@ -23,7 +23,7 @@ def all(otype, selector=None, index=None, timed=None):
         nr += 1
         if index is not None and nr != index:
             continue
-        yield o
+        yield fn, o
 
 def deleted(otype):
     "return all deleted objects"
@@ -31,7 +31,7 @@ def deleted(otype):
         o = hook(fn)
         if "_deleted" not in o or not o._deleted:
             continue
-        yield o
+        yield fn, o
 
 def find(otype, selector=None, index=None, timed=None):
     "find objects"
@@ -47,7 +47,7 @@ def find(otype, selector=None, index=None, timed=None):
         nr += 1
         if index is not None and nr != index:
             continue
-        yield o
+        yield fn, o
 
 def find_event(e):
     "find objects based on event"
@@ -61,14 +61,13 @@ def find_event(e):
         nr += 1
         if e.index is not None and nr != e.index:
             continue
-        yield o
+        yield fn, o
 
 def last(o):
     "return last object"
     path, l = lastfn(str(get_type(o)))
     if  l:
         update(o, l)
-        o.stp = os.sep.join(os.path.split(path)[-4:])
 
 def lasttype(otype):
     "return last object of type"
