@@ -1,33 +1,28 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "kernel (krn)"
 
-__version__ = 16
+__version__ = 21
 
 import importlib, os, pkgutil, sys, time, threading
 
-#: has booted ?
 booted = False
-
-#: at the begin
 starttime = time.time()
-
-#: working directory
 wd = ""
 
-from ol.bus import bus
-from ol.cfg import Cfg
-from ol.evt import Event
-from ol.ldr import Loader
-from ol.hdl import Handler
-from ol.int import *
-from ol.obj import Object, get, update
-from ol.prs import parse, parse_cli
-from ol.trm import termreset, termsave
-from ol.tsk import start
-from ol.utl import cdir, direct, get_exception, get_name, spl
+from ob.bus import bus
+from ob.cfg import Cfg
+from ob.evt import Event
+from ob.ldr import Loader
+from ob.hdl import Handler
+from ob.int import *
+from ob.obj import Object, get, update
+from ob.prs import parse, parse_cli
+from ob.trm import termreset, termsave
+from ob.tsk import start
+from ob.utl import cdir, direct, get_exception, get_name, spl
 
 class Cfg(Cfg):
 
@@ -203,8 +198,8 @@ def boot(name, wd="", root=False):
     cfg = parse_cli()
     k = get_kernel()
     update(k.cfg, cfg)
-    import ol.krn
-    ol.krn.wd = k.cfg.wd or wd
+    import ob.krn
+    ob.krn.wd = k.cfg.wd or wd
     sys.path.insert(0, k.cfg.wd)
     return k
 

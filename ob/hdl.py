@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -6,8 +6,8 @@
 
 import queue, _thread
 
-from ol.obj import Object
-from ol.tsk import start as launch
+from ob.obj import Object
+from ob.tsk import start as launch
 
 dispatchlock = _thread.allocate_lock()
 

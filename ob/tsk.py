@@ -1,13 +1,13 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "tasks (tsk)"
 
-import ol, queue, threading, time
+import queue, threading, time
 
-from ol.obj import Object
-from ol.utl import get_name
+from ob.obj import Object
+from ob.utl import get_name
 
 class Task(threading.Thread):
 

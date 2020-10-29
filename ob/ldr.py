@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -6,7 +6,7 @@
 
 import importlib
 
-from ol.obj import Object
+from ob.obj import Object
 
 class Loader(Object):
 

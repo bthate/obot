@@ -1,15 +1,14 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "terminal (trm)"
 
 import atexit
-import ol
 import sys
 import termios
 
-from ol.utl import get_exception
+from ob.utl import get_exception
 
 resume = {}
 

@@ -1,10 +1,10 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "object base class (obj)"
 
-from ol.obj import get, items
+from ob.obj import get, items
 
 def edit(o, setter, skip=False):
     "update an object from a dict"

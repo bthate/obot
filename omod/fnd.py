@@ -6,19 +6,19 @@
 
 import os, time
 
-from ol.dbs import find
-from ol.tms import elapsed, fntime
-from ol.krn import get_kernel, wd
-from ol.obj import get, keys
-from ol.ofn import format
-from ol.utl import cdir
+from ob.dbs import find
+from ob.tms import elapsed, fntime
+from ob.krn import get_kernel, wd
+from ob.obj import get, keys
+from ob.ofn import format
+from ob.utl import cdir
 
 def fnd(event):
     "locate and show objects on disk"
     if not event.args:
-        import ol.krn
-        assert ol.krn.wd
-        wd = os.path.join(ol.krn.wd, "store", "")
+        import ob.krn
+        assert ob.krn.wd
+        wd = os.path.join(ob.krn.wd, "store", "")
         cdir(wd)
         fns = os.listdir(wd)
         fns = sorted({x.split(os.sep)[0].split(".")[-1].lower() for x in fns})

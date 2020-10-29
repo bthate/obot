@@ -1,4 +1,4 @@
-# OLIB - object library
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -8,10 +8,10 @@ import sys
 import time
 import unittest
 
-from ol.evt import Event
-from ol.krn import get_kernel
-from ol.obj import Object, get
-from ol.tsk import start
+from ob.evt import Event
+from ob.krn import get_kernel
+from ob.obj import Object, get
+from ob.tsk import start
 
 param = Object()
 param.add = ["test@shell", "bart"]

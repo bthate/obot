@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -7,9 +7,9 @@
 import sys
 import time
 
-from ol.dft import Default
-from ol.obj import Object, update
-from ol.tms import parse_time
+from ob.dft import Default
+from ob.obj import Object, update
+from ob.tms import parse_time
 
 class Token(Object):
 

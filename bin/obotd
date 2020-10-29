@@ -3,9 +3,9 @@
 #
 #
 
-from ol.krn import boot, execute, scandir, os, sys
-from ol.trm import termreset
-from ol.utl import privileges
+from ob.krn import boot, execute, scandir, os, sys
+from ob.trm import termreset
+from ob.utl import privileges
 
 def daemon():
     pid = os.fork()

@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -6,11 +6,11 @@
 
 import atexit, readline, threading
 
-from ol.bus import bus
-from ol.evt import Event
-from ol.krn import get_kernel
-from ol.obj import Object
-from ol.tsk import start
+from ob.bus import bus
+from ob.evt import Event
+from ob.krn import get_kernel
+from ob.obj import Object
+from ob.tsk import start
 
 #:
 cmds = []

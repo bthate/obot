@@ -6,13 +6,13 @@ __version__ = 21
 
 import threading, time
 
-from ol.dft import Default
-from ol.krn import get_kernel, starttime
-from ol.obj import Object, get, keys, save, update
-from ol.ofn import format
-from ol.prs import parse
-from ol.tms import elapsed
-from ol.utl import get_name
+from ob.dft import Default
+from ob.krn import get_kernel, starttime
+from ob.obj import Object, get, keys, save, update
+from ob.ofn import format
+from ob.prs import parse
+from ob.tms import elapsed
+from ob.utl import get_name
 
 def cmd(event):
     "list commands (cmd)"
@@ -54,5 +54,5 @@ def tsk(event):
 
 def ver(event):
     "show version (ver)"
-    import ol.krn
+    import ob.krn
     event.reply("OBOT %s" % __version__)

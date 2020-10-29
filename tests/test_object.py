@@ -2,12 +2,10 @@
 #
 #
 
-import ol
-import types
-import unittest
+import types, unittest
 
-from ol.dbs import last
-from ol.obj import Object, load, save
+from ob.dbs import last
+from ob.obj import Object, load, save
 
 class Test_Object(unittest.TestCase):
 

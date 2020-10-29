@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -8,8 +8,8 @@ import importlib
 import inspect
 import pkgutil
 
-from ol.obj import Object
-from ol.obl import Ol
+from ob.obj import Object
+from ob.obl import Ol
 
 def find_cmds(mod):
     "find commands"

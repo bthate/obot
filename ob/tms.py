@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -9,9 +9,9 @@ import os
 import threading
 import time
 
-from ol.obj import Object
-from ol.tsk import start
-from ol.utl import get_name
+from ob.obj import Object
+from ob.tsk import start
+from ob.utl import get_name
 
 class Timer(Object):
 

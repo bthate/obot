@@ -4,18 +4,18 @@
 
 "edit objects"
 
-from ol.dbs import lasttype
-from ol.krn import get_kernel
-from ol.obj import get, save
-from ol.ofn import edit
-from ol.utl import get_cls, list_files
+from ob.dbs import lasttype
+from ob.krn import get_kernel
+from ob.obj import get, save
+from ob.ofn import edit
+from ob.utl import get_cls, list_files
 
 def edt(event):
     "edit objects"
     if not event.args:
-        import ol.krn
-        assert ol.krn.wd
-        f = list_files(ol.krn.wd)
+        import ob.krn
+        assert ob.krn.wd
+        f = list_files(ob.krn.wd)
         if f:
             event.reply(f)
         return
@@ -34,7 +34,7 @@ def edt(event):
             c = get_cls(cn)
             l = c()
             event.reply("created %s" % cn)
-        except ol.ENOCLASS:
+        except ob.obj.ENOCLASS:
             event.reply(list_files(wd))
             return
     if not event.prs.sets:

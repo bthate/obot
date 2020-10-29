@@ -1,11 +1,11 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "object base class (obj)"
 
 import datetime, json, os, uuid, _thread
-import ol.utl
+import ob.utl
 
 sl = _thread.allocate_lock()
 
@@ -13,12 +13,13 @@ class Object:
 
     "basic object"
 
-    __slots__ = ("__dict__",)
+    __slots__ = ("__dict__", "__id__")
 
     def __init__(self, *args, **kwargs):
         super().__init__()
         if args:
             self.__dict__.update(args[0])
+        self.__id__ = str(uuid.uuid4())        
 
     def __delitem__(self, k):
         del self.__dict__[k]
@@ -78,10 +79,11 @@ def keys(o):
 def load(o, path):
     "load from disk into an object"
     assert path
-    import ol.krn
+    import ob.krn
     stp = os.sep.join(path.split(os.sep)[-4:])
-    lpath = os.path.join(ol.krn.wd, "store", stp)
-    ol.utl.cdir(lpath)
+    lpath = os.path.join(ob.krn.wd, "store", stp)
+    ob.utl.cdir(lpath)
+    id = stp[1]
     with open(lpath, "r") as ofile:
         try:
             v = json.load(ofile)
@@ -90,6 +92,7 @@ def load(o, path):
             return
         if v:
             o.__dict__.update(v)
+    o.__id__ = id
 
 def register(o, k, v):
     "register key/value"
@@ -97,24 +100,16 @@ def register(o, k, v):
 
 def save(o, stime=None):
     "save object to disk"
-    import ol.krn
-    assert ol.krn.wd
+    import ob.krn
+    assert ob.krn.wd
     if stime:
-        stp = os.path.join(o.utl.get_type(o), str(uuid.uuid4()),
+        stp = os.path.join(o.utl.get_type(o), o.__id__,
                              stime + "." + str(random.randint(0, 100000)))
     else:
         timestamp = str(datetime.datetime.now()).split()
-        if getattr(o, "stp", None):
-            try:
-                spl = o.stp.split(os.sep)
-                spl[-2] = timestamp[0]
-                spl[-1] = timestamp[1]
-                o.stp = os.sep.join(spl)
-            except AttributeError:
-                pass
-        stp = os.path.join(ol.utl.get_type(o), str(uuid.uuid4()), os.sep.join(timestamp))
-    opath = os.path.join(ol.krn.wd, "store", stp)
-    ol.utl.cdir(opath)
+        stp = os.path.join(ob.utl.get_type(o), o.__id__, os.sep.join(timestamp))
+    opath = os.path.join(ob.krn.wd, "store", stp)
+    ob.utl.cdir(opath)
     with open(opath, "w") as ofile:
         json.dump(o, ofile, default=default)
     os.chmod(opath, 0o444)

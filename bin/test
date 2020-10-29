@@ -2,21 +2,18 @@
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import ol
-import os
-import sys
-import time
-import unittest
+import os, sys, time, unittest
+import ob.krn
 import obot.rss
 
-from ol.krn import boot, execute
-from ol.prs import parse_cli
+from ob.krn import boot, execute
+from ob.prs import parse_cli
 
 def main():
     obot.rss.debug = True
-    ol.wd = os.path.expanduser("~/.test")
+    ob.krn.wd = os.path.expanduser("~/.test")
     k = boot("test")
-    k.walk("ol,obot,omod,mymod")
+    k.walk("ob,obot,omod,mymod")
     k.start()
     test_path = os.getcwd() + os.sep + "tests"
     if k.cfg.txt:

@@ -1,12 +1,12 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "announce to listeners"
 
-import ol.obj
+from ob.obj import Object
 
-class Bus(ol.obj.Object):
+class Bus(Object):
 
     "bus class"
 

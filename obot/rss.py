@@ -10,14 +10,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
 
-from ol.bus import bus
-from ol.cfg import Cfg
-from ol.dbs import all, find, last, lastmatch
-from ol.dft import Default
-from ol.obj import Object, save, get, update
-from ol.ofn import edit
-from ol.tms import Repeater
-from ol.tsk import start
+from ob.bus import bus
+from ob.cfg import Cfg
+from ob.dbs import all, find, last, lastmatch
+from ob.dft import Default
+from ob.obj import Object, save, get, update
+from ob.ofn import edit
+from ob.tms import Repeater
+from ob.tsk import start
 
 try:
     import feedparser
@@ -274,7 +274,6 @@ def rem(event):
     nr = 0
     got = []
     for fn, o in find("obot.rss.Rss", selector):
-        print(o)
         nr += 1
         o._deleted = True
         got.append(o)

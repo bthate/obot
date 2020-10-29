@@ -1,10 +1,10 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "object list"
 
-from ol.obj import Object
+from ob.obj import Object
 
 class Ol(Object):
 

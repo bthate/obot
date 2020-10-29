@@ -1,10 +1,14 @@
+# OBOT - 24/7 channel daemon
+#
+#
+
 "mailbox"
 
 import mailbox
 import os
 import time
 
-from ol.obj import Object, save, update
+from ob.obj import Object, save, update
 
 bdmonths = ['Bo', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
             'Sep', 'Oct', 'Nov', 'Dec']

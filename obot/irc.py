@@ -6,18 +6,18 @@
 
 import os, queue, socket, textwrap, time, threading, _thread
 
-from ol.bus import bus
-from ol.dbs import find, last
-from ol.cfg import Cfg
-from ol.dft import Default
-from ol.evt import Event
-from ol.hdl import Handler
-from ol.krn import get_kernel
-from ol.ldr import Loader
-from ol.obj import Object, save, update
-from ol.ofn import format
-from ol.prs import parse
-from ol.tsk import start
+from ob.bus import bus
+from ob.dbs import find, last
+from ob.cfg import Cfg
+from ob.dft import Default
+from ob.evt import Event
+from ob.hdl import Handler
+from ob.krn import get_kernel
+from ob.ldr import Loader
+from ob.obj import Object, save, update
+from ob.ofn import format
+from ob.prs import parse
+from ob.tsk import start
 
 k = get_kernel()
 saylock = _thread.allocate_lock()
@@ -53,12 +53,12 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.channel = "#olib"
-        self.nick = "olib"
+        self.channel = "#obot"
+        self.nick = "obot"
         self.port = 6667
-        self.realname = "object library"
+        self.realname = "24/7 channel daemon"
         self.server = "localhost"
-        self.username = "olib"
+        self.username = "obot"
 
 class Event(Event):
 
@@ -402,7 +402,7 @@ class IRC(Loader, Handler):
 
     def NOTICE(self, event):
         "handle noticed"
-        from ol.krn import __version__
+        from ob.krn import __version__
         if event.txt.startswith("VERSION"):
             txt = "\001VERSION %s %s - %s\001" % ("BOTLIB", __version__, "the bot library")
             self.command("NOTICE", event.channel, txt)

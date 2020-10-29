@@ -1,16 +1,16 @@
-# GENOCIDE - the king of the netherlands commits genocide
+# OBOT - 24/7 channel daemon
 #
-# OTP-CR-117/19/001 otp.informationdesk@icc-cpi.int https://genocide.rtfd.io
+#
 
 "show suicide stats"
 
-import random, time, ol
+import random, time
 
-from ol.bus import bus
-from ol.evt import Event
-from ol.krn import get_kernel
-from ol.obj import Object, get, items, keys, values
-from ol.tms import Repeater, elapsed, to_day
+from ob.bus import bus
+from ob.evt import Event
+from ob.krn import get_kernel
+from ob.obj import Object, get, items, keys, values
+from ob.tms import Repeater, elapsed, to_day
 
 #:
 startdate = "2018-10-05 00:00:00"

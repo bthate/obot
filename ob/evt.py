@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -6,10 +6,10 @@
 
 import threading
 
-from ol.bus import bus
-from ol.dft import Default
-from ol.obj import Object, update
-from ol.prs import parse
+from ob.bus import bus
+from ob.dft import Default
+from ob.obj import Object, update
+from ob.prs import parse
 
 class Event(Object):
 

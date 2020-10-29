@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -131,9 +131,9 @@ def hook(fn):
     t = oname[0]
     if not t:
         raise ENOFILENAME(fn)
-    import ol.obj
+    import ob.obj
     o = get_cls(t)()
-    ol.obj.load(o, fn)
+    ob.obj.load(o, fn)
     return o
 
 def list_files(wd):

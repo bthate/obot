@@ -5,9 +5,9 @@
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-from ol.csl import Console
-from ol.krn import boot, cmd, os
-from ol.trm import execute
+from ob.csl import Console
+from ob.krn import boot, cmd, os
+from ob.trm import execute
 
 def main():
     k = boot("obot")

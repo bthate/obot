@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -6,9 +6,9 @@
 
 import os
 
-from ol.obj import update
-from ol.ofn import format, search
-from ol.utl import get_type, hook
+from ob.obj import update
+from ob.ofn import format, search
+from ob.utl import get_type, hook
 
 def all(otype, selector=None, index=None, timed=None):
     "return all matching objects"
@@ -17,7 +17,6 @@ def all(otype, selector=None, index=None, timed=None):
         selector = {}
     for fn in fns(otype, timed):
         o = hook(fn)
-        print(o)
         if selector and not search(o, selector):
             continue
         if "_deleted" in o and o._deleted:
@@ -94,8 +93,8 @@ def fns(name, timed=None):
     "return filenames"
     if not name:
         return []
-    import ol.krn
-    p = os.path.join(ol.krn.wd, "store", name) + os.sep
+    import ob.krn
+    p = os.path.join(ob.krn.wd, "store", name) + os.sep
     res = []
     d = ""
     for rootdir, dirs, _files in os.walk(p, topdown=False):
@@ -106,9 +105,9 @@ def fns(name, timed=None):
                 fls = sorted(os.listdir(dd))
                 if fls:
                     p = os.path.join(dd, fls[-1])
-                    if timed and "from" in timed and timed["from"] and ol.tms.fntime(p) < timed["from"]:
+                    if timed and "from" in timed and timed["from"] and ob.tms.fntime(p) < timed["from"]:
                         continue
-                    if timed and timed.to and ol.tms.fntime(p) > timed.to:
+                    if timed and timed.to and ob.tms.fntime(p) > timed.to:
                         continue
                     res.append(p)
-    return sorted(res, key=ol.tms.fntime)
+    return sorted(res, key=ob.tms.fntime)

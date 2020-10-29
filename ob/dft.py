@@ -1,10 +1,10 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "default values"
 
-from ol.obj import Object
+from ob.obj import Object
 
 class Default(Object):
 

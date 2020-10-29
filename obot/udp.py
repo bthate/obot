@@ -4,13 +4,13 @@
 
 "udp to irc relay"
 
-import ol, select, socket, sys, time
+import select, socket, sys, time
 
-from ol.bus import bus
-from ol.cfg import Cfg
-from ol.dbs import last
-from ol.obj import Object
-from ol.tsk import start
+from ob.bus import bus
+from ob.cfg import Cfg
+from ob.dbs import last
+from ob.obj import Object
+from ob.tsk import start
 
 def init(kernel):
     "start a udp to irc relay server and return it"
