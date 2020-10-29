@@ -4,8 +4,10 @@
 
 "object base class (obj)"
 
-import datetime, json, os, uuid
+import datetime, json, os, uuid, _thread
 import ol.utl
+
+sl = _thread.allocate_lock()
 
 class Object:
 

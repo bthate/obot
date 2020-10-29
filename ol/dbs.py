@@ -17,6 +17,7 @@ def all(otype, selector=None, index=None, timed=None):
         selector = {}
     for fn in fns(otype, timed):
         o = hook(fn)
+        print(o)
         if selector and not search(o, selector):
             continue
         if "_deleted" in o and o._deleted:
@@ -69,6 +70,11 @@ def last(o):
     path, l = lastfn(str(get_type(o)))
     if  l:
         update(o, l)
+
+def lastmatch(otype, selector=None, index=None, timed=None):
+    for fn, o in find(otype, selector, index, timed):
+        yield fn, o
+        break
 
 def lasttype(otype):
     "return last object of type"

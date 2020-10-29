@@ -10,10 +10,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
 
+from ol.bus import bus
 from ol.cfg import Cfg
-from ol.dbs import all, find, last
+from ol.dbs import all, find, last, lastmatch
 from ol.dft import Default
 from ol.obj import Object, save, get, update
+from ol.ofn import edit
 from ol.tms import Repeater
 from ol.tsk import start
 
@@ -144,19 +146,19 @@ class Fetcher(Object):
             counter += 1
             objs.append(f)
             if self.cfg.dosave:
-                ol.save(f)
+                save(f)
         if objs:
-            ol.save(Fetcher.seen)
+            save(Fetcher.seen)
         for o in objs:
             txt = self.display(o)
-            for bot in ol.bus.bus:
+            for bot in bus:
                 bot.announce(txt)
         return counter
 
     def run(self):
         "update all feeds"
         thrs = []
-        for o in all("obot.rss.Rss"):
+        for fn, o in all("obot.rss.Rss"):
             thrs.append(start(self.fetch, o))
         return thrs
 
@@ -170,7 +172,7 @@ class Fetcher(Object):
 
     def stop(self):
         "stop the rss poller"
-        ol.save(self.seen)
+        save(self.seen)
 
 #:
 fetcher = Fetcher()
@@ -178,11 +180,11 @@ fetcher = Fetcher()
 def get_feed(url):
     "return a feed by it's url"
     if debug:
-        return [ol.Object(), ol.Object()]
+        return [Object(), Object()]
     try:
         result = get_url(url)
     except (HTTPError, URLError):
-        return [ol.Object(), ol.Object()]
+        return [Object(), Object()]
     if gotparser:
         result = feedparser.parse(result.data)
         if "entries" in result:
@@ -190,7 +192,7 @@ def get_feed(url):
                 yield entry
     else:
         print("feedparser is missing")
-        return [ol.Object(), ol.Object()]
+        return [Object(), Object()]
 
 def file_time(timestamp):
     s = str(datetime.datetime.fromtimestamp(timestamp))
@@ -262,7 +264,7 @@ def unescape(text):
 
 def useragent():
     "return useragent"
-    return 'Mozilla/5.0 (X11; Linux x86_64) BOTLIB +http://github.com/bthate/botlib)'
+    return 'Mozilla/5.0 (X11; Linux x86_64) OBOT +http://github.com/bthate/obot)'
 
 def rem(event):
     "remove a rss feed"
@@ -272,11 +274,12 @@ def rem(event):
     nr = 0
     got = []
     for fn, o in find("obot.rss.Rss", selector):
+        print(o)
         nr += 1
         o._deleted = True
         got.append(o)
     for o in got:
-        ol.save(o)
+        save(o)
     event.reply("ok")
 
 def dpl(event):
@@ -284,9 +287,9 @@ def dpl(event):
     if len(event.args) < 2:
         return
     setter = {"display_list": event.args[1]}
-    for fn, o in find("obot.rss.Rss", {"rss": event.args[0]}):
-        ol.edit(o, setter)
-        ol.save(o)
+    for fn, o in lastmatch("obot.rss.Rss", {"rss": event.args[0]}):
+        edit(o, setter)
+        save(o)
     event.reply("ok")
 
 def ftc(event):

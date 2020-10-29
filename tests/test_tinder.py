@@ -16,7 +16,7 @@ from ol.tsk import start
 param = Object()
 param.add = ["test@shell", "bart"]
 param.dne = ["test4", ""]
-param.edt = ["omod.ent.Todo", "omod.ent.Log"]
+param.edt = ["omod.ent.Todo txt=bla", "omod.ent.Log txt=bla"]
 param.rm = ["reddit", ]
 param.dpl = ["reddit title,summary,link",]
 param.log = ["test1", ""]

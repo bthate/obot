@@ -46,6 +46,19 @@ class Test_Object(unittest.TestCase):
         load(ooo, pp)
         self.assertEqual(ooo.bla, "mekker")
 
+    def test_deleted(self):
+        o = Object()
+        o._deleted = True
+        stp = save(o)
+        oo = Object()
+        load(oo, stp)
+        self.assertEqual(oo._deleted, True)
+
+    def test_contains(self):
+        o = Object()
+        o._deleted = True
+        self.assertTrue("_deleted" in o)
+
     def test_last(self):
         o = Object()
         o.bla = "test"
