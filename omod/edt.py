@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
@@ -6,7 +6,8 @@
 
 from ol.dbs import lasttype
 from ol.krn import get_kernel
-from ol.obj import edit, save, get
+from ol.obj import get, save
+from ol.ofn import edit
 from ol.utl import get_cls, list_files
 
 def edt(event):

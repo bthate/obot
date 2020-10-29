@@ -1,3 +1,7 @@
+# OBOT - 24/7 channel daemon
+#
+#
+
 "rich site syndicate"
 
 import datetime, os, random, re, time, urllib

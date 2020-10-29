@@ -1,16 +1,16 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 
 "find objects (fnd)"
 
-import os
-import time
+import os, time
 
 from ol.dbs import find
 from ol.tms import elapsed, fntime
 from ol.krn import get_kernel, wd
-from ol.obj import format, get, keys
+from ol.obj import get, keys
+from ol.ofn import format
 from ol.utl import cdir
 
 def fnd(event):

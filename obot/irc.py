@@ -1,3 +1,7 @@
+# OBOT - 24/7 channel daemon
+#
+#
+
 "Internet Relay Chat"
 
 import os, queue, socket, textwrap, time, threading, _thread
@@ -10,7 +14,8 @@ from ol.evt import Event
 from ol.hdl import Handler
 from ol.krn import get_kernel
 from ol.ldr import Loader
-from ol.obj import Object, format, save, update
+from ol.obj import Object, save, update
+from ol.ofn import format
 from ol.prs import parse
 from ol.tsk import start
 

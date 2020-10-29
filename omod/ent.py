@@ -1,4 +1,4 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-# OBOT = 24/7 channel daemon
+# OBOT - 24/7 channel daemon
+#
+#
 
 import importlib, os, sys
 importlib.invalidate_caches()

@@ -1,12 +1,15 @@
-# OLIB
+# OBOT - 24/7 channel daemon
 #
 #
+
+__version__ = 21
 
 import threading, time
 
 from ol.dft import Default
-from ol.krn import get_kernel, starttime, __version__
-from ol.obj import Object, format, save, get, keys, update
+from ol.krn import get_kernel, starttime
+from ol.obj import Object, get, keys, save, update
+from ol.ofn import format
 from ol.prs import parse
 from ol.tms import elapsed
 from ol.utl import get_name
@@ -51,4 +54,5 @@ def tsk(event):
 
 def ver(event):
     "show version (ver)"
-    event.reply("OLIB %s" % __version__)
+    import ol.krn
+    event.reply("OBOT %s" % __version__)

@@ -6,7 +6,8 @@
 
 import os
 
-from ol.obj import search, update
+from ol.obj import update
+from ol.ofn import format, search
 from ol.utl import get_type, hook
 
 def all(otype, selector=None, index=None, timed=None):
