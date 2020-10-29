@@ -1,5 +1,5 @@
-README
-######
+O B O T
+#######
 
 | Welcome to OBOT, the 24/7 channel daemon ! see https://pypi.org/project/obot/ - :ref:`source <source>`
 
