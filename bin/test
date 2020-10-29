@@ -1,0 +1,31 @@
+#!/usr/bin/python3
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+import ol
+import os
+import sys
+import time
+import unittest
+import obot.rss
+
+from ol.krn import boot, execute
+from ol.prs import parse_cli
+
+def main():
+    obot.rss.debug = True
+    ol.wd = os.path.expanduser("~/.test")
+    k = boot("test")
+    k.walk("ol,obot,omod,mymod")
+    k.start()
+    test_path = os.getcwd() + os.sep + "tests"
+    if k.cfg.txt:
+        pat = "test_%s*" % k.cfg.txt
+    else:
+        pat = "test*"
+    suite = unittest.loader.TestLoader().discover(test_path, pattern=pat)
+    unittest.TextTestRunner(verbosity=3).run(suite)
+    k.wait()
+   
+execute(main)
+os._exit(0)
