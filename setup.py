@@ -1,6 +1,4 @@
-# OBOT - 24/7 channel daemon
-#
-#
+# This file is placed in the Public Domain
 
 from setuptools import setup
 
@@ -14,7 +12,7 @@ setup(
     url='https://github.com/bthate/obot',
     author='Bart Thate',
     author_email='bthate@dds.nl',
-    description="24/7 channel daemon",
+    description="bot library",
     long_description=readme(),
     license='Public Domain',
     install_requires=["ob", "feedparser"],
