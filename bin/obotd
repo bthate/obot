@@ -9,7 +9,9 @@ from ob.dbs import last
 from ob.shl import Shell, cfg, parse
 from ob.trm import termreset, termsave
 from ob.utl import j, os, privileges, sys
-from ob.ver import __version__
+
+from obot.tbl import tbl
+from obot.ver import __version__
 
 # defines
 
@@ -38,7 +40,7 @@ def main():
     privileges("obot")
     last(cfg)
     parse()
-    s = Shell()
+    s = Shell(tbl)
     s.scandir(j(cfg.wd, "mod"))
     s.load_mod("cmd")
     s.load_mod(cfg.sets.mods)
