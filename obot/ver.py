@@ -2,7 +2,7 @@
 
 "version"
 
-__version__ = 21
+__version__ = 22
 
 def ver(event):
     event.reply("OBOT %s - 24/7 channel daemon." % __version__)

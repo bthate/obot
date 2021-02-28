@@ -10,7 +10,7 @@ def readme():
 
 setup(
     name='obot',
-    version='21',
+    version='22',
     url='https://github.com/bthate/obot',
     author='Bart Thate',
     author_email='bthate@dds.nl',
@@ -19,7 +19,6 @@ setup(
     license='Public Domain',
     install_requires=["ob", "feedparser"],
     packages=["obot"],
-    scripts=["bin/obot", "bin/obctl", "bin/obotd", "bin/obudp"],
     zip_safe=True,
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
