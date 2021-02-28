@@ -52,7 +52,7 @@ def exec(cmd):
 events = []
 
 h = Test()
-h.walk("ob")
+h.walk("ob,obot")
 h.start()
 
 for e in exec("rss https://www.reddit.com/r/python/.rss"):
