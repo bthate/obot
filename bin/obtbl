@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+"create tables"
+
+# imports
+
+import json
+
+from ob import default
+from ob.itr import walk
+from ob.utl import direct, spl
+
+# functions
+
+def tojson(d):
+    return json.dumps(d, default=default, indent=4, sort_keys=True)
+
+# runtime
+
+tbl = walk("ob,obot")
+del tbl.pnames["__init__"]
+print("# This file is placed in the Public Domain.")
+print("")
+print("tbl = %s" % tojson(tbl))
