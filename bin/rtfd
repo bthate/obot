@@ -1,9 +1,0 @@
-#!/bin/bash
-# OBOT - 24/7 channel daemon
-#
-#
-
-#rm -fr ~/.cache/pip
-bin/env
-env/bin/python3 env/bin/pip3 install -r docs/requirements.txt --upgrade --force-reinstall
-env/bin/python3 env/bin/sphinx-build docs html
