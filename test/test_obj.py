@@ -1,17 +1,49 @@
-# OBOT - 24/7 channel daemon
-#
-#
+# This file is placed in the Public Domain.
 
-import types, unittest
+"test objects"
 
+# imports
+
+import unittest
+
+from ob import O, Object, load, save
 from ob.dbs import last
-from ob.obj import Object, load, save
+
+# classes
 
 class Test_Object(unittest.TestCase):
 
+    def testO(self):
+        o = O()
+        self.assertEqual(type(o), O)
+
+    def testObject(self):
+        o = Object()
+        self.assertEqual(type(o), Object)
+
+    def test_intern1(self):
+        o = Object()
+        self.assertTrue(o.__type__)
+
+    def test_intern2(self):
+        o = Object()
+        self.assertFalse(o)
+
+    def test_intern3(self):
+        o = Object()
+        self.assertTrue("<ob.Object object at" in repr(o))
+
+    def test_intern4(self):
+        o = Object()
+        self.assertTrue(o.__type__ in str(type(o)))
+
+    def test_intern5(self):
+        o = Object()
+        self.assertTrue(o.__id__)
+
     def test_empty(self):
         o = Object()
-        self.assertTrue(not o) 
+        self.assertTrue(not o)
 
     def test_final(self):
         o = Object()
@@ -21,8 +53,8 @@ class Test_Object(unittest.TestCase):
 
     def test_stamp(self):
         o = Object()
-        stp = save(o)
-        self.assertTrue("Object" in stp)
+        save(o)
+        self.assertTrue(o.__type__)
 
     def test_attribute(self):
         o = Object()
@@ -43,19 +75,6 @@ class Test_Object(unittest.TestCase):
         ooo = Object()
         load(ooo, pp)
         self.assertEqual(ooo.bla, "mekker")
-
-    def test_deleted(self):
-        o = Object()
-        o._deleted = True
-        stp = save(o)
-        oo = Object()
-        load(oo, stp)
-        self.assertEqual(oo._deleted, True)
-
-    def test_contains(self):
-        o = Object()
-        o._deleted = True
-        self.assertTrue("_deleted" in o)
 
     def test_last(self):
         o = Object()

@@ -1,0 +1,49 @@
+#!/usr/bin/python3
+# This file is placed in the Public Domain.
+
+"udp to irc relay"
+
+# imports
+
+import select
+import socket
+import sys
+
+# defines
+
+host = "localhost"
+port = 5500
+
+# functions
+
+def toudp(host, port, txt):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
+
+def main():
+    if len(sys.argv) > 1:
+        txt = " ".join(sys.argv[1:])
+        toudp(host, port, txt)
+        return
+    if not select.select([sys.stdin, ], [], [], 0.0)[0]:
+        return
+    while 1:
+        try:
+            (i, o, e) = select.select([sys.stdin,], [], [sys.stderr,])
+        except KeyboardInterrupt:
+            return
+        if e:
+            break
+        stop = False
+        for sock in i:
+            txt = sock.readline()
+            if not txt:
+                stop = True
+                break
+            toudp(host, port, txt)
+        if stop:
+            break
+
+# runtime
+
+main()

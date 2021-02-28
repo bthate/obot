@@ -1,38 +1,51 @@
-#!/usr/bin/python3
-# OBOT - 24/7 channel daemon
-#
-#
+#!/usr/bin/env python3 
+# This file is placed in the Public Domain.
 
-from ob.krn import boot, execute, scandir, os, sys
-from ob.trm import termreset
-from ob.utl import privileges
+"service, not daemon"
 
-def daemon():
-    pid = os.fork()
-    if pid != 0:
+# imports
+
+from ob.dbs import last
+from ob.shl import Shell, cfg, parse
+from ob.trm import termreset, termsave
+from ob.utl import j, os, privileges, sys
+from ob.ver import __version__
+
+# defines
+
+cfg.wd = "/var/lib/ob/"
+cfg.version = __version__
+
+class Core(Shell):
+
+    def direct(self, txt):
+        print(txt)
+
+# functions
+
+def exec(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
         termreset()
-        os._exit(0)
-    os.setsid()
-    os.umask(0)
-    si = open("/dev/null", 'r')
-    so = open("/dev/null", 'a+')
-    se = open("/dev/null", 'a+')
-    os.dup2(si.fileno(), sys.stdin.fileno())
-    os.dup2(so.fileno(), sys.stdout.fileno())
-    os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
-    k = boot("obot", root=True)
-    if "d" in k.cfg.opts:
-        daemon()
-        privileges("obot")
-    k.walk("obot,omod")
-    scandir(k.cfg.wd)
-    if k.cfg.txt:
-        return k.cmd(k.cfg.otxt)
-    k.init(k.cfg.mods)
-    k.start()
-    k.wait()
+    privileges("ob")
+    last(cfg)
+    parse()
+    s = Shell()
+    s.scandir(j(cfg.wd, "mod"))
+    s.load_mod("cmd")
+    s.load_mod(cfg.sets.mods)
+    s.start()
+    s.init(cfg.sets.mods)
+    s.wait()
 
-execute(main)
-os._exit(0)
+# runtime
+
+exec(main)

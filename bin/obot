@@ -1,28 +1,79 @@
-#!/usr/bin/python3
-# OBOT - 24/7 channel daemon
-#
-#
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
 
-import os, sys ; sys.path.insert(0, os.getcwd())
+"main program"
 
-from ob.csl import Console
-from ob.krn import boot, cmd, os
-from ob.trm import execute
+# imports
+
+import os
+import readline
+import time
+
+from ob import cfg
+from ob.dbs import last
+from ob.ofn import format
+from ob.hdl import Command
+from ob.shl import Shell, op, parse
+from ob.thr import launch
+from ob.trm import termreset, termsave
+from ob.utl import e, j
+from ob.ver import __version__
+
+# defines
+
+cfg.debug = False
+cfg.wd = e("~/.ob")
+cfg.version = __version__
+
+# classes
+
+class Core(Shell):
+
+    def direct(self, txt):
+        print(txt)
+
+class Console(Core):
+
+    def poll(self):
+        return Command(input("> "))
+
+    def start(self):
+        super().start()
+        launch(self.input)
+
+# functions
+
+def exec(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except PermissionError as ex:
+        print(str(ex))
+    finally:
+        termreset()
 
 def main():
-    k = boot("obot")
-    if "h" in k.cfg.opts:
-        from omod.hlp import help
-        return help()
-    k.walk("obot,omod")
-    k.init(k.cfg.mods)
-    if k.cfg.txt:
-        return k.cmd(k.cfg.otxt)
-    if "s" in k.cfg.opts or k.cfg.mods:
+    last(cfg)
+    parse()
+    s = Shell()
+    s.scandir(j(cfg.wd, "mod"))
+    s.load_mod("cmd")
+    s.load_mod(cfg.sets.mods)
+    if cfg.res.txt:
+        c = Core()
+        c.clone(s)
+        return c.cmd(cfg.old.txt)
+    if op("c"):
         c = Console()
+        c.clone(s)
         c.start()
-        k.start()
-        k.wait()
+    s.start()
+    s.init(cfg.sets.mods)
+    if op("rcw"):
+        s.wait()
 
-execute(main)
-os._exit(0)
+# runtime
+
+exec(main)

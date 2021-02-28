@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+"lintify"
+
+# imports
+
+import os
+import sys
+
+# defines
+
+skip = "R0904,E0237,C0112,C0111,C0103,E1121,E1101,C0413,W0703,W0622,F0010,"
+skip2 = "C0415,E0202,W0603,W0621,R0914,R0912,R0902,R0915,R0913,R0801,C0411,"
+skip3 = "C0116,C0103,C0114,C0115,C0301,W0613,E0102,R0201,R1710,W0212,C0410,"
+skip4 = "E0402,W0201,R0903,W0221,W0612"
+
+skips = skip + skip2 + skip3 + skip4
+
+txt = "pylint3 --ignore=all.py -d %s ob bin test" % skips
+
+# functions
+
+def open(txt):
+    try:
+        for line in os.popen(txt).readlines():
+           print(line.rstrip())
+    except:
+        pass
+
+# runtime
+
+open(txt)

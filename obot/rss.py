@@ -1,23 +1,20 @@
-# OBOT - 24/7 channel daemon
-#
-#
+# This file is placed in the Public Domain.
 
 "rich site syndicate"
 
-import datetime, os, random, re, time, urllib
+# imports
+
+import urllib
+
+from . import Cfg, Default, Object, cfg, get, save, update
+from .clk import Repeater
+from .dbs import all, find, last, last_match
+from .ofn import edit
+from .hdl import Bus
+from .thr import launch
+from .utl import get_tinyurl, get_url, strip_html, unescape
 
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote_plus, urlencode
-from urllib.request import Request, urlopen
-
-from ob.bus import bus
-from ob.cfg import Cfg
-from ob.dbs import all, find, last, lastmatch
-from ob.dft import Default
-from ob.obj import Object, save, get, update
-from ob.ofn import edit
-from ob.tms import Repeater
-from ob.tsk import start
 
 try:
     import feedparser
@@ -25,50 +22,27 @@ try:
 except ModuleNotFoundError:
     gotparser = False
 
-#:
-debug = False
+# defines
 
-#;
-timestrings = [
-    "%a, %d %b %Y %H:%M:%S %z",
-    "%d %b %Y %H:%M:%S %z",
-    "%d %b %Y %H:%M:%S",
-    "%a, %d %b %Y %H:%M:%S",
-    "%d %b %a %H:%M:%S %Y %Z",
-    "%d %b %a %H:%M:%S %Y %z",
-    "%a %d %b %H:%M:%S %Y %z",
-    "%a %b %d %H:%M:%S %Y",
-    "%d %b %Y %H:%M:%S",
-    "%a %b %d %H:%M:%S %Y",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%dt%H:%M:%S+00:00",
-    "%a, %d %b %Y %H:%M:%S +0000",
-    "%d %b %Y %H:%M:%S +0000",
-    "%d, %b %Y %H:%M:%S +0000"
-]
-
-
-def init(krn):
-    "start a rss poller and return it"
+def init(hdl):
     f = Fetcher()
-    f.start()
-    return f
+    return launch(f.start)
+
+# classes
 
 class Cfg(Cfg):
 
-    "rss configuration"
-
     def __init__(self):
         super().__init__()
-        self.dosave = True
+        self.dosave = False
+        self.display_list = "title,link"
+        self.tinyurl = False
 
 class Feed(Default):
 
-    "a feed item"
+    pass
 
 class Rss(Object):
-
-    "a rss feed url"
 
     def __init__(self):
         super().__init__()
@@ -76,27 +50,16 @@ class Rss(Object):
 
 class Seen(Object):
 
-    "all urls seen"
-
     def __init__(self):
         super().__init__()
         self.urls = []
 
 class Fetcher(Object):
 
-    "rss feed poller"
-
-    #:
     cfg = Cfg()
-    #:
     seen = Seen()
 
-    def __init__(self):
-        super().__init__()
-        self._thrs = []
-
     def display(self, o):
-        "display a rss feed item"
         result = ""
         dl = []
         try:
@@ -111,20 +74,20 @@ class Fetcher(Object):
             if not key:
                 continue
             data = get(o, key, None)
+            if not data:
+                continue
             if key == "link" and self.cfg.tinyurl:
                 datatmp = get_tinyurl(data)
                 if datatmp:
                     data = datatmp[0]
-            if data:
-                data = data.replace("\n", " ")
-                data = strip_html(data.rstrip())
-                data = unescape(data)
-                result += data.rstrip()
-                result += " - "
+            data = data.replace("\n", " ")
+            data = strip_html(data.rstrip())
+            data = unescape(data)
+            result += data.rstrip()
+            result += " - "
         return result[:-2].rstrip()
 
     def fetch(self, rssobj):
-        "update a rss feed"
         counter = 0
         objs = []
         if not rssobj.rss:
@@ -134,7 +97,7 @@ class Fetcher(Object):
                 continue
             f = Feed()
             update(f, rssobj)
-            update(f, o)
+            update(f, dict(o))
             u = urllib.parse.urlparse(f.link)
             if u.path and not u.path == "/":
                 url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
@@ -151,19 +114,16 @@ class Fetcher(Object):
             save(Fetcher.seen)
         for o in objs:
             txt = self.display(o)
-            for bot in bus:
-                bot.announce(txt)
+            Bus.announce(txt)
         return counter
 
     def run(self):
-        "update all feeds"
         thrs = []
-        for fn, o in all("obot.rss.Rss"):
-            thrs.append(start(self.fetch, o))
+        for fn, o in all("ob.rss.Rss"):
+            thrs.append(launch(self.fetch, o))
         return thrs
 
     def start(self, repeat=True):
-        "start the rss poller"
         last(Fetcher.cfg)
         last(Fetcher.seen)
         if repeat:
@@ -171,15 +131,12 @@ class Fetcher(Object):
             repeater.start()
 
     def stop(self):
-        "stop the rss poller"
         save(self.seen)
 
-#:
-fetcher = Fetcher()
+# functions
 
 def get_feed(url):
-    "return a feed by it's url"
-    if debug:
+    if cfg.debug:
         return [Object(), Object()]
     try:
         result = get_url(url)
@@ -191,89 +148,38 @@ def get_feed(url):
             for entry in result["entries"]:
                 yield entry
     else:
-        print("feedparser is missing")
         return [Object(), Object()]
 
-def file_time(timestamp):
-    s = str(datetime.datetime.fromtimestamp(timestamp))
-    return s.replace(" ", os.sep) + "." + str(random.randint(111111, 999999))
+# commands
 
-def get_tinyurl(url):
-    "return a corresponding timyurl"
-    postarray = [
-        ('submit', 'submit'),
-        ('url', url),
-        ]
-    postdata = urlencode(postarray, quote_via=quote_plus)
-    req = Request('http://tinyurl.com/create.php', data=bytes(postdata, "UTF-8"))
-    req.add_header('User-agent', useragent())
-    for txt in urlopen(req).readlines():
-        line = txt.decode("UTF-8").strip()
-        i = re.search('data-clipboard-text="(.*?)"', line, re.M)
-        if i:
-            return i.groups()
-    return []
+def dpl(event):
+    if len(event.args) < 2:
+        return
+    setter = {"display_list": event.args[1]}
+    for fn, o in last_match("ob.rss.Rss", {"rss": event.args[0]}):
+        edit(o, setter)
+        save(o)
+        event.reply("ok")
 
-def get_url(url):
-    "return a http page"
-    url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
-    req = urllib.request.Request(url)
-    req.add_header('User-agent', useragent())
-    response = urllib.request.urlopen(req)
-    response.data = response.read()
-    return response
-
-def strip_html(text):
-    "strip html codes from a page"
-    clean = re.compile('<.*?>')
-    return re.sub(clean, '', text)
-
-def to_time(daystr):
-    "convert a timestring to unix timestamp"
-    daystr = daystr.strip()
-    if "," in daystr:
-        daystr = " ".join(daystr.split(None)[1:7])
-    elif "(" in daystr:
-        daystr = " ".join(daystr.split(None)[:-1])
-    else:
-        try:
-            d, h = daystr.split("T")
-            h = h[:7]
-            daystr = " ".join([d, h])
-        except (ValueError, IndexError):
-            pass
-    res = 0
-    for tstring in timestrings:
-        try:
-            res = time.mktime(time.strptime(daystr, tstring))
-            break
-        except ValueError:
-            try:
-                res = time.mktime(time.strptime(" ".join(daystr.split()[:-1]), tstring))
-            except ValueError:
-                pass
-        if res:
-            break
-    return res
-
-def unescape(text):
-    "unescape html codes"
-    import html.parser
-    txt = re.sub(r"\s+", " ", text)
-    return html.parser.HTMLParser().unescape(txt)
-
-def useragent():
-    "return useragent"
-    return 'Mozilla/5.0 (X11; Linux x86_64) OBOT +http://github.com/bthate/obot)'
+def ftc(event):
+    res = []
+    thrs = []
+    fetcher = Fetcher()
+    fetcher.start(False)
+    thrs = fetcher.run()
+    for thr in thrs:
+        res.append(thr.join() or 0)
+    if res:
+        event.reply("fetched %s" % ",".join([str(x) for x in res]))
+        return
 
 def rem(event):
-    "remove a rss feed"
     if not event.args:
         return
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
-    for fn, o in find("obot.rss.Rss", selector):
+    for fn, o in find("ob.rss.Rss", selector):
         nr += 1
         o._deleted = True
         got.append(o)
@@ -281,35 +187,11 @@ def rem(event):
         save(o)
     event.reply("ok")
 
-def dpl(event):
-    "set keys to display"
-    if len(event.args) < 2:
-        return
-    setter = {"display_list": event.args[1]}
-    for fn, o in lastmatch("obot.rss.Rss", {"rss": event.args[0]}):
-        edit(o, setter)
-        save(o)
-    event.reply("ok")
-
-def ftc(event):
-    "manual run a fetch batch"
-    res = []
-    thrs = []
-    fetchr = Fetcher()
-    fetchr.start(False)
-    thrs = fetchr.run()
-    for thr in thrs:
-        res.append(thr.join() or 0)
-    if res:
-        event.reply("fetched %s" % ",".join([str(x) for x in res]))
-        return
-
 def rss(event):
-    "add a feed"
     if not event.args:
         return
     url = event.args[0]
-    res = list(find("obot.rss.Rss", {"rss": url}))
+    res = list(find("ob.rss.Rss", {"rss": url}))
     if res:
         return
     o = Rss()

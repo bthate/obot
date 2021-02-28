@@ -1,13 +1,17 @@
 #!/usr/bin/python3
-# OBOT - 24/7 channel daemon
-#
-#
+# This file is placed in the Public Domain.
+
+"build environment"
+
+# imports
 
 import os
+import shutil
+import sys
 
-old =  os.getcwd()
+# functions
 
-def obopen(txt):
+def open(txt):
     try:
         for line in os.popen(txt).readlines():
             print(line.rstrip())
@@ -15,7 +19,7 @@ def obopen(txt):
         pass
 
 def main():
-    obopen("bin/clean")
+    open("bin/clean")
     try:
         shutil.rmtree("build")
     except:
@@ -25,15 +29,23 @@ def main():
     except:
         pass
     try:
-        shutil.rmtree("obot.egg-info")
+        shutil.rmtree("%s.egg-info" % pn)
     except:
         pass
     for line in os.popen("python3 setup.py sdist").readlines():
         print(line.strip())
-    #obopen("rm -fR ~/.cache/pip/")
-    obopen("python3 -mvirtualenv -p python3 env")
-    obopen("env/bin/pip3 install obot -f dist --upgrade --force-reinstall")
+    open("python3 -mvirtualenv -p python3 env")
+    open("env/bin/pip3 install %s -f dist --force-reinstall" % pn)
+
+# runtime
+
+old =  os.getcwd()
+
+try:
+    pn = sys.argv[1]
+except IndexError:
+    pn = old.split(os.sep)[-1].lower()
 
 if __name__ == "__main__":
     main()
-    obopen("tar zcf env.tar.gz env")
+    open("tar zcf env.tar.gz env")
