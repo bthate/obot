@@ -1,0 +1,16 @@
+[Unit]
+Description=OBOT - 24/7 channel daemon
+After=multi-user.target
+
+[Service]
+StandardOutput=journal+console
+StandardError=journal+console
+SyslogIdentifier=obot
+DynamicUser=True
+StateDirectory=obot
+CacheDirectory=obot
+ExecStart=/usr/local/bin/obotd
+CapabilityBoundingSet=CAP_NET_RAW
+
+[Install]
+WantedBy=multi-user.target

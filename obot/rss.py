@@ -6,13 +6,13 @@
 
 import urllib
 
-from . import Cfg, Default, Object, cfg, get, save, update
-from .clk import Repeater
-from .dbs import all, find, last, last_match
-from .ofn import edit
-from .hdl import Bus
-from .thr import launch
-from .utl import get_tinyurl, get_url, strip_html, unescape
+from ob import Cfg, Default, Object, cfg, get, save, update
+from ob.clk import Repeater
+from ob.dbs import all, find, last, last_match
+from ob.ofn import edit
+from ob.hdl import Bus
+from ob.thr import launch
+from ob.utl import get_tinyurl, get_url, strip_html, unescape
 
 from urllib.error import HTTPError, URLError
 
@@ -119,7 +119,7 @@ class Fetcher(Object):
 
     def run(self):
         thrs = []
-        for fn, o in all("ob.rss.Rss"):
+        for fn, o in all("obot.rss.Rss"):
             thrs.append(launch(self.fetch, o))
         return thrs
 
@@ -156,7 +156,7 @@ def dpl(event):
     if len(event.args) < 2:
         return
     setter = {"display_list": event.args[1]}
-    for fn, o in last_match("ob.rss.Rss", {"rss": event.args[0]}):
+    for fn, o in last_match("obot.rss.Rss", {"rss": event.args[0]}):
         edit(o, setter)
         save(o)
         event.reply("ok")
@@ -179,7 +179,7 @@ def rem(event):
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
-    for fn, o in find("ob.rss.Rss", selector):
+    for fn, o in find("obot.rss.Rss", selector):
         nr += 1
         o._deleted = True
         got.append(o)
@@ -191,7 +191,7 @@ def rss(event):
     if not event.args:
         return
     url = event.args[0]
-    res = list(find("ob.rss.Rss", {"rss": url}))
+    res = list(find("obot.rss.Rss", {"rss": url}))
     if res:
         return
     o = Rss()

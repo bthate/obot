@@ -1,0 +1,6 @@
+# This file is placed in the Public Domain.
+
+systemctl daemon-reload
+systemctl stop obot
+systemctl start obot
+systemctl status obot

@@ -17,12 +17,14 @@ from ob.shl import Shell, op, parse
 from ob.thr import launch
 from ob.trm import termreset, termsave
 from ob.utl import e, j
-from ob.ver import __version__
+
+from obot.tbl import tbl
+from obot.ver import __version__
 
 # defines
 
 cfg.debug = False
-cfg.wd = e("~/.ob")
+cfg.wd = "/var/lib/obot"
 cfg.version = __version__
 
 # classes
@@ -57,9 +59,9 @@ def exec(main):
 def main():
     last(cfg)
     parse()
-    s = Shell()
+    s = Shell(tbl)
     s.scandir(j(cfg.wd, "mod"))
-    s.load_mod("cmd")
+    s.load_mod("cmd,fnd,irc,rss,sys,udp")
     s.load_mod(cfg.sets.mods)
     if cfg.res.txt:
         c = Core()

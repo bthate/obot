@@ -1,0 +1,6 @@
+# This file is placed in the Public Domain.
+
+include README.rst
+include obot.service
+include MANIFEST.in
+recursive-include bin *

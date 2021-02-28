@@ -7,10 +7,10 @@
 import socket
 import time
 
-from . import Cfg, Object
-from .dbs import last
-from .hdl import Bus
-from .thr import launch
+from ob import Cfg, Object
+from ob.dbs import last
+from ob.hdl import Bus
+from ob.thr import launch
 
 # defines
 

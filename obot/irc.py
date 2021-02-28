@@ -12,13 +12,14 @@ import time
 import threading
 import  _thread
 
-from . import Cfg, Object, save
-from .dbs import find, last
-from .ofn import edit, format
-from .hdl import Bus, Event, Handler, cmd
-from .thr import launch
-from .utl import locked
-from .ver import __version__
+from ob import Cfg, Object, save
+from ob.dbs import find, last
+from ob.ofn import edit, format
+from ob.hdl import Bus, Event, Handler, cmd
+from ob.thr import launch
+from ob.utl import locked
+
+from obot.ver import __version__
 
 # defines
 
@@ -39,12 +40,12 @@ class ENOUSER(Exception):
 
 class Cfg(Cfg):
 
-    channel = "#ob"
-    nick = "ob"
+    channel = "#obot"
+    nick = "obot"
     port = 6667
     server = "localhost"
-    realname = "write your own commands."
-    username = "ob"
+    realname = "24/7 channel daemon"
+    username = "obot"
 
     def __init__(self):
         super().__init__()
@@ -484,7 +485,7 @@ class Users(Object):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        return find("ob.irc.User", s)
+        return find("obot.irc.User", s)
 
     def get_user(self, origin):
         u = list(self.get_users(origin))
@@ -535,7 +536,7 @@ def dlt(event):
     if not event.res.args:
         return
     selector = {"user": event.res.args[0]}
-    for fn, o in find("ob.irc.User", selector):
+    for fn, o in find("obot.irc.User", selector):
         o._deleted = True
         save(o)
         event.reply("ok")
