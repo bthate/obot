@@ -15,6 +15,7 @@ sys.path.insert(0, os.getcwd())
 
 from ob import cfg
 from ob.hdl import Event, Handler
+from ob.itr import find_mods
 from ob.shl import parse
 from ob.utl import get_exception, mods
 
@@ -64,7 +65,7 @@ class Test_Fuzzer(unittest.TestCase):
 
     def test_fuzz(self):
         global exc
-        m = mods("ob")
+        m = find_mods("ob,obot")
         for x in range(cfg.index or 1):
             for mod in m:
                 fuzz(mod)

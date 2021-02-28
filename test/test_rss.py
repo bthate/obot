@@ -8,7 +8,8 @@ import feedparser
 import unittest
 
 from ob import update
-from ob.rss import Feed
+
+from obot.rss import Feed
 
 # classes
 
