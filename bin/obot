@@ -24,7 +24,7 @@ from obot.ver import __version__
 # defines
 
 cfg.debug = False
-cfg.wd = "/var/lib/obot"
+cfg.wd = e("~/.obot")
 cfg.version = __version__
 
 # classes
@@ -59,6 +59,8 @@ def exec(main):
 def main():
     last(cfg)
     parse()
+    if op("r"):
+        cfg.wd = "/var/lib/obot"
     s = Shell(tbl)
     s.scandir(j(cfg.wd, "mod"))
     s.load_mod("cmd,fnd,irc,rss,sys,udp")
